@@ -1,0 +1,136 @@
+	: hinter einem buchstaben bedeuted mit eingabe parameter
+
+	-M: == Mode , welcher programmierer (avrdude,openocd) verwendet wird
+
+AVRdude:	ALLE Befehle bedeuten das, was sie in avrdude bedeuten
+		-B:,-U: wird interpretiert
+		-P:,-c:,-b:,-P,-c,-b wird ignoriert, da von uns vorgegeben
+		-v,-q,-p:,-s,-e wird weitergeleitet (1 zu 1)
+		
+		-v = verbose, viel output
+		-q = quell, wenig output
+		-p = partno, microprocessor der programmiert wird
+		-e = erase, löscht den chip
+		-U== speicherart:r/w/v:dateipfad:dateiart (letzter : kann ignoriert werden da die dateiendung interpretiert wird)
+		
+		-B== geschwindigkeit, entweder durch zahl oder durch slow, normal, fast angegeben. falls keine angabe vorhanden eingestellt auf  B = 10
+
+		
+OpenOCD:  	Alle befehle sind abstrahiert: -p== prozessortyp ,  -o== optional telnet,gdb (falls beides 2 mal eepro-o)
+		-p:,-o:,-f: wird interpretiert (falls es ein file zum flaschen gibt wird dieses mit übertragen)
+		-p = processor, microprocessor der programmiert wird
+		-o,= optional, ob telnet oder gdb für ein/ausgaben verwendet werden sollen
+		-f = file, welches file verwendet werden soll
+
+
+beispiel befehl:
+
+eeprog.py -M openocd -p stm32f4x -o telnet -o gdb -f hallo.bin
+
+
+ 
+(-c avrisp2 -P usb -b 230400 ,von uns vorgegeben aber falls extra mitgeschrieben nur warn keine fehler meldung)
+python eeprog.py -M avrdude -p m16 -B fast -U flash:r:test.hex:i -v -v -c avrisp2 -P usb -b 230400
+
+befehle:: 
+
+	--eeprog-ip 192.167.74.56 	//die ip des servers
+	--eeprog-port 8888	  	//der port über den der client connected
+	--signature 	 		//über angabe des processors die standart signatur lesen (automatische interpretation des modi über prozessor)
+	--speed 2 			//2 ist standart mit b=10 1 = 1 3=100 bei avrdude
+	--processor m16 		//wahl des processors + interpretation des programms
+	--flash-read test.bin 		//read auf flash, programm wahl durch processor
+	--eeprom-read test.bin		//"      "eeprom"                             "
+	--fuse-read-low			//"      " fuse-low"                          "
+	
+	zu jedem read 1 write
+	bei fuse write eingabe= 0x22, ansonsten file
+
+		//gibt komplette liste der unterstützten processoren aus
+	--help 				//gibt komanndo liste aus
+	--gdb				//target aufruf gdb, STRG C abfangen und beenden (entweder kill oder reset + quit per "telnet")
+	--gdb-port 3333			//gdb port festlegen, sonst 3333
+	--telnet			//zugriff per telnet
+	--telnet-port 4444		//telnet port festlegen,sonst 4444
+	--raw 				//raw eingabe in terminal des servers
+	
+
+Signatur lesen:
+==========================
+
+eeprog --eeprog-ip 192.167.74.56 --eeprog-port 323 --signature stm32f4x // port ist optional
+eeprog --signature m16
+
+Firmware  / EEPROM / FUSE flashen bzw lesen:
+===========================
+
+eeprog --vendor atmel --processor m16 --speed 1 --flash-read test.bin  --verify --mode avrdude // vendor optional , verify optional, mode optional
+eeprog --processor stm32f4x --flash-write hallo.hex
+
+eeprog --eeprom-read main.bin
+eeprog --eeprom-write mein.hex
+
+eeprog --fuse-read-low //infos vom avrdude + 1 byte
+eeprog --fuse-read-high 
+eeprog --fuse-read-extended
+
+eeprog --fuse-write-low 0x12
+eeprog --fuse-write-high 0x22
+eeprog --fuse-write-extended 0x22 // optional immer fuer alle fuse befehle
+
+GDB starten:
+===========================
+
+eeprog --processor stm32f4x --gdb --gdb-port 3333  // gdb-port optional sonst 3333  STRG C abfangen und beenden (entweder kill oder reset + quit per "telnet")
+eeprog --processor stm32f4x --telnet // besagt was ich direkt als ein und ausgabe benutzen kann darum entweder gdb 
+
+Raw Mode:
+===========================
+
+1:1 Durchgabe Befehle + Dateien
+
+eeprog --raw openocd "openocd -f sdsdsd.cfg dad.cfg"
+eeprog --raw avrdude "avrdude -B 10 -m16 -c avrisp2 -P usb"
+
+Info Commandos
+===========================
+eeprog --show-all// gibt liste aller prozessoren aus anzeigen connector + interface
+eeprog --help
+
+
+
+
+Live Konsole
+===========================
+
+
+
+
+
+
+
+
+==========================================0
+Im Server gibt es eine Mapping Tabelle
+
+part: m16
+vendor: atmel
+connector: avr
+interface: isp, debug-wire
+mode: avrdude
+defaultvoltage: 3V3
+
+
+
+///etc/avrdude.conf anschauen
+
+
+
+
+
+python eeprog.py -M openocd -p stm32f4x -o telnet -o gdb -f hallo.bin
+
+python eeprog.py -M openocd -f hallo.hex
+
+python eeprog.py -M avrdude -p m16 -B 10 -U flash:r:test.bin 	
+

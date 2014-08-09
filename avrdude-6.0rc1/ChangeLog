@@ -1,0 +1,194 @@
+2013-05-08  Joerg Wunsch <j.gnu@uriah.heep.sax.de>
+
+	* configure.ac (AC_INIT): Bump version to 6.0rc1.
+
+2013-05-07  Hannes Weisbach <hannes_weisbach@gmx.net>
+
+	* avrftdi_private.h: Change size of pin_checklist to N_PINS (from N_PINS-1)
+	* avrftdi.c: Adapt code to new size of pin_checklist. Remove pins_check()
+	from set_pin().
+	Add pgm->power[up|down] functions as well as fill pgm->enable|disable with
+	proper content as suggested by Rene Liebscher.
+
+2013-05-05  Rene Liebscher <R.Liebscher@gmx.de>
+
+	* pindefs.h: use unsigned int if stdint.h is not available and UINT_MAX is 0xffffffff
+	otherwise use unsinged long
+	* ft245r.c: added support for more pin functions led, vcc, buff
+
+2013-05-06  Hannes Weisbach <hannes_weisbach@gmx.net>
+
+	* avrftdi_tpi.c: instead of private set_pin() function pointer use the one
+	declared in struct PROGRAMMER.
+	* avrftdi_private.h: remove set_pin function pointer. Add pin_checklist_t
+	member to check pgm->setpin calls during runtime.
+	* avrftdi.c: remove set_pin function pointer init, add pgm->setpin init.
+	Convert avrftdi to new 0-based pindefs infrastructure.
+	* avrdude.conf.in: Change all avrftdi-based programmers' pin definitions to
+	0-based.
+
+2013-05-06  Joerg Wunsch <j.gnu@uriah.heep.sax.de>
+
+	* pindefs.h: Include "ac_cfg.h" before testing for HAVE_* macros.
+
+2013-05-05  Rene Liebscher <R.Liebscher@gmx.de>
+
+	* main.c: revert to rev 1159 (doing pgm_display after pgm_open)
+	* avrpart.[ch]: moved avr_pin_name to pindefs.[ch]
+	* pgm.c: moved pins_to_str to pindefs.[ch], added initialization of 
+          new pin definitions in pgm_new()
+	* pindefs.[ch]: added moved functions from other files, added a lot of 
+          documentation, reformatted files using astyle to have consistent spacing,
+          added a new generic check function for pins
+	* ft245r.c: used new generic pin check function
+
+2013-05-03  Rene Liebscher <R.Liebscher@gmx.de>
+
+	Create new pin definition data structures to support 0-based pin numbers,
+	and mixed inverse/non-inverse pin lists.
+	* avrftdi.c,buspirate.c,linuxgpio.c,par.c,serbb_*.c: added function call 
+          to fill old pinno entries from new pin definitions.
+	* pindefs.[hc]: added data struct and helper functions for new pin definitions
+	* avrdude.conf.in: pins in entries using ftdi_syncbb are now 0-based
+	* config_gram.y: allow combinations of inverted and non-inverted pins in pin lists
+	* ft245r.c: reworked to work directly with the new pin definitions,
+          pins are now 0-based, inverse pins are supported, buff is supported
+	* pgm.[ch]: added new pin definitions field to programmer structure, 
+          adapted pin display functions
+
+2013-05-03  Hannes Weisbach <hannes_weisbach@gmx.net>
+
+	* avrftdi_private.h: Remove update forward declaration from avrftdi_print to
+	avrftdi_log.
+	* avrftdi_tpi.c: Do all I/O in terms of pgm->cmd_tpi()-calls instead of
+	avrftdi_tpi_[read,write]_byte().
+	Remove unnecessary set_pin call to set MOSI high, speeds up I/O.
+	Removes SKEY array, moves it to tpi.h.
+	Integrate new avr_tpi_[program_enable,chip_erase]() and functions into
+	avrftdi_tpi.
+	* avrftdi_tpi.h: Remove avrftdi_tpi_[program_enable,chip_erase] forward
+	declarations.
+	* avr.c: Adds avr_tpi_chip_erase() generic TPI chip erase function.
+	Adds avr_tpi_program_enable() - generic TPI external programming enable
+	function. Sets guard time, reads identification register, sends SKEY command
+	and key, checks NVMEN bit. The required guard time has to be passed as
+	parameter.
+	* tpi.h: Adds SKEY array including CMD_SKEY in "correct" order.
+
+2013-05-02  Hannes Weisbach <hannes_weisbach@gmx.net>
+
+	* avrftdi_private.h: Add libusb-1.0 include to fix include order in windows.
+	* NEWS: Add notice avrftdi supporting TPI
+	* avr.c: Fix avr_tpi_poll_nvmbsy() - poll read data instead of return code
+	* avrftdi_private.h, avrftdi.c: move logging #defines to from avrftdi.c to
+	avrftdi_private.h, so that they are available for avrftdi_tpi, too.
+
+2013-04-30  Hannes Weisbach <hannes_weisbach@gmx.net>
+
+	* tpi.h: Add definition for TPI Identification Code
+	* avrftdi_tpi.c: Add TPI-support for FTDI-based programmers
+	* avrftdi_private.h: Add common include file for FTDI-based programmers
+
+2013-04-28  Hannes Weisbach <hannes_weisbach@gmx.net>
+
+	* avrftdic: Rework of textual output. Messages are divided by severity and
+	printed accordingly to the verbosity,	as specified by the user. The provided
+	severity level are (ERROR, WARN, INFO, DEBUG, TRACE). Where "ERROR" messages
+	are always printed. Shortcut-macros	including function, from which the
+	output was generated, and line number were also added.
+	Some log messages were updated and other code warnings removed.
+
+2013-04-27  Hannes Weisbach <hannes_weisbach@gmx.net>
+
+	* configure.ac: Add libftdi1 library check, remove TYPE_232H DECL check
+	* Makefile.am: Add @LIBFTDI1@ to avrdude_LDADD
+	* avrftdi.c: Update from libftdi0 to libftdi1. Use libftdi1's function to
+	find a device by vid/pid/serial instead of doing it ourself and add/update
+	error messages. avrftdi_print is changed so that a message is printed when
+	the verbosity level is greater or equal the message level, to have always-on
+	messages.
+	Fix a bug where the RX fifo of the FTDI chip is full, resulting in STALL/NAK
+	of the ongoing OUT request and subsequently timeout, because an IN request
+	cannot be issued due to the synchronous part of libftdi. This should fix
+	#38831 and #38659.
+
+2013-04-25  Joerg Wunsch <j.gnu@uriah.heep.sax.de>
+
+	* configure.ac(AC_CONFIG_HEADERS): Replace the old AM_CONFIG_HEADER
+	by this; automake 1.13+ barfs.
+
+2013-03-12  Joerg Wunsch <j.gnu@uriah.heep.sax.de>
+
+	* avrdude.conf.in (ATmega2564RFR2, ATmega1284RFR2, ATmega644RFR2):
+	New devices
+
+2013-01-30  Rene Liebscher <R.Liebscher@gmx.de>
+
+	patch #7724 Add TPI support for Bus Pirate using bitbang mode
+	* buspirate.[ch]: added support for BusPirate Bitbanging
+	* pgm_type.c: added entry for buspirate_bb
+	* avrdude.conf.in: added entry for buspirate_bb
+
+2013-01-30  Rene Liebscher <R.Liebscher@gmx.de>
+
+	patch #7936 Patch to support BusPirate AVR Extended Commands mode
+	* buspirate.c: added support for BusPirate AVR Extended Commands mode
+	* avrdude.1: added doc for nopagedread parameter
+	* doc/avrdude.texi: added doc for nopagedread parameter
+
+2013-01-30  Rene Liebscher <R.Liebscher@gmx.de>
+
+	patch #7723 Bus Pirate “raw-wire” mode which can run down to 5 kHz
+	* buspirate.c: added raw wire mode
+	* avrdude.1: added doc for rawfreq parameter
+	* doc/avrdude.texi: added doc for rawfreq parameter
+
+2013-01-30  Rene Liebscher <R.Liebscher@gmx.de>
+
+	bug #37977 Support for Openmoko Debug Board
+	* avrdude.conf.in: added openmoko entry
+
+2013-01-29  Rene Liebscher <R.Liebscher@gmx.de>
+
+	patch #7932 Read USBtiny VID and PID from avrdude.conf if provided.
+	* avrdude.conf.in: added usbpid, usbvid to usbtiny
+	* usbtiny.[ch]: use usbpid, usbpid if provided in config file
+
+2013-01-26  Joerg Wunsch <j.gnu@uriah.heep.sax.de>
+
+	bug #38172: avrftdi: Incorrect information in avrdude.conf
+	* avrdude.conf.in (avrftdi): fix comments about ACBUS vs. ADBUS;
+	add a comment that the MPSSE signals are fixed by the FTDI
+	hardware and cannot be changed
+
+2013-01-09  Rene Liebscher <R.Liebscher@gmx.de>
+
+	patch #7165 Add support for bitbanging GPIO lines using the Linux sysf GPIO interface
+	* doc/avrdude.texi,avrdude.1: added doc for linuxgpio 
+	* avrdude.conf.in: added template for linuxgpio programmer
+	* config_gram.y: pin numbers restricted to [PIN_MIN, PIN_MAX]
+	* pindefs.h: added PIN_MIN, PIN_MAX, removed unused LED_ON/OFF
+	* configure.ac: configure option enable-linuxgpio, print of enabled options
+	* linuxgpio.[ch]: new source for linuxgpio programmer
+	* Makefile.am: added linuxgpio to sources list
+	* pgm_type.c: added linuxgpio to programmer types list
+
+2013-01-08  Joerg Wunsch <j.gnu@uriah.heep.sax.de>
+
+	* jtagmkI.c (jtagmkI_prmsg): replace a putchar() by putc(...stderr)
+	* jtagmkII.c (jtagmkII_prmsg): (Dito.)
+	* jtag3.c (jtag3_prevent, jtag3_prmsg): (Dito.)
+
+2013-01-02  Joerg Wunsch <j.gnu@uriah.heep.sax.de>
+
+	* usb_libusb.c (usbdev_open): Downgrade the max transfer size for
+	the main data endpoints when being forced so by the USB; this can
+	happen when attaching the JTAGICE3 to a USB 1.1 connection
+	* jtag3.c (jtag3_initialize): When detecting a downgraded max
+	transfer size on the JTAGICE3 (presumably, due to being connected
+	to USB 1.1 only), bail out as its firmware cannot properly handle
+	this (by now)
+
+2013-01-02  Joerg Wunsch <j.gnu@uriah.heep.sax.de>
+
+	* ChangeLog: annual ChangeLog rotation time

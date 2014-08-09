@@ -1,0 +1,28 @@
+makeprocessor.py
+
+renders processor list for server.py and browser.
+
+
+needed: avrdude.conf, tcl dir. with: board,target
+
+creates: avrdude.rc, openocd.rc, processor.php
+
+avrdude.rc 	-> /var/www
+openocd.rc 	-> /var/www
+processor.php	-> /var/www
+
+processors.txt:
+
+{"processor":"m16","name":"ATMEGA16","vendor":"Atmega","program":"avrdude"}
+
+	overwrites renderred processors with the same 'name' 
+	list sortet by 'name'
+	'name' will be shown in the browser in the processor dropdown bar
+	for openocd use filename without .cfg as processor
+	for avrdude use id or desc from avrdude.conf
+	written in json.
+
+on board pls copy the /tcl/board dir into the /tcl/taget dir.
+
+its also possible to put the /tcl/board dir into the /tcl/taget dir before using 
+makeprocessor.py

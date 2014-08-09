@@ -1,0 +1,9 @@
+{"processor":"m16","name":"ATMEGA16","vendor":"Atmel","program":"avrdude"}
+{"processor":"m16","name":"ATMEGA16","vendor":"","program":"avrdude"}
+{"processor":"c32","name":"ATTINY45","vendor":"Atmel","program":"avrdude"}
+{"processor":"c64","name":"AT90CAN64","vendor":"Atiny","program":"avrdude"}
+{"processor":"c128","name":"AT90CAN128","vendor":"Atiny","program":"avrdude"}
+{"processor":"lpc2103","name":"LPC2103","vendor":"NXP","program":"openocd"}
+{"processor":"lpc2103","name":"LPC-H2103","vendor":"Olimex","program":"openocd"}
+{"processor":"at91eb40a","name":"at91eb40a","vendor":"Atmel","program":"avrdude"}
+{"processor":"actux3","name":"actux3","vendor":"Atmel","program":"avrdude"}
