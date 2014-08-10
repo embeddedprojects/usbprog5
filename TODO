@@ -1,8 +1,8 @@
-
--optional:
-	openocd speed einstellbar (3 stufen);
-
--soll:
+	- prozessor liste saeubert + alphabet
+	- Hilfe Texte saeubern
+	- sichtbar ob openocd laeuft oder nicht
+	- letzte firmware loeschbar / im tmp bereich
         - update prozess sicher und schoen (prio)
-	- inet adresse/wlan (change ip mit 
+	- inet adresse/wlan (change ip)
+	- openocd speed einstellbar (3 stufen);
 	

@@ -547,15 +547,15 @@ to write fuses please use the embeddedprog.py
 Shows signature/standart output of the programmer
 
 <h2>Dump Memory:</h2>
-Please insert the command in following form: <br> mdw [phys] addr [count] <br><br>   mdw = 32-bit word<br>   mdh = 16-bit halfword<br>   mdb = 8-bit byte<br><br>When the current target has an MMU which is present and<br>active, addr is interpreted as a virtual address. Otherwise,<br>or if the optional phys flag is specified, addr is interpreted<br>as a physical address. If count is specified, displays that<br>many units
+Insert the command in following form: <br> mdw [phys] addr [count] <br><br>   mdw = 32-bit word<br>   mdh = 16-bit halfword<br>   mdb = 8-bit byte<br><br>When the current target has an MMU which is present and<br>active, addr is interpreted as a virtual address. Otherwise,<br>or if the optional phys flag is specified, addr is interpreted<br>as a physical address. If count is specified, displays that<br>many units
 
 <h2>Start/Stop openocd:</h2>
-starts/tops openocd with current settings.<br>
-after start it will remain open for gdb/telnet connections
+Starts and stop openocd with current settings.<br>
+After start it will remain open for gdb/telnet connections.
 
 <h2>Change Ports:</h2>
-change gdb/telnet port<br>
-ports can only be changed via browser
+Change gdb/telnet port.<br>
+Ports can only be changed via browser
 </div>
 </div>
 
@@ -569,24 +569,23 @@ ports can only be changed via browser
 
 
 <div align="left">
-The "Temp Firmware"-field shows the last uploaded file.<br>
-This file will be overriten once a new file is uploaded.
+The "Upload Firmware" field shows the last uploaded file.<br>
+This file will be overwritten once a new file is uploaded.
 
-<h2>save profile:</h2>
-saves the current temp file + settings as an profile for later use.
+<h2>Save profile:</h2>
+Saves the current temp file + settings as an profile for later use.
 
-<h2>program:</h2>
-program the board with the current temp settings.
+<h2>Program:</h2>
+Program the board with the current temp settings.
 
 <h2>Upload:</h2>
-please chose the needed settings BEFORE you upload the file.<br>
-Here you can upload your files as temp files.<br>
-check autoflash to upload and program at once.
+Please choose the needed settings BEFORE you upload the file.<br>
+Here you can upload your files.<br>
+Check autoflash to upload and program at once. After your first upload
+you can save the firmware with the current settings as profile in firmware archive.
 
 </div>
 </div>
-
-
 
 
     <div align="right">
@@ -596,14 +595,14 @@ check autoflash to upload and program at once.
     </div>
 
 <div align="left">
-The "Flash Archive"-field shows your saved files+settings.<br>
-the description can be changed by clicking on it
+The "Flash Archive" field shows your saved files with the settings.<br>
+Rhe description can be changed by clicking on it.
 
-<h2>program:</h2>
-to program just use the program button, it will use your saved file + settings.
+<h2>Program:</h2>
+To program just use the program button, it will use your saved file + settings.
 
 <h2>delete:</h2>
-with the delete button you can delete an old entry.
+With the delete button you can delete an old entry.
 
 
 </div>
@@ -622,15 +621,15 @@ with the delete button you can delete an old entry.
 
 <div align="left">
 <h2>Update:</h2>
-<a>you can get the latest updates from :  <a style="color:blue"  href="javascript:hide_popup('helpUp') ">dlseite</a>.<br>
+<a>You can get the latest updates from :  <a style="color:blue"  href="https://github.com/embeddedprojects/usbprog5/raw/master/update/update.tar.gz">Download</a>.<br>
 to update just upload the update.tar.gz .</a>
 
 
 <h2>Change IP:</h2>
-refers you to a new page where you can chose your preffered inet settings.(Only useable in Pro Version)
+Refers you to a new page where you can chose your preffered inet settings. (Only useable in pro version)
 
 <h2>Download Client:</h2>
-downloads the newest version of the client,<br>
+Downloads the newest version of the client,<br>
 the client is used to communicate --via shell(command line)-- with the embeddedprog server.
 
 
@@ -709,24 +708,24 @@ echo render_firmware_table();
 
 <tr valign="top" style="background:#BBB"><td colspan="5">Command Lines:</td></tr>
 <tr><td>Read Signature</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --speed 2 </td></tr>
-<tr><td>Flash</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --flash-write /tmp/yourprog.hex --speed 2</td></tr>
-<tr><td>Read Flash</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --flash-read yourprog.hex  --speed 2</td></tr>
-<tr><td>Erase</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --delete --speed 2</td></tr>
-<tr><td>Start openocd</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --gdb "start" --speed 2</td></tr>
-<tr><td>Stop openocd</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --gdb "stop" --speed 2</td></tr>
-<tr><td>Dump Memory</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --dump "mdw addr count" --speed 2</td></tr>
-<tr><td>Read Fuse High</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_read_high --speed 2</td></tr>
-<tr><td>Read Fuse Low</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_read_low --speed 2</td></tr>
-<tr><td>Read Fuse Extended</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_read_extended --speed 2</td></tr>
-<tr><td>Write Fuse High</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_write_high "fusebits" --speed 2</td></tr>
-<tr><td>Write Fuse Low</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_write_low "fusebits" --speed 2</td></tr>
-<tr><td>Write Fuse Extended</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_write_extended "fusebits" --speed 2</td></tr>
+<tr><td>Flash</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --flash-write /tmp/yourprog.hex</td></tr>
+<tr><td>Read Flash</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --flash-read yourprog.hex</td></tr>
+<tr><td>Erase</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --delete</td></tr>
+<tr><td>Start openocd</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --gdb "start"</td></tr>
+<tr><td>Stop openocd</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --gdb "stop"</td></tr>
+<tr><td>Dump Memory</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --dump "mdw addr count"</td></tr>
+<tr><td>Read Fuse High</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_read_high</td></tr>
+<tr><td>Read Fuse Low</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_read_low</td></tr>
+<tr><td>Read Fuse Extended</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_read_extended</td></tr>
+<tr><td>Write Fuse High</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_write_high "fusebits"</td></tr>
+<tr><td>Write Fuse Low</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_write_low "fusebits"</td></tr>
+<tr><td>Write Fuse Extended</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_write_extended "fusebits"</td></tr>
 
 <tr valign="top" style="background:#BBB"><td colspan="5"></td></tr>
 
 </table>
 <br>
-<center><i style="color:#BBB">embeddedprog 0.1 created by <a href="" style="color:#bbb;">embedded projects GmbH</a>. Based on GNU/Linux, OpenOCD, avrdude and many other Open Source projects. <a href="" style="color:#bbb;">Documentation</a></i></center>
+<center><i style="color:#BBB">embeddedprog 0.1 created by <a href="http://shop.embedded-projects.net" target="_blank" style="color:#bbb;">embedded projects GmbH</a>. Based on GNU/Linux, OpenOCD, avrdude and many other Open Source projects. <a href="http://www.usbprog.org" style="color:#bbb;" target="_blank">Homepage</a></i></center>
 
 
  <iframe id="myIFrm" src="" style="visibility:hidden">
