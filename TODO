@@ -1,9 +1,29 @@
-	- prozessor liste saeubert + alphabet
-	- Hilfe Texte saeubern
-	- sichtbar ob openocd laeuft oder nicht
-	- letzte firmware loeschbar / im tmp bereich
-        - update prozess sicher und schoen (prio)
-	- inet adresse/wlan (change ip)
-	- openocd speed einstellbar (3 stufen);
-	- add openocd 0.8
+Prio 1:
+- togl beispiel testen: ist das wirklich 50ns aktuell schnell?
+
+
+Prio 2:
+- add openocd 0.8
+- FUSE bits aufeinmal lesen
+- Prozessorliste nach Alphabet
+- Darstellung Prozessor in Firmwarearchiv statt m16 eher ATMEGA16 (wie in Prozessorliste)
+- Letzte firmware loeschbar / im tmp bereich
+- Download Link pro Firmware
+- Download Link auf bei Temp File
+- Laufen die Gnublin Tools?
+- embeddedprog.py tool bringt Fehler nach Download (es wird nicht alles heruntergeladen)
+- embeddedprog.py soll 10.0.0.1 verwenden wenn nichts angegeben ist
+- sichtbar ob openocd laeuft oder nicht
+- Hilfe Texte saeubern
+- erase in embeddedprog tool geht nicht bzw. heisst es delete
+
+
+Prio 3 
+- vor dem loeschen Fragen ob man wirklich loeschen will
+
+
+Prio 4
+- openocd speed einstellbar (3 stufen);
+- update prozess sicher und schoen (prio)
+- inet adresse/wlan (change ip mit 
 	
