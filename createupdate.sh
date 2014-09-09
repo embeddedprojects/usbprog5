@@ -15,6 +15,11 @@ cp  web/render.php /tmp/build/var/www
 cp  web/index.php /tmp/build/var/www
 cp  web/embeddedprog.php /tmp/build/var/www
 cp  web/download.php /tmp/build/var/www
+cp  web/jquery.min.js /tmp/build/var/www
+cp  web/jquery.flexselect.js /tmp/build/var/www
+cp  web/liquidmetal.js /tmp/build/var/www
+cp  web/flexselect.css /tmp/build/var/www
+cp  web/download_icon.png /tmp/build/var/www
 
 cp  server/server.py /tmp/build/root/server.py
 

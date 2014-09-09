@@ -1,5 +1,3 @@
-lpc2103
-lpc2103
 aduc702x
 altera_fpgasoc
 altera_sockit
@@ -16,7 +14,6 @@ at91r40008
 at91rm9200
 at91rm9200-dk
 at91rm9200-ek
-at91sam3XXX
 at91sam3ax_4x
 at91sam3ax_8x
 at91sam3ax_xx
@@ -29,10 +26,11 @@ at91sam3u2e
 at91sam3u4c
 at91sam3u4e
 at91sam3uxx
-at91sam4XXX
+at91sam3XXX
 at91sam4lXX
-at91sam4sXX
 at91sam4sd32x
+at91sam4sXX
+at91sam4XXX
 at91sam7se512
 at91sam7sx
 at91sam7x256
@@ -161,6 +159,7 @@ linksys-wrt54gl
 linksys_nslu2
 lisa-l
 logicpd_imx27
+lpc2103
 lpc11uxx
 lpc1751
 lpc1752
@@ -179,6 +178,7 @@ lpc1788
 lpc17xx
 lpc1850
 lpc1850_spifi_generic
+lpc2103
 lpc2124
 lpc2129
 lpc2148
