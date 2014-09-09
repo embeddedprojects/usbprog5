@@ -23,7 +23,7 @@ cp  web/download_icon.png /tmp/build/var/www
 
 cp  server/server.py /tmp/build/root/server.py
 
-cp openocd-code/src/openocd /tmp/build/root/openocd-code/src
+cp openocd-0.8.0/src/openocd /tmp/build/root/openocd-code/src
 
 cp avrdude-6.0rc1/avrdude /tmp/build/root/avrdude-6.0rc1
 
