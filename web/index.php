@@ -706,7 +706,7 @@ echo render_firmware_table();
 
 </td></tr>
 
-<tr valign="top" style="background:#BBB"><td colspan="4">Update programmer:&nbsp;<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td><td colspan="2">Settings:<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td></tr>
+<tr valign="top" style="background:#BBB"><td colspan="4">Update programmer:&nbsp;<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td><td colspan="2">Settings:&nbsp;<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td></tr>
 <tr><td colspan="4" align="">
 <br>
 
@@ -745,7 +745,7 @@ echo render_firmware_table();
 
 </table>
 <br>
-<center><i style="color:#BBB">embeddedprog 0.1 created by <a href="http://shop.embedded-projects.net" target="_blank" style="color:#bbb;">embedded projects GmbH</a>. Based on GNU/Linux, OpenOCD, avrdude and many other Open Source projects. <a href="http://www.usbprog.org" style="color:#bbb;" target="_blank">Homepage</a></i></center>
+<center><i style="color:#BBB">embeddedprog created by <a href="http://shop.embedded-projects.net" target="_blank" style="color:#bbb;">embedded projects GmbH</a>. Based on GNU/Linux, OpenOCD, avrdude and many other Open Source projects. <a href="http://www.usbprog.org" style="color:#bbb;" target="_blank">Homepage</a></i></center>
 
 
  <iframe id="myIFrm" src="" style="visibility:hidden">
