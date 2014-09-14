@@ -292,6 +292,48 @@ function UpdateValues(index)
 * { font-size:9pt; }
 .even { background-color:white;}
 .odd{ background-color:lightgrey;}
+
+.myButton {
+    -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+    box-shadow:inset 0px 1px 0px 0px #ffffff;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffffff), color-stop(1, #f6f6f6));
+    background:-moz-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+    background:-webkit-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+    background:-o-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+    background:-ms-linear-gradient(top, #ffffff 5%, #f6f6f6 100%);
+    background:linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0);
+    background-color:#ffffff;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    border:1px solid #dcdcdc;
+    display:inline-block;
+    cursor:pointer;
+    color:#666666;
+    font-family:arial;
+    font-size:12px;
+    font-weight:bold;
+    padding:6px 18px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #ffffff;
+}
+.myButton:hover {
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #f6f6f6), color-stop(1, #ffffff));
+    background:-moz-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+    background:-webkit-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+    background:-o-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+    background:-ms-linear-gradient(top, #f6f6f6 5%, #ffffff 100%);
+    background:linear-gradient(to bottom, #f6f6f6 5%, #ffffff 100%);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f6f6f6', endColorstr='#ffffff',GradientType=0);
+    background-color:#f6f6f6;
+}
+.myButton:active {
+    position:relative;
+    top:1px;
+}
+
 </style>
 </head>
 <?php
@@ -440,21 +482,21 @@ echo "style=\"display:none\"";
 ><td colspan="5" align="center">
 <br>
 
-<input type="button" value="Read Signature" onclick="SendCommand('readsignature')">
+<input type="button" class="myButton" value="Read Signature" onclick="SendCommand('readsignature')">
 &nbsp;&nbsp;&nbsp;
-<input type="button" value="Erase Flash" onclick="SendCommand('erase')">
+<input type="button" class="myButton" value="Erase Flash" onclick="SendCommand('erase')">
 &nbsp;&nbsp;&nbsp;
-<input type="button" value="Download Flash" onclick="SendCommand('read-flash')">
+<input type="button" class="myButton" value="Download Flash" onclick="SendCommand('read-flash')">
 &nbsp;&nbsp;&nbsp;
 <b>Read Fuses:</b>
 &nbsp;&nbsp;&nbsp;
-<input type="button" value="low" onclick="SendCommand('read-fuse','1')">
+<input type="button" class="myButton" value="low" onclick="SendCommand('read-fuse','1')">
 &nbsp;&nbsp;&nbsp;
-<input type="button" value="high" onclick="SendCommand('read-fuse','2')">
+<input type="button" class="myButton" value="high" onclick="SendCommand('read-fuse','2')">
 &nbsp;&nbsp;&nbsp;
-<input type="button" value="extended" onclick="SendCommand('read-fuse','3')">
+<input type="button" class="myButton" value="extended" onclick="SendCommand('read-fuse','3')">
 &nbsp;&nbsp;&nbsp;
-<input type="button" value="all" onclick="SendCommand('read-fuse','0')">
+<input type="button" class="myButton" value="all" onclick="SendCommand('read-fuse','0')">
 <br>
 <br>
 </td>
@@ -492,19 +534,19 @@ echo "style=\"display:none\"";
 ><td colspan="5" align="center">
 <br>
 
-<input type="button" value="Read Signature" onclick="SendCommand('readsignature')">
+<input type="button" class="myButton"  value="Read Signature" onclick="SendCommand('readsignature')">
 &nbsp;&nbsp;&nbsp;
-<input type="button" value="Dump Memory" onclick="SendCommand('dump')">
+<input type="button" class="myButton" value="Dump Memory" onclick="SendCommand('dump')">
 &nbsp;&nbsp;&nbsp;
-<input type="button" value="Start openocd" onclick="SendCommand('start-gdb')">
+<input type="button" class="myButton" value="Start openocd" onclick="SendCommand('start-gdb')">
 &nbsp;&nbsp;&nbsp;
-<input type="button" value="Stop openocd"  onclick="SendCommand('stop-gdb' )">
+<input type="button" class="myButton" value="Stop openocd"  onclick="SendCommand('stop-gdb' )">
 &nbsp;&nbsp;&nbsp;
 GDB-Port:&nbsp;<b onclick="SendCommand('port','1' )"> <?php echo render_gdb() ?> </b>&nbsp;
-<input type="button" value="change"  onclick="SendCommand('port','1' )">
+<input type="button" class="myButton" value="change"  onclick="SendCommand('port','1' )">
 &nbsp;&nbsp;&nbsp;
 Telnet-Port:&nbsp;<b onclick="SendCommand('port','-1' )">  <?php echo render_tel() ?> </b>&nbsp;
-<input type="button" value="change"  onclick="SendCommand('port','-1' )">
+<input type="button" class="myButton" value="change"  onclick="SendCommand('port','-1' )">
 
 <br>
 <br>
@@ -672,11 +714,11 @@ echo render_temp();
 </td>
 <tr valign="top"><td colspan="5" align="center">
 
-<input type="file" value="" name="datei">
-<input type="submit" value="Upload File">
+<input type="file" value="" name="datei" class="myButton" >
+<input type="submit" value="Upload File" class="myButton" >
 <input type="checkbox" name="flashdirect" value="1" >
 &nbsp;Autoflash after upload
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="safe profile" onclick="SendCommand('save-conf')">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="myButton"  value="safe profile" onclick="SendCommand('save-conf')">
 
 <br>
 <br>
@@ -710,15 +752,15 @@ echo render_firmware_table();
 <tr><td colspan="4" align="">
 <br>
 
-<input type="file" value="" name="date">
-<input type="submit" value="Upload Update">
+<input type="file" value="" name="date" class="myButton" >
+<input type="submit" value="Upload Update" class="myButton" >
 <br><br>
 </td>
 <td colspan="2" align="">
 
 <!--<input type="button" value="Change IP">-->
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="button" value="Download embeddedprog.py" onclick="window.open('download.php?name=embeddedprog.py&path=tmp&'+1*new Date(),'_top');">
+<input type="button" class="myButton"  value="Download embeddedprog.py" onclick="window.open('download.php?name=embeddedprog.py&path=tmp&'+1*new Date(),'_top');">
 </td>
 </td></tr>
 
