@@ -24,6 +24,6 @@ Prio 3
 
 Prio 4
 - openocd speed einstellbar (3 stufen);
-- update prozess sicher und schoen (prio)
+- update prozess sicher und schoen (prio) + die Datei muss gerade update.tar.gz heissen (auch dateien mit update(1).tar.gz usw.. erlauben, da der firefox gleiche dateien so nennt)
 - inet adresse/wlan (change ip mit 
 	
