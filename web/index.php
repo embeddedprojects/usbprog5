@@ -156,7 +156,7 @@ function SendCommand(command, i, help)
     var voltage = $('input[name=voltage]:checked', '#myForm').val();
     var safe = '';
     if(command=='save-conf'){ 
-    var save = prompt("Bitte beschreibung eingeben","");   
+    var save = prompt("Please add a description","");   
     }
 
     if(command=='read-flash'){ 
@@ -189,7 +189,7 @@ function SendCommand(command, i, help)
 
 
 	if(command=='del-conf'){
-		var box=window.confirm("do u want to delete this line?");
+		var box=window.confirm("Do you want to delete this line?");
 		if(box==true){
 		}
 		else{
@@ -289,7 +289,9 @@ function UpdateValues(index)
 </script>
 
 <style type="text/css">
-* { font-size:10pt; }
+* { font-size:9pt; }
+.even { background-color:white;}
+.odd{ background-color:lightgrey;}
 </style>
 </head>
 <?php
@@ -320,12 +322,12 @@ function UpdateValues(index)
 
 //print_r($test); 
 ?>
-<body onload="set_options();SendCommand('pro')" style="font: 9pt Arial,'Helvetica Neue',Helvetica,sans-serif; margin-top:0px;">
+<body onload="set_options();SendCommand('pro')" style="font: 9pt Arial,sans-serif; margin-top:0px;">
 
 <form name="myForm" id="myForm"  method="post" enctype="multipart/form-data">
 
 <table width="1000" border="0" cellpadding="5" style="border-right: 1px solid #BBB; border-left: 1px solid #BBB;border-bottom: 1px solid #BBB; background-color:#f5f5f5;" cellspacing="0"  align="center">
-<tr><td colspan="5" style="padding:10px; background: url('bg_header.jpg') repeat-y scroll left top rgb(67, 187, 209);"><img src="ep_logo_web.png"></td></tr>
+<tr><td colspan="5" style="padding:10px; background: url('bg_header.jpg') repeat-y scroll left top rgb(67, 187, 209);"><img src="ep_logo_web.png" height="50"></td></tr>
 
 <tr style="background:black; color:white;">
 <td colspan="5" align="center"><table style="background:black; color:white;"><tr>
@@ -336,7 +338,7 @@ function UpdateValues(index)
 
 
 	<td>Processor:</td>
-	<td><select name="processors" id="processors" style="width: 300px;font:10pt  Monaco,ProFont,Andale Mono,Anonymous,Courier New,Courier,Angelus III,Bitstream Vera,Doire,Everson Mono,Excalibur Monospace" class="flexselect" onchange="SendCommand('pro')" >
+	<td><select name="processors" id="processors" style="width: 300px;font:9pt  Arial, sans-serif" class="flexselect" onchange="SendCommand('pro')" >
 	<!--<option>ARM7</option>-->
 	<?php
 	echo render_processors()
@@ -423,7 +425,7 @@ else{
 echo "style=\"background:#BBB;display:none\"";
 }
  ?>
- id="avr2"><td colspan="3">Commands: <a style="color:white"  href="javascript:show_popup('helpcommands') ">?</a></td><td colspan="3"></td></tr>
+ id="avr2"><td colspan="5">Commands: <a style="color:white"  href="javascript:show_popup('helpcommands') ">?</a></td></tr>
 <tr id="avr" 
 <?php 
 $avr=file('/var/www/avrdude.rc');        
@@ -704,7 +706,7 @@ echo render_firmware_table();
 
 </td></tr>
 
-<tr valign="top" style="background:#BBB"><td colspan="4">Update programmer:<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td><td colspan="2">Settings:<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td></tr>
+<tr valign="top" style="background:#BBB"><td colspan="4">Update programmer:&nbsp;<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td><td colspan="2">Settings:<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td></tr>
 <tr><td colspan="4" align="">
 <br>
 
@@ -724,7 +726,7 @@ echo render_firmware_table();
 
 
 
-<tr valign="top" style="background:#BBB"><td colspan="5">Command Lines:</td></tr>
+<tr valign="top" style="background:#43BBD1;"><td colspan="5">Command Lines:</td></tr>
 <tr><td>Read Signature</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --speed 2 </td></tr>
 <tr><td>Flash</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --flash-write /tmp/yourprog.hex</td></tr>
 <tr><td>Read Flash</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --flash-read yourprog.hex</td></tr>
