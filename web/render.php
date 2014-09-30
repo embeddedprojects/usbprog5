@@ -43,12 +43,17 @@ function render_processors()
         //for($i=0;$i<10;$i++)
 	foreach($processors as $i=>$value)
         {
-		if($x==$help[0]){ 
-          		$sel=' selected="selected"';}
-    		else{$sel='';}
-		$x=$x+1;
+		if (file_exists('/var/www/tmp/processor')){
+			if(($x+1)==$help[0]){ 
+          			$sel=' selected="selected"';}
+    			else{$sel='';}
+			$x=$x+1;
+		}
+		else{
+		$sel='';
+		}
              // return "<option>".$vendor[$i]."</option>";
-  	echo "<option value=\"" . $processors[$i] . "\"".$sel."style=\"font:10pt   \" >" . $i . "</option>\n";
+  	echo "<option value=\"" . $processors[$i] . "\"".$sel.">" . $i . "</option>\n";
 
  	}
 
@@ -63,7 +68,7 @@ include("processor.php");
   $return="";
         foreach($vendor as $i=>$value)
   {
-		if(isset($_POST['vendors']) && $_POST['vendors'] == $i){ 
+		if(isset($_POST['vendors']) && $_POST['vendors'] == ($i+1)){ 
           		$sel=' selected="selected"';}
     		else{$sel='';}
 	
@@ -120,20 +125,25 @@ function render_temp()
 		}
 	$part=pathinfo($code['flash-write']);
 	$datei=$part['basename'];
+	if (($part['extension']== null) ||($part['extension'] == '')){
+		$part['extension'] = 'diesefile sollte nicht existieren';
+	}
 
-$line= $line . '<tr><td><b>Temp File</b></td><td><b>' . $datei . '</b></td><td><b>' . $code['processor'] . '</b></td><td><b>' . (filesize('/var/www/tmp/tmp.'. $part['extension'])/1000) . 'kb</b></td><td><img src="download_icon.png" onclick="window.open(\'download.php?name=tmp.'. $part['extension'] .'&path=tmp&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png" value="program" onclick="SendCommand(\'programm\', ' . '0' . ')"></td></tr>';
+$line= $line . '<tr><td><b>Temp File</b></td><td><b>' . $datei . '</b></td><td><b>' . $code['processor'] . '</b></td><td><b>' . (filesize('/var/www/tmp/tmp.'. $part['extension'])/1000) . 'kb</b></td><td><img src="icon_del_gr_20x20_004.png" onclick="SendCommand(\'del-conf\', 0)"/>&nbsp;<img src="download_icon.png" onclick="window.open(\'download.php?name=tmp.'. $part['extension'] .'&path=tmp&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png" value="program" onclick="SendCommand(\'programm\', ' . '0' . ')"></td></tr>';
 return $line;
 } 
 
 function render_options()
 {
   $line=" ";
+if(file_exists('/var/www/tmp/processor')){
+
   $i=file('/var/www/tmp/processor');
   
   $line="<script type=\"text/javascript\">
 	function set_options() {
 	var dd = document.getElementById('processors');
-        dd.selectedIndex = " . $i[0] . " ;
+        dd.selectedIndex = " . ($i[0]) . " ;
 
 "."var dd = document.getElementById('speed');
 	try{
@@ -155,7 +165,12 @@ for (var i = 1 ; i < 6 ; i=i+2){
 
 </script>";
   
-
+}
+else{
+$line="<script type=\"text/javascript\">
+	function set_options() {};
+	</script>";
+}
 return $line;
 }
 

@@ -167,9 +167,11 @@ def makephp():
 
 				if test[i]['program'] == 'openocd':
 					o.write(tempid+'\n')
+				if len(tempvendor)>2:
+					tempvendor=tempvendor+',&nbsp;'
 				
 				#print "vendorlen",y," == ",len(vendorspace)/6
-				w.write("'"+unicode(tempname)+"&nbsp&nbsp||&nbsp&nbsp;"+unicode(tempvendor)+"&nbsp;"+unicode(tempprogram)+"'=>'"+unicode(tempid)+"',")
+				w.write("'"+unicode(tempname)+"&nbsp;("+unicode(tempvendor)+""+unicode(tempprogram)+")'=>'"+unicode(tempid)+"',")
 				i=i+1
 			except Exception as e: 
 				#print "error"

@@ -3,27 +3,28 @@
 include "embeddedprog.php";
 include "render.php";
 
-if(isset($_GET['download'])) {
 
-	$pfad = "/var/www/tmp/myprog.hex";
-
-	header("Content-Type: application/force-download");
-	header("Content-Disposition: attachment; filename=\"". urlencode("myprog.hex") ."\"");
-	header("Content-Length: ". filesize($pfad));
-	header("Content-Transfer-Encoding: binary");
-	
-
-	readfile($pfad);
-	exit;
-}
 
 render_get_post();
+$datei = $_FILES['date'];
+if ($datei['name']==((null)||(""))){
 
 
+}
+else{
 
+$name = preg_replace("/[^A-Z0-9._-]/i", "_", $datei["name"]);
+$parts=pathinfo($name);
 
+if($parts['extension']=='gz'){
+$myfile=$_FILES['date'];
+unlink("/tmp/update_done");
+embeddedprog_upload($myfile);
+header("location: update.php");
+exit;
+};
+}
 ?>
-
 <!--echo '<script type="text/javascript">alert("' . $gruss . '")</script>'; -->
 <html>
 <head>
@@ -55,23 +56,32 @@ function art(string){
   ocd  = document.getElementById('ocd');
   avr2 = document.getElementById('avr2');
   ocd2 = document.getElementById('ocd2');
+  avr3 = document.getElementById('avr_area');
+  ocd3 = document.getElementById('ocd_area');
+
     if (string==1) {
 
         ocd.style.display='none';
         avr.style.display='';
         ocd2.style.display='none';
         avr2.style.display='';
+        ocd3.style.display='none';
+        avr3.style.display='';
       }
-    else{
+    if (string==2) {
 	ocd.style.display='';
 	avr.style.display='none';
 	ocd2.style.display='';
 	avr2.style.display='none';
+	ocd3.style.display='';
+	avr3.style.display='none';
 	}
 
 
 
 }
+
+
 
 
 function show_popup(id) {
@@ -172,10 +182,12 @@ function SendCommand(command, i, help)
 	
     if(command=='port'){
 	if (i=='1'){
-	var save = prompt("Please insert new GDB port","");	
+	var save = prompt("Please insert new GDB port\nstandart = 3333","");
+	if (save==null){document.getElementById('loading').style.display="none";return;}	
 	}
 	else{
-	var save = prompt("Please insert new Telnet port","");
+	var save = prompt("Please insert new Telnet port\nstandart = 4444","");
+	if (save==null){document.getElementById('loading').style.display="none";return;}
 	}
 	}
      if(command=='desc'){
@@ -186,7 +198,10 @@ function SendCommand(command, i, help)
 		var save = prompt("Please insert the command in following form: \n mdw [phys] addr [count] \n\n   mdw = 32-bit word\n   mdh = 16-bit halfword\n   mdb = 8-bit byte\n\nWhen the current target has an MMU which is present and active, addr is interpreted as a virtual address. Otherwise, or if the optional phys flag is specified, addr is interpreted as a physical address. If count is specified, displays that many units","mdw ");
 	if ((save==null)||(save=="")){document.getElementById('loading').style.display="none";return;}
 	}       
-
+     if(command=='write-fuse'){
+		var save = prompt("Please Insert the Fuse as Hex in Following form:\n0xFF");
+	if ((save==null)||(save=="")){document.getElementById('loading').style.display="none";return;}
+	}     
 
 	if(command=='del-conf'){
 		var box=window.confirm("Do you want to delete this line?");
@@ -198,15 +213,16 @@ function SendCommand(command, i, help)
 		
 }
 
+
      $.ajax({
         'url' : 'server.php?cmd=' + command + '&processor=' + processor + '&voltage='+ voltage + '&speed=' + speed + '&i=' + i + '&save=' + save + '&pointer=' + pointer + '&' + 1*new Date(),
         'type' : 'GET',
         'data' : {
         },
         'success' : function(data) { 
-		if (command!='upload'){
+		
 		document.getElementById('loading').style.display="none";
-		}
+		
 		if(command=='pro'){
 		art(data);
 		return;
@@ -214,9 +230,9 @@ function SendCommand(command, i, help)
 		if(command=='read-flash'){
 			
 			if (data.indexOf("unexpected error")<1){
-				save=save+'&'+1*new Date();
+				
 		//tryToDownload(save,data)
-          			window.open('download.php?name='+save+'&'+1*new Date(),"_top");
+          			window.open('download.php?name='+save+'&path=tmp'+'&'+1*new Date(),"_top");
 			}
 
 
@@ -286,6 +302,7 @@ function UpdateValues(index)
 
 }
 
+
 </script>
 
 <style type="text/css">
@@ -336,35 +353,8 @@ function UpdateValues(index)
 
 </style>
 </head>
-<?php
- //$test=render_processors();
-//define("UPLOAD_DIR", "/var/www/tmp/");<script src="liquidmetal.js" type="text/javascript"></script>
-//echo $_FILES['datei']['name'];
-//if ($_FILES['datei']['name']==((null)||("")))
-//{
-//	echo leer;
-//}
-//else
-//{
-//$name = preg_replace("/[^A-Z0-9._-]/i", "_", $_FILES["datei"]["name"]);
-//$parts=pathinfo($name);         
-//$success = move_uploaded_file($_FILES["datei"]["tmp_name"],UPLOAD_DIR . "tmp" . "." . $parts['extension']);
-//if (!$success) {
-//        echo "<p>Unable to save file.</p>";
-//        exit;
-//    }
-//else 
-//{#
-//$myfile=$_FILES['datei'];
-//echo embeddedprog_upload($myfile);
-//}	
 
-//}	
-
-
-//print_r($test); 
-?>
-<body onload="set_options();SendCommand('pro')" style="font: 9pt Arial,sans-serif; margin-top:0px;">
+<body onload="set_options();SendCommand('pro');" style="font: 9pt Arial,sans-serif; margin-top:0px;">
 
 <form name="myForm" id="myForm"  method="post" enctype="multipart/form-data">
 
@@ -381,7 +371,7 @@ function UpdateValues(index)
 
 	<td>Processor:</td>
 	<td><select name="processors" id="processors" style="width: 300px;font:9pt  Arial, sans-serif" class="flexselect" onchange="SendCommand('pro')" >
-	<!--<option>ARM7</option>-->
+	<option selected="selected">Search Processor ...</option>
 	<?php
 	echo render_processors()
 	?>
@@ -456,7 +446,7 @@ function UpdateValues(index)
 
 
 
-<tr valign="top" 
+<tr valign="center" 
 <?php 
 $avr=file('/var/www/avrdude.rc');        
 $i=file('/var/www/tmp/processor');
@@ -479,15 +469,19 @@ else{
 echo "style=\"display:none\"";
 }
  ?>
-><td colspan="5" align="center">
+><td colspan="2" align="center">
 <br>
-
+<br>
 <input type="button" class="myButton" value="Read Signature" onclick="SendCommand('readsignature')">
 &nbsp;&nbsp;&nbsp;
 <input type="button" class="myButton" value="Erase Flash" onclick="SendCommand('erase')">
 &nbsp;&nbsp;&nbsp;
 <input type="button" class="myButton" value="Download Flash" onclick="SendCommand('read-flash')">
-&nbsp;&nbsp;&nbsp;
+<br>
+<br>
+<br>
+</td>
+<td colspan="3" align="left">
 <b>Read Fuses:</b>
 &nbsp;&nbsp;&nbsp;
 <input type="button" class="myButton" value="low" onclick="SendCommand('read-fuse','1')">
@@ -497,14 +491,28 @@ echo "style=\"display:none\"";
 <input type="button" class="myButton" value="extended" onclick="SendCommand('read-fuse','3')">
 &nbsp;&nbsp;&nbsp;
 <input type="button" class="myButton" value="all" onclick="SendCommand('read-fuse','0')">
+
 <br>
+<b>Write Fuses:</b>
+&nbsp;&nbsp;&nbsp;
+<input type="button" class="myButton" value="low" onclick="SendCommand('write-fuse','1')">
+&nbsp;&nbsp;&nbsp;
+<input type="button" class="myButton" value="high" onclick="SendCommand('write-fuse','2')">
+&nbsp;&nbsp;&nbsp;
+<input type="button" class="myButton" value="extended" onclick="SendCommand('write-fuse','3')">
+&nbsp;&nbsp;&nbsp;
+<input type="button" class="myButton" value="fuse calc" onclick="window.open('http://www.embedded-projects.net/avrfuse','_blank')">
+
+
+
+
 <br>
+
+
+
 </td>
 
 </tr>
-
-
-
 <tr valign="top" 
 <?php 
 $ocd=file('/var/www/openocd.rc');        
@@ -538,7 +546,17 @@ echo "style=\"display:none\"";
 &nbsp;&nbsp;&nbsp;
 <input type="button" class="myButton" value="Dump Memory" onclick="SendCommand('dump')">
 &nbsp;&nbsp;&nbsp;
-<input type="button" class="myButton" value="Start openocd" onclick="SendCommand('start-gdb')">
+<input type="button"  onclick="SendCommand('start-gdb')" value="Start openocd"
+<?php
+ //$test=render_processors();
+if (file_exists('/tmp/gdb_runs')){
+echo 'disabled="true"';
+echo ' style="display:hide"';
+}
+else{
+echo 'class="myButton"';
+}
+?>>
 &nbsp;&nbsp;&nbsp;
 <input type="button" class="myButton" value="Stop openocd"  onclick="SendCommand('stop-gdb' )">
 &nbsp;&nbsp;&nbsp;
@@ -556,7 +574,7 @@ Telnet-Port:&nbsp;<b onclick="SendCommand('port','-1' )">  <?php echo render_tel
 
 
 
-<img src="loading.gif" id="loading"  style="display:none;position:absolute;width:40px;height:40px;left:44%;top:42%" />
+<img src="loading.gif" id="loading"  style="display:none;position:absolute;width:40px;height:40px;left:48%;top:42%" >
 
     <div align="right">
 <div id="my_popup" style="display:none;border:1px solid gray;padding:.3em;background-color:black;position:absolute;width:80%;height:80%;left:10%;top:10%">
@@ -567,7 +585,7 @@ Telnet-Port:&nbsp;<b onclick="SendCommand('port','-1' )">  <?php echo render_tel
 <textarea readonly name="textarea1" id="textarea1" style="color:white;font-family:Ubuntu Mono,Terminus Font,GNU Unifont;resize:none;border:0px;background-color:transparent;width:100%;height:97%;top:10% "data-role="none">
 </textarea>
 </div>
-
+</div>
 
 
 
@@ -586,13 +604,37 @@ Erases the flash memory of the target board
 
 <h2>Download Flash:</h2>
 Reads the flash of the target board and offers it as an file, <br>
-dependig of the chosen name the type changes, test.hex = hex ...
+depending of the chosen name the type changes, test.hex = hex ...
 
 <h2>Read Fuses:</h2>
 Read Fuses low/high/extended<br>
 to write fuses please use the embeddedprog.py
+
+<h2>Write Fuses:</h2>
+Write chosen Fuse in following Form:<br>
+0xFF <br>
+The fuse calc button relinks you to an fuse calculator
+
 </div>
 </div>
+
+    <div align="left">
+<div id="update" style="display:none;border:0px solid gray;padding:.3em;background-color:white;position:absolute;width:80%;height:80%;left:10%;top:10%">
+
+
+
+<a style="color:black;font-family:Ubuntu Mono,Terminus Font,GNU Unifont;size:5;" ><center>
+<font size="7">
+update in progress
+</font>
+</center>
+</a>
+
+
+<img id="update_loading" src="loading.gif" style="display:none;position:absolute;width:40px;height:40px;left:48%;top:42%" / >
+</tr></td>
+</div></div>
+
 
 
 
@@ -604,10 +646,11 @@ to write fuses please use the embeddedprog.py
 <div align="left">
 
 <h2>Signature:</h2>
-Shows signature/standart output of the programmer
+Shows signature/standard output of the programmer
 
 <h2>Dump Memory:</h2>
 Insert the command in following form: <br> mdw [phys] addr [count] <br><br>   mdw = 32-bit word<br>   mdh = 16-bit halfword<br>   mdb = 8-bit byte<br><br>When the current target has an MMU which is present and<br>active, addr is interpreted as a virtual address. Otherwise,<br>or if the optional phys flag is specified, addr is interpreted<br>as a physical address. If count is specified, displays that<br>many units
+Bsp.:mdw 0 2
 
 <h2>Start/Stop openocd:</h2>
 Starts and stop openocd with current settings.<br>
@@ -656,12 +699,12 @@ you can save the firmware with the current settings as profile in firmware archi
 
 <div align="left">
 The "Flash Archive" field shows your saved files with the settings.<br>
-Rhe description can be changed by clicking on it.
+The description can be changed by clicking on it.
 
 <h2>Program:</h2>
 To program just use the program button, it will use your saved file + settings.
 
-<h2>delete:</h2>
+<h2>Delete:</h2>
 With the delete button you can delete an old entry.
 
 
@@ -686,7 +729,7 @@ to update just upload the update.tar.gz .</a>
 
 
 <h2>Change IP:</h2>
-Refers you to a new page where you can chose your preffered inet settings. (Only useable in pro version)
+Refers you to a new page where you can choose your preffered inet settings. (Only useable in pro version)
 
 <h2>Download Client:</h2>
 Downloads the newest version of the client,<br>
@@ -714,7 +757,7 @@ echo render_temp();
 </td>
 <tr valign="top"><td colspan="5" align="center">
 
-<input type="file" value="" name="datei" class="myButton" >
+<input type="file" value="" name="datei" >
 <input type="submit" value="Upload File" class="myButton" >
 <input type="checkbox" name="flashdirect" value="1" >
 &nbsp;Autoflash after upload
@@ -725,8 +768,7 @@ echo render_temp();
 
 </td>
 </tr>
-</td>
-</td></tr>
+
 
 
 <tr valign="top" style="background:#BBB"><td colspan="5">Flash Archive: <a style="color:white"  href="javascript:show_popup('helparch') ">?</a></td></tr>
@@ -752,8 +794,9 @@ echo render_firmware_table();
 <tr><td colspan="4" align="">
 <br>
 
-<input type="file" value="" name="date" class="myButton" >
-<input type="submit" value="Upload Update" class="myButton" >
+<input type="file" value="" name="date"  >
+<input type="submit" value="Upload Update" class="myButton" onclick="javascript:document.getElementById('update').style.display='';document.getElementById('update_loading').style.display='';">
+
 <br><br>
 </td>
 <td colspan="2" align="">
@@ -762,28 +805,45 @@ echo render_firmware_table();
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <input type="button" class="myButton"  value="Download embeddedprog.py" onclick="window.open('download.php?name=embeddedprog.py&path=tmp&'+1*new Date(),'_top');">
 </td>
-</td></tr>
-
-</form>
-
-
+</tr>
 
 <tr valign="top" style="background:#43BBD1;"><td colspan="5">Command Lines:</td></tr>
-<tr><td>Read Signature</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --speed 2 </td></tr>
-<tr><td>Flash</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --flash-write /tmp/yourprog.hex</td></tr>
-<tr><td>Read Flash</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --flash-read yourprog.hex</td></tr>
-<tr><td>Erase</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --delete</td></tr>
-<tr><td>Start openocd</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --gdb "start"</td></tr>
-<tr><td>Stop openocd</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --gdb "stop"</td></tr>
-<tr><td>Dump Memory</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --dump "mdw addr count"</td></tr>
-<tr><td>Read Fuse High</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_read_high</td></tr>
-<tr><td>Read Fuse Low</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_read_low</td></tr>
-<tr><td>Read Fuse Extended</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_read_extended</td></tr>
-<tr><td>Write Fuse High</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_write_high "fusebits"</td></tr>
-<tr><td>Write Fuse Low</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_write_low "fusebits"</td></tr>
-<tr><td>Write Fuse Extended</td><td colspan="4">embeddedprog.py --processor "yourProcessor" --fuse_write_extended "fusebits"</td></tr>
 
-<tr valign="top" style="background:#BBB"><td colspan="5"></td></tr>
+<tr ><td colspan="5" >
+
+<table width="100%" border="0" style="border: 0px solid black; display:none"   colspan="5" name="ocd_area" id="ocd_area">
+<tr><td colspan="3" width=51%>Read Signature</td><td colspan="2">python embeddedprog.py --processor "your Processor" --speed 2 </td></tr>
+<tr><td colspan="3">Flash</td><td colspan="2">python embeddedprog.py --processor "your Processor" --flash-write /tmp/yourprog.hex</td></tr>
+<tr><td colspan="3">Start openocd</td><td colspan="2">python embeddedprog.py --processor "your Processor" --gdb "start"</td></tr>
+<tr><td colspan="3">Stop openocd</td><td colspan="2">python embeddedprog.py --processor "your Processor" --gdb "stop"</td></tr>
+<tr><td colspan="3">Dump Memory</td><td colspan="2">python embeddedprog.py --processor "your Processor" --dump "mdw addr count"</td></tr>
+</table>
+</td></tr>
+
+
+
+
+
+<tr ><td colspan="5" >
+
+<table width="100%" border="0" style="border: 0px solid black; display:none"   colspan="5" name="avr_area" id="avr_area">
+<tr><td colspan="3" width=51%>Read Signature</td><td colspan="2">python embeddedprog.py --processor "your Processor" --speed 2 </td></tr>
+<tr><td colspan="3">Flash</td><td colspan="2">python embeddedprog.py --processor "your Processor" --flash-write /tmp/yourprog.hex</td></tr>
+<tr><td>Erase</td><td colspan="4">python embeddedprog.py --processor "your Processor" --delete</td></tr>
+<tr><td>Read Fuse High</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_read_high</td></tr>
+<tr><td>Read Fuse Low</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_read_low</td></tr>
+<tr><td>Read Fuse Extended</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_read_extended</td></tr>
+<tr><td>Write Fuse High</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_write_high "fusebits"</td></tr>
+<tr><td>Write Fuse Low</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_write_low "fusebits"</td></tr>
+<tr><td>Write Fuse Extended</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_write_extended "fusebits"</td></tr>
+</table>
+</td></tr>
+
+
+
+
+
+
 
 </table>
 <br>
@@ -792,18 +852,6 @@ echo render_firmware_table();
 
  <iframe id="myIFrm" src="" style="visibility:hidden">
 </iframe>
-
-
-</body>
-<?php
-$myfile=$_FILES['datei'];
-
-echo embeddedprog_upload($myfile);
-$myfile=$_FILES['date'];
-echo embeddedprog_upload($myfile);
-
-
-?>
 <script type="text/javascript">
 
 
@@ -811,4 +859,20 @@ jQuery(document).ready(function() {
 $("select.flexselect").flexselect();
 });
 </script>
+
+<?php
+
+$myfile=$_FILES['datei'];
+echo embeddedprog_upload($myfile);
+
+
+
+
+?>
+
+</form>
+</body>
 </html>
+
+
+

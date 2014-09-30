@@ -31,6 +31,10 @@ switch($cmd)
     #echo embeddedprog_signature($vendor,$processor,$voltage,$speed);
     echo read_fuse($processor,$i,$speed,$voltage);
   break;    
+  case "write-fuse":
+    #echo embeddedprog_signature($vendor,$processor,$voltage,$speed);
+    echo write_fuse($processor,$i,$speed,$voltage,$save);
+  break; 
   case "pro":
     #echo embeddedprog_signature($vendor,$processor,$voltage,$speed);
     echo pro($processor,$i,$voltage,$speed);

@@ -123,7 +123,7 @@ function pro($processor,$i,$voltage,$speed)
 	
 	$avr=file('/var/www/avrdude.rc');        
 	$ocd=file('/var/www/openocd.rc');
-	$lol=shell_exec('touch /var/www/tmp/processor');
+
  	$lol=shell_exec('echo ' . $i . ' > /var/www/tmp/processor');
  	$lol=shell_exec('echo ' . $voltage . ' >> /var/www/tmp/processor');
  	$lol=shell_exec('echo ' . $speed . ' >> /var/www/tmp/processor');
@@ -135,16 +135,16 @@ function pro($processor,$i,$voltage,$speed)
 	
 	
  	if (in_array ($processor."\n",$ocd,true)){
-	return (-1);
+	return 2;
 	}
+	return 0;
         #return 'avr';
 }
 
 
 
 
-function embeddedprog_upload($datei)
-{
+function embeddedprog_upload($datei){
 define("UPLOAD_DIR", "/var/www/tmp/");
 if ($datei['name']==((null)||("")))
 {
@@ -154,33 +154,26 @@ else
 {
 $name = preg_replace("/[^A-Z0-9._-]/i", "_", $datei["name"]);
 $parts=pathinfo($name);
-
 if($parts['extension']=='gz'){
-$success = move_uploaded_file($datei["tmp_name"],UPLOAD_DIR . $datei["name"] );
+$success = move_uploaded_file($datei["tmp_name"],UPLOAD_DIR . "update.tar.gz" );
 system("sync");
 if (!$success) {
         return "upload hat nicht funktioniert\r";
-
+	exit;
     }
 else
 {
-system("killall python");
-system("killall openocd");
-$programm=shell_exec('tar xvzf /var/www/tmp/update.tar.gz -C /  ');
-$programm=shell_exec('/bin/bash /var/www/updatescript.sh');
-system("sync");
-system("python /root/server.py &");
-return $programm."update is raus";
-
+exec("sudo /var/www/update.sh > /dev/null &");
+//system("sudo /var/www/update.sh");
+return ;
+exit;
 }
 }
-
 else{
 $success = move_uploaded_file($datei["tmp_name"],UPLOAD_DIR . "tmp." . $parts['extension']);
 system("sync");
 if (!$success) {
         return "upload hat nicht funktioniert\r";
-
     }
 else
 {
@@ -189,22 +182,18 @@ if($_POST["flashdirect"]!="1")
 $return='<script type="text/javascript"> SendCommand("upload","'.$datei['name'].'","1"); </script>';
 } else {
 $return='<script type="text/javascript"> SendCommand("upload","'.$datei['name'].'"); SendCommand("programm","0"); </script>';
-
-
 }
-
 return $return;
 }
 }
 }
 }
+
+
 function exec_upload($vendor,$processor,$voltage,$speed,$datei)
 {
 $parts=pathinfo($datei);
 $programm=shell_exec('python /var/www/client.py --processor ' . $processor . '  --speed ' . $speed . ' --safe "/var/www/tmp/tmp.' . $parts['extension'] . '" --flash-write "' .$datei. '"' );
-
-
-
 return $programm;
 }
 

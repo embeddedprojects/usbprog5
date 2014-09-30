@@ -20,6 +20,8 @@ cp  web/jquery.flexselect.js /tmp/build/var/www
 cp  web/liquidmetal.js /tmp/build/var/www
 cp  web/flexselect.css /tmp/build/var/www
 cp  web/download_icon.png /tmp/build/var/www
+cp  web/update.php /tmp/build/var/www
+
 
 cp  server/server.py /tmp/build/root/server.py
 
@@ -29,8 +31,9 @@ cp avrdude-6.0rc1/avrdude /tmp/build/root/avrdude-6.0rc1
 
 cp client/embeddedprog.py /tmp/build/var/www/tmp
 
+
 cd /tmp/build
-tar cvfz update.tar.gz var/ root/
+tar cvfz update.tar.gz var/ root/ 
 cd -
 mv /tmp/build/update.tar.gz update/
 

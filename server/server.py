@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 import socket
 import sys
 import os
@@ -8,9 +9,15 @@ import struct, fcntl
 from collections import defaultdict
 import threading
 import signal
+import pwd, os
+
+
 
 
 #start socket
+#uid = pwd.getpwnam('www-data')[2]
+#os.setuid(uid)
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_address = ('', 8888)
 print >>sys.stderr, 'starting up on %s port %s' % server_address
@@ -114,7 +121,7 @@ def send_file(code , sock):
         if buf == ('rdy'):
 		if code['v']>=2:
 			print "open"
-                with open(str(code['name']),'r') as f:
+                with open('/root/'+str(code['name']),'r') as f:
 			#print buf
                         buf=f.read()
 			b=base64.b64encode(buf)
@@ -484,7 +491,7 @@ def logica(code,connection):
 	
 
 
-			code['execute']=code['execute']+" -U flash:r:"+'"'+namefr+'"'+ende
+			code['execute']=code['execute']+" -U flash:r:/root/"+'"'+namefr+'"'+ende
 			if code['v']>=2:
 				print code['execute']
 			lisr.append("fr")
@@ -544,7 +551,10 @@ def logica(code,connection):
 
 		if code['flash-read']!= None:
 			print "filename =",namefr
-			os.system('cp /root/'+namefr+' /var/www/tmp/'+namefr)
+			if code['web'] == True:
+				subprocess.call(['/bin/mv', '/root/'+namefr, '/var/www/tmp/'+namefr])
+				subprocess.call(["chmod", "777",  "/var/www/tmp/"+namefr])
+				subprocess.call(["chown", "-cR", "www-data:www-data", "/var/www/tmp/"+namefr])	
 		if "fr" in lisr:
 			if code['v']>=1:
 				print "flash-read"
@@ -565,6 +575,7 @@ def logica(code,connection):
 			code['name']=nameer
 			if code['web']!=True:
 				get_file(code,connection)
+			subprocess.call('/bin/rm', '/root/'+namefr)
 
 
 
@@ -592,7 +603,7 @@ def logica(code,connection):
 			
 			if (code['gdb']=='stop') :
 			
-					os.system('killall openocd')
+					subprocess.call(['killall', 'openocd'])
 					if code['web']!=True:
 						connection.sendall("{'v':"+str(code['v'])+",'mode':'exit'}")
 					return
@@ -602,7 +613,7 @@ def logica(code,connection):
 					gdb.replace('\n','')
 					gdb.replace('\r','')
 					tel=r.readline()
-				f=subprocess.Popen(['/root/openocd-code/src/openocd','-f','/root/openocd-code/tcl/interface/embeddedprog.cfg','-f','/root/openocd-code/tcl/target/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
+				subprocess.Popen(['/root/openocd-code/src/openocd','-f','/root/openocd-code/tcl/interface/embeddedprog.cfg','-f','/root/openocd-code/tcl/target/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
 		
 				if code['web']!=True:
 					connection.sendall("{'v':"+str(code['v'])+",'mode':'exit'}")
@@ -771,7 +782,7 @@ def conf (code):
 		f=open("/var/www/save/eeprog.rc","w")
 		i=0
 		for line in lines:
-			if (int(code["del-conf"]) eq 0):
+			if ((code["del-conf"] == 0)and(i<1)):
 				f.write('{"load": null, "fuse-write-low": null, "fuse-read-extended": false, "fuse-write-extended": null, "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": null, "speed": 2, "processor": null, "del-conf": null, "flash-read": null, "safe": null, "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": null, "eeprom-write": null, "fuse-read-low": false, "eeprog_ip": null, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": null, "delete": false, "web": true,"rename": null,"dump": null,"voltage": 3}\n')
 				
 			if (i)!=(code["del-conf"]):
@@ -816,7 +827,7 @@ def conf (code):
 
 
 #prototype change ip
-def change_ip:
+def change_ip():
 	if code['ip']!= None:
 		call(['ifconif','usb0',code['ip']])
 		code['mode']='conf'
@@ -825,13 +836,26 @@ def change_ip:
 
 def change_voltage (code):
 	if code['voltage'] == 3:
-		call(["/bin/sh", "/root/3V3.sh"])
+		subprocess.call(["/bin/sh", "/root/3V3.sh"])
 	if code['voltage'] == 1:
-		call(["/bin/sh", "/root/1V8.sh"])
+		subprocess.call(["/bin/sh", "/root/1V8.sh"])
 	if code['voltage'] == 5:
-		call(["/bin/sh", "/root/5V0.sh"])
+		subprocess.call(["/bin/sh", "/root/5V0.sh"])
 	return
+try:
 
+	subprocess.call(["/bin/rm", "/var/www/tmp/processor"])
+	subprocess.call(["touch", "/var/www/tmp/processor"])
+	subprocess.call(["chmod", "777", "/var/www/tmp/processor"])
+	with open("/var/www/tmp/processor",'w') as w:
+		w.write("0\n3\n2\n\n")
+	subprocess.call(["/bin/rm", "/tmp/gdb_runs"])
+	subprocess.call(["touch", "/tmp/update_done"])
+	subprocess.call(["chmod", "777", "/tmp/update_done"])
+	subprocess.call(["chown", "-cR", "www-data:www-data", "/tmp/update_done"])	
+
+except:
+	pass
 try:
 	while inn!='kill':
 		
@@ -873,7 +897,7 @@ try:
 		
 		
 		finally:
-		
+			subprocess.call(["sync"])
 			connection.close()
 
 
@@ -882,4 +906,5 @@ except:
 
 
 finally:
+	subprocess.call(["/bin/rm", "/tmp/update_done"])
 	print "programm beendet"

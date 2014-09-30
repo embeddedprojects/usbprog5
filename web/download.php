@@ -12,4 +12,5 @@
 	header("Content-Length: ". filesize($pfad));
 	header("Content-Transfer-Encoding: binary");
 	readfile($pfad);
+	unlink($pfad);
 ?>
