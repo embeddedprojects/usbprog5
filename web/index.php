@@ -182,11 +182,11 @@ function SendCommand(command, i, help)
 	
     if(command=='port'){
 	if (i=='1'){
-	var save = prompt("Please insert new GDB port\nstandart = 3333","");
+	var save = prompt("Please insert new GDB port\nstandard = 3333","");
 	if (save==null){document.getElementById('loading').style.display="none";return;}	
 	}
 	else{
-	var save = prompt("Please insert new Telnet port\nstandart = 4444","");
+	var save = prompt("Please insert new Telnet port\nstandard = 4444","");
 	if (save==null){document.getElementById('loading').style.display="none";return;}
 	}
 	}
@@ -597,14 +597,14 @@ Telnet-Port:&nbsp;<b onclick="SendCommand('port','-1' )">  <?php echo render_tel
 <div align="left">
 
 <h2>Signature:</h2>
-Shows signature/standart output of the programmer
+Shows signature/standard output of the programmer
 
 <h2>Erase Flash:</h2>
 Erases the flash memory of the target board
 
 <h2>Download Flash:</h2>
 Reads the flash of the target board and offers it as an file, <br>
-depending of the chosen name the type changes, test.hex = hex ...
+depending of the name the type changes, test.hex = hex ...
 
 <h2>Read Fuses:</h2>
 Read Fuses low/high/extended<br>
