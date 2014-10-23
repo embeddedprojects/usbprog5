@@ -86,7 +86,7 @@ def recieve_file(code,connection ):
 		if code['v']>=2:
 			print "open"
 		line=" "
-		with open('/var/www/save/'+str(code['name']),'w') as f:
+		with open('/tmp/'+str(code['name']),'wb') as f:
 			if code['v']>=2:
 				print "start while"
 			line=connection.recv(8192)
@@ -99,7 +99,7 @@ def recieve_file(code,connection ):
 				line=connection.recv(8192)
 			if code['v']>=2:
 				print "while finished"
-			line, ignored ,statusr =line.partition('/')
+			line, ignored ,statusr =line.partition('/done')
 			f.write(line.decode('base64'))
 			if code['v']>=2:
 				print "send"
@@ -111,7 +111,7 @@ def recieve_file(code,connection ):
 
 
 
-#sends file to client (not used in browser)
+#sends file to client (not used in browser)update.php
 def send_file(code , sock):
         sock.sendall('send')
 	if code['v']>=1:
@@ -121,7 +121,7 @@ def send_file(code , sock):
         if buf == ('rdy'):
 		if code['v']>=2:
 			print "open"
-                with open('/root/'+str(code['name']),'r') as f:
+                with open('/root/'+str(code['name']),'rb') as f:
 			#print buf
                         buf=f.read()
 			b=base64.b64encode(buf)
@@ -144,6 +144,7 @@ def go(code,connection):
 	if code['v']>=2:
                 print "subprocess started"
 	realtime(connection,p,code)
+	
 	
 
 #named set file becouse the client sets an file
@@ -196,6 +197,33 @@ def decodejson(content):
 
 #choses a mode (avrdude,openocd)
 def processor(code,connection):
+	if code['v']>=1:
+		print "look for atmel-studio"
+	if code['processor']== None:
+	
+		if code['atmel-studio'] == None: 
+			if code['v']>=1:
+				print "no atmel-studio"            	
+			
+		else:
+			if code['v']>=1:
+				print "atmel-studio == ",code['atmel-studio']
+			with open('/var/www/tmp/processor') as f:
+				lines=f.read().splitlines()
+				try:
+					if (lines[3] == '') or (lines[3] == 'None') or ('Search' in lines[3]):
+						connection.sendall("{'v':"+str(code['v'])+",'mode':'browser','msg':'to use this program an processor needs to be set','eeprog-ip':'"+code['eeprog-ip']+"'}")
+						
+						return code
+				
+					else:
+						code['processor']=lines[3]
+					code['voltage']=lines[1]
+					code['speed']=lines[2]
+					code['flash-write']=code['atmel-studio']
+				except:
+					connection.sendall("{'v':"+str(code['v'])+",'mode':'browser','msg':'to use this program an processor needs to be set','eeprog-ip':'"+code['eeprog-ip']+"'}")
+					return code
 	if code['v']>=1:
 		print "choose mode via processor"
 	with open('/var/www/openocd.rc','r') as f:
@@ -306,10 +334,9 @@ def logica(code,connection):
 	if code['v']>=2:
 		print "logic"
         if code['mode'] == None:
-                print " kein processor"
+                	print " kein processor"
 
-		return " "
-
+			return " "
 	if 'avrdude' in code['mode']:
 		#kills openocd and unexports used ports 
 		os.system('killall openocd')
@@ -518,16 +545,23 @@ def logica(code,connection):
                                 ende=":b"
                         elif '.hex'in namefw: 
                                 ende=":i"
+			elif '.elf' in namefw:
+				ende=":i"
                         else:   
                                 ende =":a"
 			if code['web']!=True:
 				connection.sendall("{'v':"+str(code['v'])+",'mode':'set_file','path':'"+code['flash-write']+"'}")
-		
+				
 			code['name']=namefw
                         set_file(code,connection)
-            
+			if '.elf' in namefw:
+            			subprocess.call(['avr-objcopy','-O', 'ihex', '/tmp/'+namefw, '/tmp/output.hex'])
+				namefw='output.hex'
 			if code['load']!=0:
-				code['execute']=code['execute']+" -U flash:w:"+'"/var/www/save/'+namefw+'"'+ende
+				if code['web']!=True:
+					code['execute']=code['execute']+" -U flash:w:"+'"/tmp/'+namefw+'"'+ende		
+				else:			
+					code['execute']=code['execute']+" -U flash:w:"+'"/var/www/save/'+namefw+'"'+ende
 			else:
 				code['execute']=code['execute']+" -U flash:w:"+'"/var/www/tmp/'+namefw+'"'+ende
 			print code['name']	
@@ -870,9 +904,9 @@ try:
 
 			code=decodejson(inn)
 			code=conf(code)
-			change_voltage (code)
+			
 			code=processor(code,connection)
-	
+			change_voltage (code)
 
 		  	logica(code,connection)	
 	

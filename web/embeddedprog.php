@@ -208,4 +208,13 @@ $programm=shell_exec( );
 return $programm;
 }
 
+
+function embeddedprog_version()
+{
+
+$f = fopen('/root/version', 'r');
+$line = fgets($f);
+fclose($f);
+return $line;
+}
 ?>

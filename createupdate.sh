@@ -22,6 +22,7 @@ cp  web/flexselect.css /tmp/build/var/www
 cp  web/download_icon.png /tmp/build/var/www
 cp  web/update.php /tmp/build/var/www
 
+cp version /tmp/build/root/version
 
 cp  server/server.py /tmp/build/root/server.py
 

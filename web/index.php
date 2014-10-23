@@ -713,7 +713,23 @@ With the delete button you can delete an old entry.
 
 
 
+    <div align="right">
+<div id="helpatmel" style="display:none;border:1px solid gray;padding:.3em;background-color:#FF3330;position:absolute;width:80%;height:80%;left:10%;top:300">
+    <div align="right">
+        <a style="color:blue"  href="javascript:hide_popup('helpatmel') "><img src="icon_del_gr_20x20_004.png"></a>
+    </div>
 
+<div align="left">
+
+
+<h2>Atmel Studio:</h2>
+Please Select The Processor, Speed, Voltage you are using in this Browser.
+The embeddedprog.py will use those settings for Programming with Atmel Studio.
+
+
+
+</div>
+</div>
         
 
     <div align="right">
@@ -848,9 +864,23 @@ echo render_firmware_table();
 </table>
 <br>
 <center><i style="color:#BBB">embeddedprog created by <a href="http://shop.embedded-projects.net" target="_blank" style="color:#bbb;">embedded projects GmbH</a>. Based on GNU/Linux, OpenOCD, avrdude and many other Open Source projects. <a href="http://www.usbprog.org" style="color:#bbb;" target="_blank">Homepage</a></i></center>
+<br>
+<center><i style="color:#BBB">
+USBprog 5.0 OpenOCD, Version <?php 
+$i=file('/var/www/tmp/processor');
+$software=$_GET['software'];
+if ($software == 'atmel'){ 
+
+$pos = strpos($i[3], 'Search Processor ...');
+
+if (($i[3] == '')or($pos === 0)){
 
 
- <iframe id="myIFrm" src="" style="visibility:hidden">
+echo "<script type=\"text/javascript\">show_popup('helpatmel')</script>";
+} }
+echo embeddedprog_version();
+?></i></center>
+<iframe id="myIFrm" src="" style="visibility:hidden">
 </iframe>
 <script type="text/javascript">
 
@@ -864,8 +894,6 @@ $("select.flexselect").flexselect();
 
 $myfile=$_FILES['datei'];
 echo embeddedprog_upload($myfile);
-
-
 
 
 ?>

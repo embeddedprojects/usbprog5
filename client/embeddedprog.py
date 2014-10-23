@@ -6,6 +6,7 @@ import base64
 import argparse
 import ast
 import subprocess
+import webbrowser
 
 #opening and returning socket
 def connect(sa,port,code):
@@ -13,7 +14,7 @@ def connect(sa,port,code):
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		if code['v']>= 2:
 			print 'sock = ',sock
-		server_adress = ('ein','test')
+		#server_adress = ('ein','test')
 		server_address = (sa, port)
 		if code['v']>= 1:
 			print  'connecting to %s port %s' % server_address
@@ -101,12 +102,14 @@ def inpt():
                 parser = argparse.ArgumentParser()
 
 
+		parser.add_argument("--browser", help="Open The Web Browser of USBprog 5 OpenOCD;", action="store_true")
                 parser.add_argument("--processor", help="select target processor;")
 		parser.add_argument("--voltage", help="select target voltage (1 for 1V8;3 for 3V3;5 for 5V5)",type=int,default=3)
                 parser.add_argument("--eeprog-ip",  help="select target ip (default via usb 10.0.0.1) ;saved in eeprog.cfg")
                 parser.add_argument("--eeprog-port",type=int,  help="select target port (default 8888); saved in eeprog.cfg ",default=8888)
                 parser.add_argument("--signature",  help="not needed at the time... for signature just input processor only",action="store_true")
                 parser.add_argument("--speed",type=int,default=2, help="changes speed; 2 is default setting, 1=(B=1), 2=(B=10), 3=(b=100)")
+                parser.add_argument("--atmel-studio", help="(atmel-studio)write flash, needs complete path to file ")		
                 parser.add_argument("--flash-read", help="read flash, needs complete path to file ")
                 parser.add_argument("--eeprom-read",  help="read eeprom , needs complete path to file")
                 parser.add_argument("--fuse-read-low", help="read fuse_low ",action="store_true")
@@ -167,7 +170,9 @@ def inpt():
 			"rename": None,
 			"dump":None,
 			"web":None,
-			"voltage":None
+			"voltage":None,
+			"browser":False,
+			"atmel-studio":None
                 }
 		#submiting input values into dictionary
 		lis["v"]=args.verbose
@@ -198,6 +203,10 @@ def inpt():
 		lis["gdb"]=args.gdb
 		lis["dump"]=args.dump
 		lis["voltage"]=args.voltage
+		lis["browser"]=args.browser
+		lis["atmel-studio"]=args.atmel_studio
+
+
 		if args.erase==True:
 			lis["delete"]=args.erase
 
@@ -246,6 +255,17 @@ def inpt():
 						i=i+1
 				except:
 					pass
+		if 'nt' in os.name:
+			if lis['atmel-studio']!=None:
+				lis['atmel-studio']=lis['atmel-studio'].replace('\\','/')
+			if lis['flash-write']!=None:
+				lis['flash-write']=lis['flash-write'].replace('\\','/')	
+			if lis['flash-read']!=None:
+				lis['flash-read']=lis['flash-read'].replace('\\','/')
+			if lis['eeprom-write']!=None:
+				lis['eeprom-write']=lis['eeprom-write'].replace('\\','/')
+			if lis['eeprom-read']!=None:
+				lis['eeprom-read']=lis['eeprom-read'].replace('\\','/')
 		return lis
 
 #sends an file in b64 code to server
@@ -264,7 +284,7 @@ def send_file(code , sock):
         if buf == ('rdy'):
 		if code['v']>= 2:
 			print "open file"
-                with open(str(code['path']),'r+') as f:
+                with open(str(code['path']),'rb+') as f:
 			if code['v']>= 3:
 				print "read"
                         buf=f.read()
@@ -306,8 +326,11 @@ def recieve_file(code,connection):
 		line=" "
 		if code['v']>= 2:
 			print "open file"
+			
 			print str(code['path'])
-                with open(str(code['path']),'w') as f:
+		if 'nt' in os.name:
+				code['path']=code['path'].replace('/','\\')
+                with open(str(code['path']),'wb') as f:
 			line=connection.recv(8192)
                         while '/done' not in line:
 				if code['v']>= 3:
@@ -328,14 +351,33 @@ def recieve_realtime(sock,code):
 	if code['v']>= 1:
 		print "recieve output in 'realtime'" 
 	out = ' '
-	while '/done' not in out:
+	failsave= ''
+	part='nothing'
+	while ('/done' not in out) and ('/done' not in failsave):
+		failsave=failsave+out
+		if '/done' in failsave :
+			out, ignored, part =out.partition('/done')
 		sys.stdout.write(out)
 		sys.stdout.flush()
-		out=sock.recv(128)
+		if part == 'nothing':
+			out=sock.recv(128)
+		else:
+	 		out, ignored, part =part.partition('/done')
+			while '}' not in part:
+				part=part+sock.recv(1)
+			#sys.stdout.write(out)
+			#sys.stdout.flush()
+			code=ast.literal_eval(part)
+			
+			failsave=lisst.get(code['mode'])(code,sock)
+			if failsave == '/done':
+				sys.exit()
+			return 
+		
 	out, ignored ,status =out.partition('/')
 	sys.stdout.write(out)
 	sys.stdout.flush()
-	print status
+	
 	return status
 
 
@@ -437,12 +479,22 @@ def restore_backup(code):
 	return " "
 def exit(code,sock):
 	return "/done"
-
+def browser(code,sock):
+	try:
+		
+		print code['msg']
+	except:
+		pass
+	webbrowser.open('http://'+code['eeprog-ip']+'/index.php?software=atmel',new=0,autoraise=True)
+	return "/done"
 
 inn=" "
 
 #get input/saved code
 code=inpt()
+#open Browser
+if code['browser'] == True :
+	webbrowser.open('http://'+code['eeprog-ip'],new=0,autoraise=True)
 #connect port
 if code['v']>= 1:
 	print "connect port"
@@ -457,7 +509,8 @@ lisst={
                 "restore_backup":restore_backup,
 		"exit":exit,
 		"show-all":showall,
-		"show":show
+		"show":show,
+		"browser":browser
                 }
 
 
@@ -491,6 +544,7 @@ try:
 			if code['v']>= 2:
 				print "order== ",code['mode']
 			inn=lisst.get(code['mode'])(code,sock)
+		
 except Exception as ex: 
 	print  'unexpected error'
 	print ex
