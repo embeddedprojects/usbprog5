@@ -25,7 +25,7 @@ def readfile():
 				if len(temp['vendor'])>vendorlen:
 					vendorlen=len(temp['vendor'])
 				if temp['name']!="":
-					if temp['program']=='avrdude':
+					if temp['program']=='AVR':
 						temp['name']=temp['name']+'&nbsp;('+temp['processor']+')'
 					code.append(temp)
 					i=i+1
@@ -44,7 +44,7 @@ def readfile():
 def parseavr():
 	#namelen=0
 	global namelen
-	template={"processor":"","name":"","vendor":"Atmel","program":"avrdude"}
+	template={"processor":"","name":"","vendor":"Atmel","program":"AVR"}
 	
 	with open("./avrdude.conf",'r') as r:
 		out=r.read()
@@ -84,7 +84,7 @@ def parseocd():
 	global namelen
 	status="test"
 	p = subprocess.Popen("ls tcl/target",shell=True ,stdout=subprocess.PIPE)
-	template={"processor":"","name":"","vendor":"","program":"openocd"}
+	template={"processor":"","name":"","vendor":"","program":"ARM"}
 	codeoc=[]
 	i=0
 	while status!='done':
@@ -162,10 +162,10 @@ def makephp():
 				tempvendor=test[i]['vendor']
 				tempprogram=test[i]['program']
 
-				if test[i]['program'] == 'avrdude':
+				if test[i]['program'] == 'AVR':
 					a.write(tempid+'\n')
 
-				if test[i]['program'] == 'openocd':
+				if test[i]['program'] == 'ARM':
 					o.write(tempid+'\n')
 				if len(tempvendor)>2:
 					tempvendor=tempvendor+',&nbsp;'

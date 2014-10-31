@@ -368,7 +368,7 @@ def logica(code,connection):
 
 
 
-		code['execute']="/root/avrdude-6.0rc1/avrdude -p "+code['processor']+" -c linuxgpio -P usb -i "+code['speed']
+		code['execute']="/root/avrdude-6.1/avrdude -p "+code['processor']+" -c usbprog5 -i "+code['speed']
 
 
 		if code['v']>=2:
@@ -788,6 +788,11 @@ def conf (code):
                                 i=0                                
                                 line=r.readline()
                         safe=json.loads(line)
+			safe['backflash']=safe['flash-write']
+			while os.path.isfile("/var/www/save/"+safe['flash-write']):
+				safe['flash-write']=safe['backflash']
+				i=i+1
+				safe['flash-write']=safe['flash-write']+'('+str(i)+')'
 			code['flash-write']="/var/www/save/"+safe['flash-write']
 			ende=code['flash-write']
 			
@@ -818,9 +823,12 @@ def conf (code):
 		for line in lines:
 			if ((code["del-conf"] == 0)and(i<1)):
 				f.write('{"load": null, "fuse-write-low": null, "fuse-read-extended": false, "fuse-write-extended": null, "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": null, "speed": 2, "processor": null, "del-conf": null, "flash-read": null, "safe": null, "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": null, "eeprom-write": null, "fuse-read-low": false, "eeprog_ip": null, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": null, "delete": false, "web": true,"rename": null,"dump": null,"voltage": 3}\n')
-				
-			if (i)!=(code["del-conf"]):
-				f.write(line)
+			else:	
+				if (i)!=(code["del-conf"]):
+					f.write(line)
+				else :
+					rm=json.loads(line)
+					subprocess.call(['rm', rm['flash-write'] ])	
 			i=i+1
 		f.close()
 		code['mode']='conf'

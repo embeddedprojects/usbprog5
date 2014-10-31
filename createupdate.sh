@@ -1,6 +1,6 @@
 
 mkdir -p /tmp/build/var/www/tmp
-mkdir -p /tmp/build/root/avrdude-6.0rc1
+mkdir -p /tmp/build/root/avrdude-6.1
 mkdir -p /tmp/build/root/openocd-code/src
 
 cp  update/updatescript.sh /tmp/build/var/www
@@ -28,7 +28,7 @@ cp  server/server.py /tmp/build/root/server.py
 
 cp openocd-0.8.0/src/openocd /tmp/build/root/openocd-code/src
 
-cp avrdude-6.0rc1/avrdude /tmp/build/root/avrdude-6.0rc1
+cp avrdude-6.1/avrdude /tmp/build/root/avrdude-6.1
 
 cp client/embeddedprog.py /tmp/build/var/www/tmp
 

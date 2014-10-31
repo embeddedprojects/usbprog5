@@ -1,9 +1,6 @@
-actux3
 uc3a0512
 c128
-c128
 c32
-c64
 c64
 pwm2
 pwm2b
@@ -25,7 +22,6 @@ usb162
 usb646
 usb647
 usb82
-at91eb40a
 m103
 m128
 m1280
@@ -34,8 +30,6 @@ m1284p
 m1284rfr2
 m128rfa1
 m128rfr2
-m16
-m16
 m16
 m161
 m162
@@ -92,7 +86,6 @@ t261
 t4
 t4313
 t44
-c32
 t45
 t461
 t5

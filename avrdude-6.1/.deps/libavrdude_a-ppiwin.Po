@@ -1,0 +1,5 @@
+libavrdude_a-ppiwin.o: ppiwin.c ac_cfg.h avrdude.h
+
+ac_cfg.h:
+
+avrdude.h:
