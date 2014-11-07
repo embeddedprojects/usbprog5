@@ -3,6 +3,7 @@ import os
 import sys
 import subprocess
 import json
+import string
 from collections import defaultdict
 
 code=[]
@@ -51,9 +52,18 @@ def parseavr():
 	old="!"
 	codeav=[]
 	i=0
+	#weg, ignored , out =out.partition('#------------------------')
 	while old!=out :
 		old=out		
 		weg, ignored , out =out.partition('#------------------------')
+		if 'part parent' in weg:
+			if 'deprecated' in weg:
+				pass
+			elif 'readme.txt' in weg:
+				pass
+			else:
+				weg=filter(lambda x: x in string.printable, weg)
+				out=weg+ignored+out
 		weg, ignored , out =out.partition('part')
 		weg, ignored , out =out.partition('= "')
 		tempid, ignored , out =out.partition('";')
@@ -88,10 +98,12 @@ def parseocd():
 	codeoc=[]
 	i=0
 	while status!='done':
-		temp=template
-		buf=p.stdout.readline()
+	 temp=template
+	 buf=p.stdout.readline()
+	 if (".cfg" in buf) or (".tcl" in buf):
 		buf,ignored,ignored=buf.partition(".cfg")
 		buf,ignored,ignored=buf.partition(".tcl")
+		
 		temp['processor']=buf
 		temp['name']=buf
 		line=json.dumps(temp)
@@ -106,8 +118,8 @@ def parseocd():
 		else: 
 			if temp['name'] != '':
 				code.append(temp)			
-		if buf == '' and p.poll()!= None:
-			status='done'
+	 if buf == '' and p.poll()!= None:
+		status='done'
 	
 
 	p = subprocess.Popen("ls tcl/board",shell=True ,stdout=subprocess.PIPE)
@@ -166,25 +178,29 @@ def makephp():
 					a.write(tempid+'\n')
 
 				if test[i]['program'] == 'ARM':
+					tempid=filter(lambda x: x in string.printable, tempid)
 					o.write(tempid+'\n')
 				if len(tempvendor)>2:
 					tempvendor=tempvendor+',&nbsp;'
 				
 				#print "vendorlen",y," == ",len(vendorspace)/6
+				tempid=filter(lambda x: x in string.printable, tempid)
+				tempprogram=filter(lambda x: x in string.printable, tempprogram)
+				tempname=filter(lambda x: x in string.printable, tempname)
 				w.write("'"+unicode(tempname)+"&nbsp;("+unicode(tempvendor)+""+unicode(tempprogram)+")'=>'"+unicode(tempid)+"',")
 				i=i+1
 			except Exception as e: 
-				#print "error"
+			#	print "error"
 				
-				#print e,i
+			#	print e,i
     				
 				
 				help=False
 				w.write(")\n?>")
 				
-code =readfile()
-code = parseavr()
-code=parseocd()
+readfile()
+parseavr()
+parseocd()
 #print code
 makephp()
 print ""
