@@ -714,7 +714,7 @@ With the delete button you can delete an old entry.
 
 
     <div align="right">
-<div id="helpatmel" style="display:none;border:1px solid gray;padding:.3em;background-color:#FF3330;position:absolute;width:80%;height:80%;left:10%;top:300">
+<div id="helpatmel" style="display:none;border:1px solid gray;padding:.3em;background-color:#F78181;position:absolute;width:80%;height:80%;left:10%;top:300">
     <div align="right">
         <a style="color:blue"  href="javascript:hide_popup('helpatmel') "><img src="icon_del_gr_20x20_004.png"></a>
     </div>
@@ -731,6 +731,26 @@ The embeddedprog.py will use those settings for Programming with Atmel Studio.
 </div>
 </div>
         
+
+    <div align="right">
+<div id="helpatmel_studio" style="display:none;border:1px solid gray;padding:.3em;background-color:white;position:absolute;width:100%;height:100%;top:300">
+    <div align="right">
+        <a style="color:blue"  href="javascript:hide_popup('helpatmel_studio') "><img src="icon_del_gr_20x20_004.png"></a>
+    </div>
+
+<div align="left">
+
+
+<h2>Atmel Studio:</h2>
+Please Select The Processor, Speed, Voltage you are using in this Browser.
+The embeddedprog.py will use those settings for Programming with Atmel Studio.
+
+<img src="atmel_einstellungen.png">
+
+
+</div>
+</div>
+
 
     <div align="right">
 <div id="helpUp" style="display:none;border:1px solid gray;padding:.3em;background-color:white;position:absolute;width:80%;height:80%;left:10%;top:10%">
@@ -806,8 +826,8 @@ echo render_firmware_table();
 
 </td></tr>
 
-<tr valign="top" style="background:#BBB"><td colspan="4">Update programmer:&nbsp;<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td><td colspan="2">Settings:&nbsp;<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td></tr>
-<tr><td colspan="4" align="">
+<tr valign="top" style="background:#BBB"><td colspan="3">Update programmer:&nbsp;<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td><td colspan="1">Settings:&nbsp;<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td><td colspan="1">Atmel Studio 6&nbsp;<a style="color:white"  href="javascript:show_popup('helpatmel_studio') ">?</a></td></tr>
+<tr><td colspan="3" align="">
 <br>
 
 <input type="file" value="" name="date"  >
@@ -815,12 +835,27 @@ echo render_firmware_table();
 
 <br><br>
 </td>
-<td colspan="2" align="">
+
+
+<td colspan="1" align="">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Linux/MAC:&nbsp;
+<br>
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Windows:&nbsp;
+</td>
+<td colspan="1" align="">
 
 <!--<input type="button" value="Change IP">-->
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
 <input type="button" class="myButton"  value="Download embeddedprog.py" onclick="window.open('download.php?name=embeddedprog.py&path=tmp&'+1*new Date(),'_top');">
-</td>
+<!--<input type="button" value="Change IP">-->
+<br>
+<input type="button" class="myButton"  value="Download setup.exe" onclick="window.open('download.php?name=setup.exe&path=tmp&'+1*new Date(),'_top');">
+
+
+
+
 </tr>
 
 <tr valign="top" style="background:#43BBD1;"><td colspan="5">Command Lines:</td></tr>
@@ -846,12 +881,12 @@ echo render_firmware_table();
 <tr><td colspan="3" width=51%>Read Signature</td><td colspan="2">python embeddedprog.py --processor "your Processor" --speed 2 </td></tr>
 <tr><td colspan="3">Flash</td><td colspan="2">python embeddedprog.py --processor "your Processor" --flash-write /tmp/yourprog.hex</td></tr>
 <tr><td>Erase</td><td colspan="4">python embeddedprog.py --processor "your Processor" --delete</td></tr>
-<tr><td>Read Fuse High</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_read_high</td></tr>
-<tr><td>Read Fuse Low</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_read_low</td></tr>
-<tr><td>Read Fuse Extended</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_read_extended</td></tr>
-<tr><td>Write Fuse High</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_write_high "fusebits"</td></tr>
-<tr><td>Write Fuse Low</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_write_low "fusebits"</td></tr>
-<tr><td>Write Fuse Extended</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse_write_extended "fusebits"</td></tr>
+<tr><td>Read Fuse High</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-read-high</td></tr>
+<tr><td>Read Fuse Low</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-read-low</td></tr>
+<tr><td>Read Fuse Extended</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-read-extended</td></tr>
+<tr><td>Write Fuse High</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-write-high "fusebits"</td></tr>
+<tr><td>Write Fuse Low</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-write-low "fusebits"</td></tr>
+<tr><td>Write Fuse Extended</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-write-extended "fusebits"</td></tr>
 </table>
 </td></tr>
 

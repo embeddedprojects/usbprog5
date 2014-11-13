@@ -315,9 +315,13 @@ def send_file(code , sock):
 def recieve_file(code,connection):
 	if code['v']>= 1:
 		print "recieve file"
-        statusr=connection.recv(16)
+	if code['help']=='send':
+		statusr=code['help']
+	else:	
+        	statusr=code['help']+connection.recv(16)
 	if code['v']>= 2:
 		print "reply from server= ",statusr
+	
         if statusr== 'send':
 		if code['v']>= 3:
 			print "reply from server == 'send' "
@@ -332,16 +336,17 @@ def recieve_file(code,connection):
 				code['path']=code['path'].replace('/','\\')
                 with open(str(code['path']),'wb') as f:
 			line=connection.recv(8192)
-                        while '/done' not in line:
+                        while '\xa7' not in line:
 				if code['v']>= 3:
-					print "write to file file"
+					print "write to file"
                                 f.write(line.decode('base64'))
                                 f.flush()
 				if code['v']>= 3:
 					print ""
-                                line=connection.recv(8192) 
-                        line, ignored ,statusr =line.partition('/')
-			f.write(line.decode('base64'))              
+                                line=connection.recv(8192)
+                        line, ignored ,statusr =line.partition('\xa7')
+			f.write(line.decode('base64'))
+			
                         connection.sendall('done')
                         return statusr
 
@@ -353,31 +358,16 @@ def recieve_realtime(sock,code):
 	out = ' '
 	failsave= ''
 	part='nothing'
-	while ('/done' not in out) and ('/done' not in failsave):
-		failsave=failsave+out
-		if '/done' in failsave :
-			out, ignored, part =out.partition('/done')
+	while '\xa4' not in out :
 		sys.stdout.write(out)
-		sys.stdout.flush()
-		if part == 'nothing':
-			out=sock.recv(128)
-		else:
-	 		out, ignored, part =part.partition('/done')
-			while '}' not in part:
-				part=part+sock.recv(1)
-			#sys.stdout.write(out)
-			#sys.stdout.flush()
-			code=ast.literal_eval(part)
-			
-			failsave=lisst.get(code['mode'])(code,sock)
-			if failsave == '/done':
-				sys.exit()
-			return 
+		sys.stdout.flush()		
+		out=sock.recv(128)	
+	
+	out, ignored ,status =out.partition('\xa4')
+	
 		
-	out, ignored ,status =out.partition('/')
 	sys.stdout.write(out)
 	sys.stdout.flush()
-	
 	return status
 
 
@@ -447,8 +437,9 @@ def recieve_realtime(sock,code):
 def go(code,sock):
 	if code['v']>= 1:
 		print "go"
-	recieve_realtime(sock,code)
-        return " "
+	help=recieve_realtime(sock,code)
+	
+        return help
 def set_file(code,sock):
 	if code['v']>= 1:
 		print "set_file"
@@ -460,8 +451,8 @@ def set_file_execute(code,sock):
         send_file(code,sock)
 	if code['v']>= 2:
         	print "vor go"
-        go(code,sock)
-        return " "
+        help=go(code,sock)
+        return help
 def set_file_execute_w_only(code,sock):
 	if code['v']>= 1:
         	print "set_file_execute_w_only"
@@ -471,7 +462,7 @@ def get_file(code,sock):
 	if code['v']>= 1:
         	print "get_file"
         recieve_file(code,sock)
-	return " "
+	return "/done"
 def restore_backup(code):
 	if code['v']>= 1:
         	print"restore backup"
@@ -519,7 +510,8 @@ lisst={
 
 
 try:
-
+		helper=''
+		inn=""
 
 		code=inpt()
 		if code['v']>= 1:
@@ -533,18 +525,33 @@ try:
 		sock.sendall(json.dumps(code))
 		while "/done" not in inn:
 			
-			code=" "
-			code=sock.recv(8192)
+			
+			if ' ' == inn:
+				inn=''
+			if '}' in inn:
+				code=inn
+				code, added, helper =code.partition('}')
+				code=code+added
+			else:
+				code=inn+sock.recv(8192)
+				if '}' in code:
+					code, added, helper =code.partition('}')
+					code=code+added
+			
+			
+			
+			
+			
 			temp='a'
 			if(('show-all' in code)or("'ocd': ['" in code)or("'avr': ['" in code) ):
 			 while '}' not in temp :
 				temp=sock.recv(8192)
 				code=code+temp
 			code=ast.literal_eval(code)
+			code['help']=helper
 			if code['v']>= 2:
 				print "order== ",code['mode']
 			inn=lisst.get(code['mode'])(code,sock)
-		
 except Exception as ex: 
 	print  'unexpected error'
 	print ex

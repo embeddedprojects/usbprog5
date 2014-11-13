@@ -72,7 +72,7 @@ def realtime(connection,p,code):
                 		print "realtime finished"
 			statuss='done'
 			if code['web']!=True:
-				connection.sendall('/done')
+				connection.sendall('\xa4')
 			return statuss
 
 
@@ -121,14 +121,14 @@ def send_file(code , sock):
         if buf == ('rdy'):
 		if code['v']>=2:
 			print "open"
-                with open('/root/'+str(code['name']),'rb') as f:
+                with open('/tmp/'+str(code['name']),'rb') as f:
 			#print buf
                         buf=f.read()
 			b=base64.b64encode(buf)
                         sock.sendall(b)
 	if code['v']>=2:
 		print "done"
-	sock.sendall('/done')
+	sock.sendall('\xa7')
 	buf= sock.recv(16)
 	if buf == 'done':
 		return 0
@@ -518,7 +518,7 @@ def logica(code,connection):
 	
 
 
-			code['execute']=code['execute']+" -U flash:r:/root/"+'"'+namefr+'"'+ende
+			code['execute']=code['execute']+" -U flash:r:/tmp/"+'"'+namefr+'"'+ende
 			if code['v']>=2:
 				print code['execute']
 			lisr.append("fr")
@@ -586,7 +586,7 @@ def logica(code,connection):
 		if code['flash-read']!= None:
 			print "filename =",namefr
 			if code['web'] == True:
-				subprocess.call(['/bin/mv', '/root/'+namefr, '/var/www/tmp/'+namefr])
+				subprocess.call(['/bin/mv', '/tmp/'+namefr, '/var/www/tmp/'+namefr])
 				subprocess.call(["chmod", "777",  "/var/www/tmp/"+namefr])
 				subprocess.call(["chown", "-cR", "www-data:www-data", "/var/www/tmp/"+namefr])	
 		if "fr" in lisr:
@@ -674,12 +674,12 @@ def logica(code,connection):
              
 
                         if '.elf'in namefw:
-                                ende="verify reset"
+                                ende="reset"
 			elif '.hex' in namefw:
-				ende="verify reset"
+				ende="reset"
 
                         else:
-                                ende ="verify reset"
+                                ende ="reset"
 
 			code['name']=namefw
 			if code['web']!=True:
@@ -694,10 +694,13 @@ def logica(code,connection):
 
 
 			if code['load']!=0:
-				code['execute']=code['execute']+' -c "init;halt;program  /var/www/save/'+code['name']+" "+ende+';init;resume"'
+				if code['web']!= True:
+					code['execute']=code['execute']+' -c "init;reset halt;program  /tmp/'+code['name']+" "+ende+';init;resume"'
+				else:
+					code['execute']=code['execute']+' -c "init;reset halt;program  /var/www/save/'+code['name']+" "+ende+';init;resume"'
+     			
 			else:
-				code['execute']=code['execute']+' -c "init;halt;program  /var/www/tmp/'+code['name']+" "+ende+';init;resume"'
-     
+				code['execute']=code['execute']+' -c "init;reset halt;program  /var/www/tmp/'+code['name']+" "+ende+';init;resume"'
 		else:
 			code['execute']=code['execute']+' -c "init;exit;quit"'
 		#prototype raw input

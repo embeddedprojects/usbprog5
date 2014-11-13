@@ -173,20 +173,22 @@ def makephp():
 				tempname=test[i]['name']
 				tempvendor=test[i]['vendor']
 				tempprogram=test[i]['program']
+				tempid=filter(lambda x: x in string.printable, tempid)
+
+				tempname=filter(lambda x: x in string.printable, tempname)
+
 
 				if test[i]['program'] == 'AVR':
 					a.write(tempid+'\n')
 
 				if test[i]['program'] == 'ARM':
-					tempid=filter(lambda x: x in string.printable, tempid)
+					
 					o.write(tempid+'\n')
 				if len(tempvendor)>2:
 					tempvendor=tempvendor+',&nbsp;'
 				
 				#print "vendorlen",y," == ",len(vendorspace)/6
-				tempid=filter(lambda x: x in string.printable, tempid)
-				tempprogram=filter(lambda x: x in string.printable, tempprogram)
-				tempname=filter(lambda x: x in string.printable, tempname)
+
 				w.write("'"+unicode(tempname)+"&nbsp;("+unicode(tempvendor)+""+unicode(tempprogram)+")'=>'"+unicode(tempid)+"',")
 				i=i+1
 			except Exception as e: 

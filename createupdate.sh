@@ -21,6 +21,7 @@ cp  web/liquidmetal.js /tmp/build/var/www
 cp  web/flexselect.css /tmp/build/var/www
 cp  web/download_icon.png /tmp/build/var/www
 cp  web/update.php /tmp/build/var/www
+cp  web/atmel_einstellungen.png /tmp/build/var/www
 
 cp version /tmp/build/root/version
 
@@ -31,7 +32,7 @@ cp openocd-0.8.0/src/openocd /tmp/build/root/openocd-code/src
 cp avrdude-6.1/avrdude /tmp/build/root/avrdude-6.1
 
 cp client/embeddedprog.py /tmp/build/var/www/tmp
-
+cp client/windows/installer/setup.exe /tmp/build/var/www/tmp
 
 cd /tmp/build
 tar cvfz update.tar.gz var/ root/ 
