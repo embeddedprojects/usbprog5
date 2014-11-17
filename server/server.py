@@ -435,7 +435,12 @@ def logica(code,connection):
                		else:
                                	while '/'  in nameer:
                                        	part,hel,nameer=nameer.partition('/')
+					if code['v']>=3:
+						print nameer
                                        	path=path+part+hel
+					if code['v']>=3:
+						print "current path =",path
+					
 			if '.bin'in nameer:
 				ende=":b"
 			elif '.hex'in nameer:
@@ -445,7 +450,7 @@ def logica(code,connection):
 
 
 			lisr.append("er")
-			code['execute']=code['execute']+" -U eeprom:r:"+nameer+ende+" -E vcc,reset"
+			code['execute']=code['execute']+" -U eeprom:r:/tmp/"+nameer+ende+" -E vcc,reset"
 			if code['v']>=2:
 				print code['execute']	
 		
@@ -456,7 +461,7 @@ def logica(code,connection):
                         if code['web']!=True:        
 				connection.sendall("{'v':"+str(code['v'])+",'mode':'set_file','path':"+code['eeprom-read']+"}")
 
-                        nameer=code['eeprom-write']
+                        nameew=code['eeprom-write']
                         if './'  in nameew:
                                 hel , ignored, nameew=nameew.partition('./')
                              
@@ -887,13 +892,16 @@ def change_voltage (code):
 	if code['voltage'] == 5:
 		subprocess.call(["/bin/sh", "/root/5V0.sh"])
 	return
+
+
+
 try:
 
 	subprocess.call(["/bin/rm", "/var/www/tmp/processor"])
 	subprocess.call(["touch", "/var/www/tmp/processor"])
 	subprocess.call(["chmod", "777", "/var/www/tmp/processor"])
 	with open("/var/www/tmp/processor",'w') as w:
-		w.write("0\n3\n2\n\n")
+		w.write("0\n3\n2\nSearch Processor ...\n")
 	subprocess.call(["/bin/rm", "/tmp/gdb_runs"])
 	subprocess.call(["touch", "/tmp/update_done"])
 	subprocess.call(["chmod", "777", "/tmp/update_done"])

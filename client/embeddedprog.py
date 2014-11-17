@@ -336,6 +336,7 @@ def recieve_file(code,connection):
 				code['path']=code['path'].replace('/','\\')
                 with open(str(code['path']),'wb') as f:
 			line=connection.recv(8192)
+#  '\xa7' is a special char just for EOF! 
                         while '\xa7' not in line:
 				if code['v']>= 3:
 					print "write to file"

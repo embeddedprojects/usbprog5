@@ -3,6 +3,8 @@ mkdir -p /tmp/build/var/www/tmp
 mkdir -p /tmp/build/root/avrdude-6.1
 mkdir -p /tmp/build/root/openocd-code/src
 
+
+
 cp  update/updatescript.sh /tmp/build/var/www
 
 cp  processor/processor.php /tmp/build/var/www
@@ -35,6 +37,7 @@ cp client/embeddedprog.py /tmp/build/var/www/tmp
 cp client/windows/installer/setup.exe /tmp/build/var/www/tmp
 
 cd /tmp/build
+chmod -R 777 /tmp/build/ 
 tar cvfz update.tar.gz var/ root/ 
 cd -
 mv /tmp/build/update.tar.gz update/
