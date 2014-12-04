@@ -15,9 +15,6 @@ import pwd, os
 
 
 #start socket
-#uid = pwd.getpwnam('www-data')[2]
-#os.setuid(uid)
-
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_address = ('', 8888)
 print >>sys.stderr, 'starting up on %s port %s' % server_address
@@ -42,7 +39,7 @@ def backup_file (code):
 		return 0
 
 
-#restore an file from backup
+#restore an file from backup not used atm
 def restore (code):
 	if code['v']>=1:
 		print "rw"
@@ -91,15 +88,19 @@ def recieve_file(code,connection ):
 				print "start while"
 			line=connection.recv(8192)
 			
-    			while '/done' not in line:
-				if code['v']>=3:
-					print "while"
-				f.write(line.decode('base64'))
-				f.flush()
-				line=connection.recv(8192)
+    			while '\xa7' not in line:
+				if code['v']>= 3:
+					print "write to file"
+                                f.write(line.decode('base64'))
+                                f.flush()
+				if code['v']>= 3:
+					print ""
+                                line=connection.recv(8192)
+				
+
 			if code['v']>=2:
 				print "while finished"
-			line, ignored ,statusr =line.partition('/done')
+			
 			f.write(line.decode('base64'))
 			if code['v']>=2:
 				print "send"
@@ -111,7 +112,7 @@ def recieve_file(code,connection ):
 
 
 
-#sends file to client (not used in browser)update.php
+#sends file to client (not used in browser)
 def send_file(code , sock):
         sock.sendall('send')
 	if code['v']>=1:
@@ -337,11 +338,16 @@ def logica(code,connection):
                 	print " kein processor"
 
 			return " "
+
+
+#
+#AVRdude(AVR)
+#
 	if 'avrdude' in code['mode']:
 		#kills openocd and unexports used ports 
 		os.system('killall openocd')
 
-
+#oneliners (fuses + delete)
 		if code['v']>=2:
 			print "avr dude"
 		lisr=[]
@@ -349,17 +355,17 @@ def logica(code,connection):
 			connection.sendall("{'v':"+str(code['v'])+",'msg':'gdb not aviable for avrdude'}")
 			return
 		if code['speed']>3:
-			print "speed setting error, set to default (2)"
-			code['speed']=2
+			print "speed setting error, set to default (1)"
+			code['speed']=1
 		if code['speed']<1:
-			print "speed setting error, set to default (2)"
-			code['speed']=2
+			print "speed setting error, set to default (1)"
+			code['speed']=1
 		if code['speed']==1:
 			code['speed']='1'
 		if code['speed']==2:
-			code['speed']='10'
+			code['speed']='5'
 		if code['speed']==3:
-			code['speed']='100'
+			code['speed']='10'
 		if code['v']>=1:
 			print "after speed settings"
 
@@ -393,10 +399,6 @@ def logica(code,connection):
 			code['execute']=code['execute']+" -U efuse:r:-:h"
 			if code['v']>=2:
 				print code['execute']
-		#if code['fuse-read-all']:
-		#	if code['v']>=1:
-		#		print "read fuse-all"
-		#	code['execute']=code['execute']+" -U lfuse:r:-:h -U hfuse:r:-:h -U efuse:r:-:h"
 			if code['v']>=2:
 				print code['execute']
 
@@ -423,7 +425,9 @@ def logica(code,connection):
 
  
 		if code['v']>=2:
-			print "nach fuse"        
+			print "nach fuse"
+
+#eeprom read        
 		if code['eeprom-read']!= None:
 			if code['v']>=1:
 				print "read eeprom"
@@ -454,12 +458,14 @@ def logica(code,connection):
 			if code['v']>=2:
 				print code['execute']	
 		
+
+
+#eeprom write
                 if code['eeprom-write']!= None:
 			if code['v']>=1:
 				print "write eeprom"
               
-                        if code['web']!=True:        
-				connection.sendall("{'v':"+str(code['v'])+",'mode':'set_file','path':"+code['eeprom-read']+"}")
+                   
 
                         nameew=code['eeprom-write']
                         if './'  in nameew:
@@ -477,16 +483,30 @@ def logica(code,connection):
                                 ende=":i"
                         else:   
                                 ende =":a"
-
+			if code['web']!=True:
+				connection.sendall("{'v':"+str(code['v'])+",'mode':'set_file','path':'"+code['eeprom-write']+"'}")
 
 			code['name']=nameew
-			code['execute']=code['execute']+" -U eeprom:w:"+'"'+nameew+'"'+ende
+			set_file(code,connection)
+			if code['load']!=0:
+				if code['web']!=True:
+					code['execute']=code['execute']+" -U eeprom:w:"+'"/tmp/'+nameew+'"'+ende		
+				else:			
+					code['execute']=code['execute']+" -U eeprom:w:"+'"/var/www/save/'+nameew+'"'+ende
+			else:
+				code['execute']=code['execute']+" -U eeprom:w:"+'"/var/www/tmp/'+nameew+'"'+ende
+
+
+			
+			
 			if code['v']>=2:
 				print code['execute']
-                        set_file(code,connection)
+                        
 			
 		if code['v']>=3:
 			print "after eeprom write"
+
+#flash read
                 if code['flash-read']!= None:
 			if code['v']>=1:
 				print "read flash"
@@ -529,7 +549,9 @@ def logica(code,connection):
 			lisr.append("fr")
           
 			print "nach fr"
-			
+	
+
+#flash write		
                 if code['flash-write']!= None:
 			if code['v']>=1:
 				print "write flash"
@@ -572,14 +594,16 @@ def logica(code,connection):
 			print code['name']	
 			if code['v']>=2:
 				print code['execute']
-		
-		#prototype for raw input
+	
+
+	
+#prototype for raw input
 		if code['raw']!= None:
 			print "try raw"
 			code['execute']="avrdude "+code['raw']
 
 
-		print code['v']
+		#print code['v']
 		if code['web']!=True:
 			connection.sendall("{'mode':'go','v':" + str(code['v']) + "}")
 		
@@ -587,13 +611,23 @@ def logica(code,connection):
 
 
 
-
+#flash read addition for browser (move file, set file as www data)
 		if code['flash-read']!= None:
 			print "filename =",namefr
 			if code['web'] == True:
 				subprocess.call(['/bin/mv', '/tmp/'+namefr, '/var/www/tmp/'+namefr])
 				subprocess.call(["chmod", "777",  "/var/www/tmp/"+namefr])
 				subprocess.call(["chown", "-cR", "www-data:www-data", "/var/www/tmp/"+namefr])	
+
+#eeprom read addition for browser (move file, set file as www data)
+		if code['eeprom-read']!= None:
+			print "filename =",nameer
+			if code['web'] == True:
+				subprocess.call(['/bin/mv', '/tmp/'+nameer, '/var/www/tmp/'+nameer])
+				subprocess.call(["chmod", "777",  "/var/www/tmp/"+nameer])
+				subprocess.call(["chown", "-cR", "www-data:www-data", "/var/www/tmp/"+nameer])
+
+
 		if "fr" in lisr:
 			if code['v']>=1:
 				print "flash-read"
@@ -614,12 +648,14 @@ def logica(code,connection):
 			code['name']=nameer
 			if code['web']!=True:
 				get_file(code,connection)
-			subprocess.call('/bin/rm', '/root/'+namefr)
+			#subprocess.call('/bin/rm', '/root/'+nameer)
 
 
 
 
-	
+#
+#Openocd(ARM)
+#	
 	if "openocd" in  code['mode']:
 
 
@@ -771,6 +807,10 @@ def conf (code):
 		if(('/tmp.' in code['safe'])and(code['flash-write']!=None)):
 			if code['v']>=2:
                 		print "safe conf = ",code['flash-write']
+			if code['eeprom']==1:
+				code['eeprom-write'] = code['flash-write']
+				code['flash-write'] = None
+				
 
                 	f=open("/var/www/save/eeprog.rc","r")
                 	lines=f.readlines()
@@ -796,13 +836,27 @@ def conf (code):
                                 i=0                                
                                 line=r.readline()
                         safe=json.loads(line)
-			safe['backflash']=safe['flash-write']
-			while os.path.isfile("/var/www/save/"+safe['flash-write']):
-				safe['flash-write']=safe['backflash']
-				i=i+1
-				safe['flash-write']=safe['flash-write']+'('+str(i)+')'
-			code['flash-write']="/var/www/save/"+safe['flash-write']
-			ende=code['flash-write']
+			if safe['eeprom']==1:
+				code['eeprom']=1
+				safe['backflash']=safe['eeprom-write']
+				while os.path.isfile("/var/www/save/"+safe['eeprom-write']):
+					safe['eeprom-write']=safe['backflash']
+					i=i+1
+					safe['eeprom-write']=safe['eeprom-write']+'('+str(i)+')'
+				code['eeprom-write']="/var/www/save/"+safe['eeprom-write']
+				safe['flash-write'] = safe['eeprom-write']
+				ende=code['eeprom-write']
+					
+			else:
+				code['eeprom']=0
+				safe['backflash']=safe['flash-write']
+
+				while os.path.isfile("/var/www/save/"+safe['flash-write']):
+					safe['flash-write']=safe['backflash']
+					i=i+1
+					safe['flash-write']=safe['flash-write']+'('+str(i)+')'
+				code['flash-write']="/var/www/save/"+safe['flash-write']
+				ende=code['flash-write']
 			
 			while '.' in ende:
 				path, ignored,ende=ende.partition('.')
@@ -836,10 +890,16 @@ def conf (code):
 					f.write(line)
 				else :
 					rm=json.loads(line)
-					subprocess.call(['rm', rm['flash-write'] ])	
+					print line
+					print rm['eeprom']
+					if rm['eeprom'] == 0:
+						subprocess.call(['rm', rm['flash-write'] ])				
+					else:
+						subprocess.call(['rm', rm['eeprom-write'] ])
 			i=i+1
 		f.close()
 		code['mode']='conf'
+		code['v']=0
 
         else:
 #asking if an saved config should be loaded, if yes it is loaded
@@ -867,9 +927,12 @@ def conf (code):
 					print "code load ==",code['load']
 					print "old save -> write"
 					
+				if codeneu['eeprom']==0:	
+                        		codeneu['flash-write']=codeneu['safe']
 					
-                        	codeneu['flash-write']=codeneu['safe']
-				codeneu['load']=code['load']
+				else:
+					codeneu['eeprom-write']=codeneu['safe']
+			codeneu['load']=code['load']	
 			code=codeneu
 			
 		return code
@@ -901,7 +964,7 @@ try:
 	subprocess.call(["touch", "/var/www/tmp/processor"])
 	subprocess.call(["chmod", "777", "/var/www/tmp/processor"])
 	with open("/var/www/tmp/processor",'w') as w:
-		w.write("0\n3\n2\nSearch Processor ...\n")
+		w.write("0\n3\n1\nSearch Processor ...\n")
 	subprocess.call(["/bin/rm", "/tmp/gdb_runs"])
 	subprocess.call(["touch", "/tmp/update_done"])
 	subprocess.call(["chmod", "777", "/tmp/update_done"])
@@ -909,12 +972,14 @@ try:
 
 except:
 	pass
-try:
+#try:
+if 1==1:
 	while inn!='kill':
 		
 		print >>sys.stderr, 'waiting for a connection'
 		connection, client_address = sock.accept()
-		try:	
+		#try:
+		if 1==1:	
 
 		
 			inn = connection.recv(2048)
@@ -931,12 +996,14 @@ try:
 	
 			if code['web']!=True:
 				connection.sendall("{'v':"+str(code['v'])+",'mode':'exit'}")
-	
+			print "connection closed"
+			connection.close()
 
 
 
-
-
+try:
+		try:
+			pass
 		except Exception as e: 
 			print "error"
 			print >>sys.stderr , 'connection closed', client_address

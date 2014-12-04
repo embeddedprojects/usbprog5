@@ -25,7 +25,7 @@ exit;
 };
 }
 ?>
-<!--echo '<script type="text/javascript">alert("' . $gruss . '")</script>'; -->
+
 <html>
 <head>
 <title>embeddedprog GUI</title>
@@ -154,7 +154,7 @@ function sleep(millis, callback) {
 
 
 
-function SendCommand(command, i, help)
+function SendCommand(command, i, help, eproo)
 {
 	if(command!='start-gdb'&&command!='pro'){	
 	document.getElementById('loading').style.display="";
@@ -165,14 +165,16 @@ function SendCommand(command, i, help)
     var pointer = '';
     var voltage = $('input[name=voltage]:checked', '#myForm').val();
     var safe = '';
+
+
     if(command=='save-conf'){ 
     var save = prompt("Please add a description","");   
     }
 
-    if(command=='read-flash'){ 
+    if((command=='read-flash')||(command=='read-eeprom')){ 
     var save = prompt("Please insert filename","myprog.hex");   
     }
-    if ((command=='read-flash')&&((save ==null)||(save==""))){document.getElementById('loading').style.display="none";return;}
+    if (((command=='read-flash')||(command=='read-eeprom'))&&((save ==null)||(save==""))){document.getElementById('loading').style.display="none";return;}
 
     if(command=='pro'){
 	
@@ -213,9 +215,25 @@ function SendCommand(command, i, help)
 		
 }
 
+if (command=='upload'){
+
+	var eeprom = eproo;
+}else{
+	if (document.getElementById('eeprom').checked){
+		
+		var eeprom = 1;
+	}else{
+		
+		var eeprom = 0;
+	}
+}
+ 
+
+
+
 
      $.ajax({
-        'url' : 'server.php?cmd=' + command + '&processor=' + processor + '&voltage='+ voltage + '&speed=' + speed + '&i=' + i + '&save=' + save + '&pointer=' + pointer + '&' + 1*new Date(),
+        'url' : 'server.php?cmd=' + command + '&processor=' + processor + '&voltage='+ voltage + '&speed=' + speed + '&i=' + i + '&save=' + save + '&pointer=' + pointer + '&eeprom=' + eeprom + '&' + 1*new Date(),
         'type' : 'GET',
         'data' : {
         },
@@ -227,7 +245,7 @@ function SendCommand(command, i, help)
 		art(data);
 		return;
 		}
-		if(command=='read-flash'){
+		if((command=='read-flash')||(command=='read-eeprom')){
 			
 			if (data.indexOf("unexpected error")<1){
 				
@@ -469,15 +487,24 @@ else{
 echo "style=\"display:none\"";
 }
  ?>
-><td colspan="2" align="center">
+><td colspan="1" align="right">
 <br>
 <br>
 <input type="button" class="myButton" value="Read Signature" onclick="SendCommand('readsignature')">
 &nbsp;&nbsp;&nbsp;
 <input type="button" class="myButton" value="Erase Flash" onclick="SendCommand('erase')">
-&nbsp;&nbsp;&nbsp;
+<br>
+<br>
+<br>
+</td>
+
+<td colspan="1" align="left">
+<br>
+
 <input type="button" class="myButton" value="Download Flash" onclick="SendCommand('read-flash')">
 <br>
+
+<input type="button" class="myButton" value="Download EEPROM" onclick="SendCommand('read-eeprom')">
 <br>
 <br>
 </td>
@@ -791,13 +818,26 @@ echo render_temp();
 
 <br>
 </td>
-<tr valign="top"><td colspan="5" align="center">
+<tr valign="top"><td colspan="3" align="right">
+
 
 <input type="file" value="" name="datei" >
 <input type="submit" value="Upload File" class="myButton" >
+</td>
+<td colspan="1" >
 <input type="checkbox" name="flashdirect" value="1" >
+
 &nbsp;Autoflash after upload
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" class="myButton"  value="safe profile" onclick="SendCommand('save-conf')">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+<input type="checkbox" id="eeprom" name="eeprom" value="1" >
+
+&nbsp;EEPROM
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+</td>
+<td colspan="1" align="left">
+<input type="button" class="myButton"  value="safe profile" onclick="SendCommand('save-conf')">
 
 <br>
 <br>

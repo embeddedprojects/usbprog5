@@ -79,6 +79,47 @@ socket_close($socket);
 return $retur;
 }
 
+function eeprom_read($processor,$speed,$save,$voltage)
+{
+$address =	"127.0.0.1";
+$service_port =	8888;
+
+$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+if ($socket === false) {
+    #echo "socket_create() fehlgeschlagen: Grund: " . socket_strerror(socket_last_error()) . "\n";
+} else {
+    #echo "OK.\n";
+}
+ 
+#echo "Versuche, zu '$address' auf Port '$service_port' zu verbinden ...";
+$result = socket_connect($socket, $address, $service_port);
+if ($result === false) {
+    #echo "socket_connect() fehlgeschlagen.\nGrund: ($result) " . socket_strerror(socket_last_error($socket)) . "\n";
+} else {
+    #echo "OK.\n";
+}
+
+$in ='{"load": null, "fuse-write-low": null, "fuse-read-extended": false, "fuse-write-extended": null, "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": null, "speed": '.$speed.', "processor": "'.$processor.'", "del-conf": null, "flash-read": null, "safe": null, "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": null, "eeprom-write": null, "fuse-read-low": false, "eeprog_ip": null, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": "/var/www/tmp/'.$save.'", "delete": false,"web": true,"rename": null,"dump": null,"voltage": '.$voltage.' }';
+
+
+$retur="";
+#echo "HTTP HEAD request senden ...";
+socket_write($socket, $in, strlen($in));
+#echo "OK.\n";
+
+#echo "Serverantwort lesen:\n\n";
+while ($out = socket_read($socket, 2048)) {
+  $retur=$retur . $out;
+}
+
+#echo "\n\r--Socket schliesen ...";
+socket_close($socket);
+#echo "OK.\n\n";
+#echo $retur;
+return $retur;
+}
+
+
 
 function load($i,$voltage)
 {
@@ -120,7 +161,7 @@ return $retur;
 }
 
 
-function save($processor,$speed,$save,$voltage)
+function save($processor,$speed,$save,$voltage,$eeprom)
 {
 $address =	"127.0.0.1";
 $service_port =	8888;
@@ -139,7 +180,7 @@ if ($result === false) {
     #echo "OK.\n";
 }
 
-$in ='{"load": null, "fuse-write-low": null, "fuse-read-extended": false, "fuse-write-extended": null, "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": null, "speed": '.$speed.', "processor": "'.$processor.'", "del-conf": null, "flash-read": null, "safe": "'.$save.'", "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": null, "eeprom-write": null, "fuse-read-low": false, "eeprog_ip": null, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": null, "delete": false,"web": true,"rename": null,"dump": null,"voltage": '.$voltage.'}';
+$in ='{"load": null, "fuse-write-low": null, "fuse-read-extended": false, "fuse-write-extended": null, "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": null, "speed": '.$speed.', "processor": "'.$processor.'", "del-conf": null, "flash-read": null, "safe": "'.$save.'", "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": null, "eeprom-write": null, "fuse-read-low": false, "eeprog_ip": null, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": null, "delete": false,"web": true,"rename": null,"dump": null,"voltage": '.$voltage.', "eeprom": ' . $eeprom . '}';
 
 
 $retur="";
@@ -284,7 +325,7 @@ return $retur;
 }
 
 
-function upload($processor,$speed,$datei,$voltage)
+function upload($processor,$speed,$datei,$voltage,$eeprom)
 {
 $address =	"127.0.0.1";
 $service_port =	8888;
@@ -306,7 +347,10 @@ if ($result === false) {
 $parts=pathinfo($datei);
 
 
-$in ='{"load": null, "fuse-write-low": null, "fuse-read-extended": false, "fuse-write-extended": null, "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": "'. $datei .'", "speed": ' . $speed . ', "processor": "'.$processor.'", "del-conf": null, "flash-read": null, "safe": "/var/www/tmp/tmp.' . $parts['extension'] . '", "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": null, "eeprom-write": null, "fuse-read-low": false, "eeprog_ip": null, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": null, "delete": false, "web": true,"rename": null,"dump": null,"voltage": '.$voltage.'}';
+
+$in ='{"load": null, "fuse-write-low": null, "fuse-read-extended": false, "fuse-write-extended": null, "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": "'. $datei .'", "speed": ' . $speed . ', "processor": "'.$processor.'", "del-conf": null, "flash-read": null, "safe": "/var/www/tmp/tmp.' . $parts['extension'] . '", "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": null, "eeprom-write": null, "fuse-read-low": false, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": null, "delete": false, "web": true,"rename": null,"dump": null,"voltage": '.$voltage.', "eeprom": ' . $eeprom . '}';
+
+
 
 $retur="";
 #echo "HTTP HEAD request senden ...";

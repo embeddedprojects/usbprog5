@@ -13,11 +13,17 @@ $voltage = $_GET['voltage'];
 $i=$_GET['i'];
 $save=$_GET['save'];
 $pointer=$_GET['pointer'];
-
+$eeprom=$_GET['eeprom'];
 
 
 switch($cmd)
 {
+
+  case "read-eeprom":
+    #echo embeddedprog_read($vendor,$processor,$voltage,$speed,$save);
+	echo eeprom_read($processor,$speed,$save,$voltage);
+	#echo "done";
+  break; 
   case "dump":
     #echo embeddedprog_read($vendor,$processor,$voltage,$speed,$save);
 	echo dump($processor,$save,$speed,$voltage);
@@ -72,11 +78,11 @@ switch($cmd)
   break;
   case "save-conf":
     #echo embeddedprog_save($vendor,$processor,$voltage,$speed,$save);
-    echo save($processor,$speed,$save,$voltage);
+    echo save($processor,$speed,$save,$voltage,$eeprom);
   break;
   case "upload":
     #echo exec_upload($vendor,$processor,$voltage,$speed,$i);
-    echo upload($processor,$speed,$i,$voltage);
+    echo upload($processor,$speed,$i,$voltage,$eeprom);
   break;
   case "port":
     #echo embeddedprog_read($vendor,$processor,$voltage,$speed,$save);

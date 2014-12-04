@@ -299,7 +299,7 @@ def send_file(code , sock):
 	if code['v']>= 2:
 		print "close file"
 	#sock.flush()
-	sock.sendall('/done')
+	sock.sendall('\xa7')
 	#sock.flush()
 	if code['v']>= 2:
 		print "waiting for server reply"
@@ -511,6 +511,7 @@ lisst={
 
 
 try:
+
 		helper=''
 		inn=""
 

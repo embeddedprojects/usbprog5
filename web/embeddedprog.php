@@ -179,10 +179,16 @@ else
 {
 if($_POST["flashdirect"]!="1")
 {
-$return='<script type="text/javascript"> SendCommand("upload","'.$datei['name'].'","1"); </script>';
-} else {
-$return='<script type="text/javascript"> SendCommand("upload","'.$datei['name'].'"); SendCommand("programm","0"); </script>';
-}
+	if($_POST["eeprom"]!="1"){
+		$return='<script type="text/javascript"> SendCommand("upload","'.$datei	['name'].'","1","0"); </script>';
+	} else {
+		$return='<script type="text/javascript"> SendCommand("upload","'.$datei['name'].'","1","1"); </script>';
+}} else {
+	if($_POST["eeprom"]!="1"){
+		$return='<script type="text/javascript"> SendCommand("upload","'.$datei['name'].'","0","0"); SendCommand("programm","0","0"); </script>';
+	} else {
+		$return='<script type="text/javascript"> SendCommand("upload","'.$datei['name'].'","0","1"); SendCommand("programm","0","1"); </script>';
+}}	
 return $return;
 }
 }

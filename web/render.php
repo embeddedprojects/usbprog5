@@ -80,7 +80,7 @@ include("processor.php");
 
 function render_firmware_table()
 {
-
+  $eeprom="";
   $line=" ";
   $lines=file('/var/www/save/eeprog.rc');
   
@@ -91,9 +91,21 @@ function render_firmware_table()
 	$code=json_decode($lines[$i],true);
 	if($code['desc']=='')
 	{
-	$code['desc']=="write flash";
+		if($code['eeprom']==0)
+		{
+		$code['desc']=="write flash";
+		}
+		else
+		{
+		$code['desc']=="write EEPROM";
+		}
 	}
-	
+
+	if($code['eeprom']==1)
+		{
+		$code['flash-write']=$code['eeprom-write'];
+		$eeprom="EEPROM: ";
+		}	
 	if($code['flash-write']=='')
 		{
 		$code['mode']='read-flash';
@@ -103,7 +115,7 @@ function render_firmware_table()
 	$part=pathinfo($code['flash-write']);
     if($row%2)$style="even"; else $style="odd";
 	$datei=$part['basename'];
-	echo '<tr class="'.$style.'"><td onclick="SendCommand(\'desc\',\'' . $i . '\')">' . $code['desc'] . '</td><td>' . $datei . '</td><td>' . $code['processor'] . '</td><td>' . (filesize($code['flash-write'])/1000) . 'kb</td><td style="padding-top: 5px"><img src="icon_del_gr_20x20_004.png" onclick="SendCommand(\'del-conf\', ' . $i . ')"/>&nbsp;<img src="download_icon.png" onclick="window.open(\'download.php?name='. urlencode($datei) .'&path=safe&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png"  onclick="SendCommand(\'programm\', ' . $i . ')"/></td></tr>';
+	echo '<tr class="'.$style.'"><td onclick="SendCommand(\'desc\',\'' . $i . '\')">' . $code['desc'] . '</td><td>' . $eeprom . $datei . '</td><td>' . $code['processor'] . '</td><td>' . (filesize($code['flash-write'])/1000) . 'kb</td><td style="padding-top: 5px"><img src="icon_del_gr_20x20_004.png" onclick="SendCommand(\'del-conf\', ' . $i . ')"/>&nbsp;<img src="download_icon.png" onclick="window.open(\'download.php?name='. urlencode($datei) .'&path=safe&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png"  onclick="SendCommand(\'programm\', ' . $i . ')"/></td></tr>';
     $row++;
   }
 #  <img src="icon_del_gr_20x20_004.png" />
@@ -115,21 +127,28 @@ function render_firmware_table()
 function render_temp()
 {
   $line=" ";
+  $eeprom="";
   $lines=file('/var/www/save/eeprog.rc');
   $code=json_decode($lines[0],true);
 
+	if($code['eeprom']==1)
+		{
+		$code['flash-write']=$code['eeprom-write'];
+		$eeprom="EEPROM: ";
+		}
 	if($code['flash-write']=='')
 		{
 		$code['mode']='read-flash';
 		$code['flash-write']=$code['flash-read'];
 		}
+
 	$part=pathinfo($code['flash-write']);
 	$datei=$part['basename'];
 	if (($part['extension']== null) ||($part['extension'] == '')){
 		$part['extension'] = 'diesefile sollte nicht existieren';
 	}
 
-$line= $line . '<tr><td><b>Temp File</b></td><td><b>' . $datei . '</b></td><td><b>' . $code['processor'] . '</b></td><td><b>' . (filesize('/var/www/tmp/tmp.'. $part['extension'])/1000) . 'kb</b></td><td><img src="icon_del_gr_20x20_004.png" onclick="SendCommand(\'del-conf\', 0)"/>&nbsp;<img src="download_icon.png" onclick="window.open(\'download.php?name=tmp.'. $part['extension'] .'&path=tmp&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png" value="program" onclick="SendCommand(\'programm\', ' . '0' . ')"></td></tr>';
+$line= $line . '<tr><td><b>Temp File</b></td><td><b>'. $eeprom . $datei . '</b></td><td><b>' . $code['processor'] .' </b></td><td><b>' . (filesize('/var/www/tmp/tmp.'. $part['extension'])/1000) . 'kb</b></td><td><img src="icon_del_gr_20x20_004.png" onclick="SendCommand(\'del-conf\', 0)"/>&nbsp;<img src="download_icon.png" onclick="window.open(\'download.php?name=tmp.'. $part['extension'] .'&path=tmp&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png" value="program" onclick="SendCommand(\'programm\', ' . '0' . ')"></td></tr>';
 return $line;
 } 
 
