@@ -6,6 +6,7 @@ import json
 import string
 from collections import defaultdict
 
+count={"arm":0,"avr":0,"arm_name":[],"avr_name":[]}
 code=[]
 vendorlen=5
 namelen=0
@@ -158,6 +159,8 @@ def parseocd():
 def makephp():
 	i=1
 	help=True
+	count_avr=0
+	count_arm=0
 	with open('./processor.php','w') as w:
 	 with open('./avrdude.rc','w') as a:
 	  with open('./openocd.rc','w') as o:
@@ -180,10 +183,21 @@ def makephp():
 
 				if test[i]['program'] == 'AVR':
 					a.write(tempid+'\n')
+					
+					count['avr_name'].append(tempname)
+					count_avr=count_avr+1
+					count['avr']=count_avr
 
 				if test[i]['program'] == 'ARM':
-					
 					o.write(tempid+'\n')
+
+					count['arm_name'].append(tempname)
+					count_arm=count_arm+1
+					count['arm']=count_arm
+					
+
+					
+
 				if len(tempvendor)>2:
 					tempvendor=tempvendor+',&nbsp;'
 				
@@ -192,19 +206,93 @@ def makephp():
 				w.write("'"+unicode(tempname)+"&nbsp;("+unicode(tempvendor)+""+unicode(tempprogram)+")'=>'"+unicode(tempid)+"',")
 				i=i+1
 			except Exception as e: 
-			#	print "error"
+				print "error"
 				
-			#	print e,i
+				print e,i
     				
 				
 				help=False
 				w.write(")\n?>")
+				return count
+
+
+def makehtml(count,spalten):
+	i=0
+	
+	
+
+	#+1 damit kein processor hinten rausfällt
+	avr_pro_spalte=(count['avr']/spalten)+1
+	arm_pro_spalte=(count['arm']/spalten)+1
+
+	aktuelle_spalte=1   	
+		
+			
+	
+	
+	help=True
+	with open('processor_table.html','w')as w:
+		w.write("<h1>AVR</h1>\n<table>\n<tr>\n")
+		#avr	
+		print spalten
+		print count
+		print aktuelle_spalte,spalten
+		while aktuelle_spalte<=spalten:
+			
+		    	w.write('<td>\n<ul>\n')
+
+		    	while (help==True)and(i<(avr_pro_spalte*aktuelle_spalte)):
+			
+				try:	
+					tempname=count['avr_name'][i]
+					w.write("<li>"+tempname+"</li>")
+					i=i+1
 				
+				except Exception as e: 
+					print "error"
+				
+					print e,i
+    				
+				
+					help=False
+		    	w.write('</ul>\n</td>\n')
+		    	
+			help=True
+		    	aktuelle_spalte=aktuelle_spalte+1
+		i=0
+		aktuelle_spalte=1
+		    
+		w.write('</tr></table>\n<h1>ARM</h1>\n<table><tr>')
+		while aktuelle_spalte<=spalten:
+		    	w.write('<td>\n<ul>\n')
+			
+		    	while (help==True)and(i<(arm_pro_spalte*aktuelle_spalte)):
+			
+				try:	
+					tempname=count['arm_name'][i]
+					w.write("<li>"+tempname+"</li>")
+					i=i+1
+				
+				except Exception as e: 
+					print "error"
+				
+					print e,i
+    				
+				
+					help=False
+		    	w.write('</ul>\n</td>\n')
+		    	
+		    	aktuelle_spalte=aktuelle_spalte+1
+		i=0	
+		w.write('</tr></table>')
+		
+
 readfile()
 parseavr()
 parseocd()
 #print code
-makephp()
+cnt=makephp()
+makehtml(cnt,3)
 print ""
 print ""
 print ""

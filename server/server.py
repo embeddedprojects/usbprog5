@@ -672,7 +672,19 @@ def logica(code,connection):
 		code['execute']='/root/openocd-code/src/openocd -f /root/openocd-code/tcl/interface/embeddedprog.cfg -f /root/openocd-code/tcl/target/'+code['processor']+'.cfg'
 		if code['dump']!= None:
 			code['execute']=code['execute']+' -c "init;halt;'+code['dump']+';exit"'
+
+#starts gdb for eclipse debugging
+		if code['eclipse']==True:
+			with open('/var/www/tmp/port','r') as r:
+					gdb=r.readline()
+					gdb.replace('\n','')
+					gdb.replace('\r','')
+					tel=r.readline()
+				subprocess.Popen(['/root/openocd-code/src/openocd','-f','/root/openocd-code/tcl/interface/embeddedprog.cfg','-f','/root/openocd-code/tcl/target/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
+
+#start/stop gdb/telnet
 		if code['gdb']!= None:
+		
 			if code['v']>=2:
 				print "gdb ==",code['gdb'] 
 			
@@ -743,8 +755,11 @@ def logica(code,connection):
 			else:
 				code['execute']=code['execute']+' -c "init;reset halt;program  /var/www/tmp/'+code['name']+" "+ende+';init;resume"'
 		else:
+			#if code['eclipse']==True:
+			#	code['execute']=code['execute']+' -c "init";resume'
+			#else:
 			code['execute']=code['execute']+' -c "init;exit;quit"'
-		#prototype raw input
+#prototype raw input
                 if code['raw']!= None:
 			print "try raw mode"
                         code['execute']="/home/eproo/openocd-0.8.0-rc1/src/openocd -f /home/eproo/openocd-0.8.0-rc1/tcl/interface/ftdi/olimex-arm-usb-ocd.cfg "+code['raw']
@@ -972,14 +987,14 @@ try:
 
 except:
 	pass
-#try:
-if 1==1:
+try:
+#if 1==1:
 	while inn!='kill':
 		
 		print >>sys.stderr, 'waiting for a connection'
 		connection, client_address = sock.accept()
-		#try:
-		if 1==1:	
+		try:
+		#if 1==1:	
 
 		
 			inn = connection.recv(2048)
@@ -1001,8 +1016,8 @@ if 1==1:
 
 
 
-try:
-		try:
+#try:
+		#try:
 			pass
 		except Exception as e: 
 			print "error"

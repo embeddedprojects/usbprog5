@@ -106,6 +106,9 @@ function render_firmware_table()
 		$code['flash-write']=$code['eeprom-write'];
 		$eeprom="EEPROM: ";
 		}	
+	else 	{
+		$eeprom="";	
+		}
 	if($code['flash-write']=='')
 		{
 		$code['mode']='read-flash';

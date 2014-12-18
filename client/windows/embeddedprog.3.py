@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import socket
 import sys
 import json
@@ -8,18 +7,10 @@ import argparse
 import ast
 import subprocess
 import webbrowser
-import signal 
-
-
-#timeout for sock.connect
-def timeout():
-	raise TimeExceededError, "timed out"
 
 #opening and returning socket
 def connect(sa,port,code):
-	signal.signal(signal.SIGALRM, timeout)
 	try:
-		signal.alarm(2)
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		if code['v']>= 2:
 			print 'sock = ',sock
@@ -28,13 +19,12 @@ def connect(sa,port,code):
 		if code['v']>= 1:
 			print  'connecting to %s port %s' % server_address
 		sock.connect(server_address)
-		signal.alarm(0)
 		
 	except: 
 		print "couldnt connect "+ 'to %s port %s' % server_address
-		
-		return 'exit'
-	
+
+		return "/done"
+
 	return sock
 
 #prototype for 2way communication
@@ -111,9 +101,8 @@ def inpt():
         #try:                                
                 parser = argparse.ArgumentParser()
 
-		parser.add_argument("--api", help="enables api: write(flash firmware)/read signature;", action="store_true")
+
 		parser.add_argument("--browser", help="Open The Web Browser of USBprog 5 OpenOCD;", action="store_true")
-		#parser.ass_argument("--eclipse", help="Opens gdb/telnet and stays open;", action="store_true")
                 parser.add_argument("--processor", help="select target processor;")
 		parser.add_argument("--voltage", help="select target voltage (1 for 1V8;3 for 3V3;5 for 5V5)",type=int,default=3)
                 parser.add_argument("--eeprog-ip",  help="select target ip (default via usb 10.0.0.1) ;saved in eeprog.cfg")
@@ -183,9 +172,7 @@ def inpt():
 			"web":None,
 			"voltage":None,
 			"browser":False,
-			"atmel-studio":None,
-			#"eclipse":False
-			"api"=False
+			"atmel-studio":None
                 }
 		#submiting input values into dictionary
 		lis["v"]=args.verbose
@@ -218,7 +205,7 @@ def inpt():
 		lis["voltage"]=args.voltage
 		lis["browser"]=args.browser
 		lis["atmel-studio"]=args.atmel_studio
-		#lis["eclipse"]=args.eclipse
+
 
 		if args.erase==True:
 			lis["delete"]=args.erase
@@ -312,7 +299,7 @@ def send_file(code , sock):
 	if code['v']>= 2:
 		print "close file"
 	#sock.flush()
-	sock.sendall('\xa7')
+	sock.sendall('/done')
 	#sock.flush()
 	if code['v']>= 2:
 		print "waiting for server reply"
@@ -328,13 +315,9 @@ def send_file(code , sock):
 def recieve_file(code,connection):
 	if code['v']>= 1:
 		print "recieve file"
-	if code['help']=='send':
-		statusr=code['help']
-	else:	
-        	statusr=code['help']+connection.recv(16)
+        statusr=connection.recv(16)
 	if code['v']>= 2:
 		print "reply from server= ",statusr
-	
         if statusr== 'send':
 		if code['v']>= 3:
 			print "reply from server == 'send' "
@@ -349,18 +332,16 @@ def recieve_file(code,connection):
 				code['path']=code['path'].replace('/','\\')
                 with open(str(code['path']),'wb') as f:
 			line=connection.recv(8192)
-#  '\xa7' is a special char just for EOF! 
-                        while '\xa7' not in line:
+                        while '/done' not in line:
 				if code['v']>= 3:
-					print "write to file"
+					print "write to file file"
                                 f.write(line.decode('base64'))
                                 f.flush()
 				if code['v']>= 3:
 					print ""
-                                line=connection.recv(8192)
-                        line, ignored ,statusr =line.partition('\xa7')
-			f.write(line.decode('base64'))
-			
+                                line=connection.recv(8192) 
+                        line, ignored ,statusr =line.partition('/')
+			f.write(line.decode('base64'))              
                         connection.sendall('done')
                         return statusr
 
@@ -372,16 +353,31 @@ def recieve_realtime(sock,code):
 	out = ' '
 	failsave= ''
 	part='nothing'
-	while '\xa4' not in out :
+	while ('/done' not in out) and ('/done' not in failsave):
+		failsave=failsave+out
+		if '/done' in failsave :
+			out, ignored, part =out.partition('/done')
 		sys.stdout.write(out)
-		sys.stdout.flush()		
-		out=sock.recv(128)	
-	
-	out, ignored ,status =out.partition('\xa4')
-	
+		sys.stdout.flush()
+		if part == 'nothing':
+			out=sock.recv(128)
+		else:
+	 		out, ignored, part =part.partition('/done')
+			while '}' not in part:
+				part=part+sock.recv(1)
+			#sys.stdout.write(out)
+			#sys.stdout.flush()
+			code=ast.literal_eval(part)
+			
+			failsave=lisst.get(code['mode'])(code,sock)
+			if failsave == '/done':
+				sys.exit()
+			return 
 		
+	out, ignored ,status =out.partition('/')
 	sys.stdout.write(out)
 	sys.stdout.flush()
+	
 	return status
 
 
@@ -451,9 +447,8 @@ def recieve_realtime(sock,code):
 def go(code,sock):
 	if code['v']>= 1:
 		print "go"
-	help=recieve_realtime(sock,code)
-	
-        return help
+	recieve_realtime(sock,code)
+        return " "
 def set_file(code,sock):
 	if code['v']>= 1:
 		print "set_file"
@@ -465,8 +460,8 @@ def set_file_execute(code,sock):
         send_file(code,sock)
 	if code['v']>= 2:
         	print "vor go"
-        help=go(code,sock)
-        return help
+        go(code,sock)
+        return " "
 def set_file_execute_w_only(code,sock):
 	if code['v']>= 1:
         	print "set_file_execute_w_only"
@@ -476,7 +471,7 @@ def get_file(code,sock):
 	if code['v']>= 1:
         	print "get_file"
         recieve_file(code,sock)
-	return "/done"
+	return " "
 def restore_backup(code):
 	if code['v']>= 1:
         	print"restore backup"
@@ -493,7 +488,7 @@ def browser(code,sock):
 	webbrowser.open('http://'+code['eeprog-ip']+'/index.php?software=atmel',new=0,autoraise=True)
 	return "/done"
 
-inn=""
+inn=" "
 
 #get input/saved code
 code=inpt()
@@ -504,8 +499,6 @@ if code['browser'] == True :
 if code['v']>= 1:
 	print "connect port"
 sock=connect(code['eeprog-ip'],code['eeprog-port'],code)
-if sock=='exit':
-	inn='/done'
 #making dictionary for funktion calls per server
 lisst={
 		"go":go,
@@ -527,10 +520,8 @@ lisst={
 
 try:
 
-		helper=''
-		
 
-		
+		code=inpt()
 		if code['v']>= 1:
 			print "send code to server"
 		if code['v']>= 3:
@@ -538,42 +529,24 @@ try:
 			print code
 			print "in json"
 			print json.dumps(code)
-		if inn != '/done':	
-			sock.sendall(json.dumps(code))
+			
+		sock.sendall(json.dumps(code))
 		while "/done" not in inn:
 			
-			
-			if ' ' == inn:
-				inn=''
-			if '}' in inn:
-				code=inn
-				code, added, helper =code.partition('}')
-				code=code+added
-			else:
-				code=inn+sock.recv(8192)
-				if '}' in code:
-					code, added, helper =code.partition('}')
-					code=code+added
-			
-			
-			
-			
-			
+			code=" "
+			code=sock.recv(8192)
 			temp='a'
 			if(('show-all' in code)or("'ocd': ['" in code)or("'avr': ['" in code) ):
 			 while '}' not in temp :
 				temp=sock.recv(8192)
 				code=code+temp
 			code=ast.literal_eval(code)
-			code['help']=helper
 			if code['v']>= 2:
 				print "order== ",code['mode']
 			inn=lisst.get(code['mode'])(code,sock)
+		
 except Exception as ex: 
 	print  'unexpected error'
 	print ex
 finally:
-	try:
 		sock.close()
-	except:
-		pass

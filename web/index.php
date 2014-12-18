@@ -58,6 +58,7 @@ function art(string){
   ocd2 = document.getElementById('ocd2');
   avr3 = document.getElementById('avr_area');
   ocd3 = document.getElementById('ocd_area');
+  eeprom=document.getElementById('eeprom2');
 
     if (string==1) {
 
@@ -67,6 +68,7 @@ function art(string){
         avr2.style.display='';
         ocd3.style.display='none';
         avr3.style.display='';
+	eeprom.style.display='';
       }
     if (string==2) {
 	ocd.style.display='';
@@ -75,6 +77,7 @@ function art(string){
 	avr2.style.display='none';
 	ocd3.style.display='';
 	avr3.style.display='none';
+	eeprom.style.display='none';	
 	}
 
 
@@ -750,8 +753,8 @@ With the delete button you can delete an old entry.
 
 
 <h2>Atmel Studio:</h2>
-Please Select The Processor, Speed, Voltage you are using in this Browser.
-The embeddedprog.py will use those settings for Programming with Atmel Studio.
+<a>Please Select The Processor, Speed, Voltage you are using in this Browser.
+The embeddedprog.py will use those settings for Programming with Atmel Studio.</a>
 
 
 
@@ -760,7 +763,7 @@ The embeddedprog.py will use those settings for Programming with Atmel Studio.
         
 
     <div align="right">
-<div id="helpatmel_studio" style="display:none;border:1px solid gray;padding:.3em;background-color:white;position:absolute;width:100%;height:100%;top:300">
+<div id="helpatmel_studio" style="display:none;border:1px solid gray;padding:.3em;background-color:white;position:absolute;width:80%;height:80%;left:10%;top:10%">
     <div align="right">
         <a style="color:blue"  href="javascript:hide_popup('helpatmel_studio') "><img src="icon_del_gr_20x20_004.png"></a>
     </div>
@@ -769,10 +772,10 @@ The embeddedprog.py will use those settings for Programming with Atmel Studio.
 
 
 <h2>Atmel Studio:</h2>
-Please Select The Processor, Speed, Voltage you are using in this Browser.
+<a>Please Select The Processor, Speed, Voltage you are using in this Browser.
 The embeddedprog.py will use those settings for Programming with Atmel Studio.
 
-<img src="atmel_einstellungen.png">
+<img align="center" style="width=100%;max-width:100%;max-height:100%" src="atmel_einstellungen.png"></a>
 
 
 </div>
@@ -808,7 +811,7 @@ the client is used to communicate --via shell(command line)-- with the embeddedp
 <tr valign="top" style="background:#BBB"><td colspan="5">Upload Firmware: <a style="color:white"  href="javascript:show_popup('helptemp') ">?</a></td></tr>
 <tr valign="top"><td colspan="5" align="">
 <table width="100%" border="0" style="border: 0px solid black">
-<tr><td style="width:15%">Description</td><td style="width:25%">Firmware</td><td style="width:15%">Processor</td><td style="width:10%">Size</td><td style="width:10%">Action</td><td style="width:10%">Flash</td></tr>
+<tr><td style="width:15%">Description*</td><td style="width:25%">Firmware</td><td style="width:15%">Processor</td><td style="width:10%">Size</td><td style="width:10%">Action</td><td style="width:10%">Flash</td></tr>
 <?php
 echo render_temp();
 ?>
@@ -830,11 +833,11 @@ echo render_temp();
 &nbsp;Autoflash after upload
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <br>
-<input type="checkbox" id="eeprom" name="eeprom" value="1" >
+<a id='eeprom2'><input type="checkbox" id="eeprom" name="eeprom" value="1" >
 
 &nbsp;EEPROM
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
+</a>
 </td>
 <td colspan="1" align="left">
 <input type="button" class="myButton"  value="safe profile" onclick="SendCommand('save-conf')">
@@ -850,7 +853,7 @@ echo render_temp();
 <tr valign="top" style="background:#BBB"><td colspan="5">Flash Archive: <a style="color:white"  href="javascript:show_popup('helparch') ">?</a></td></tr>
 <tr valign="top"><td colspan="5" align="">
 <table width="100%" border="0" style="border: 0px solid black">
-<tr><td style="width:15%">Description</td><td style="width:25%">Firmware</td><td style="width:15%">Processor</td><td style="width:10%">Size</td><td style="width:10%">Action</td><td style="width:10%">Flash</td></tr>
+<tr><td style="width:15%">Description*</td><td style="width:25%">Firmware</td><td style="width:15%">Processor</td><td style="width:10%">Size</td><td style="width:10%">Action</td><td style="width:10%">Flash</td></tr>
 <?php
 
 
@@ -860,7 +863,7 @@ echo render_firmware_table();
 
 </table>
 
-
+<i><a>*The description can be changed by clicking on it</a></i>
 
 
 
@@ -904,7 +907,7 @@ echo render_firmware_table();
 
 <table width="100%" border="0" style="border: 0px solid black; display:none"   colspan="5" name="ocd_area" id="ocd_area">
 <tr><td colspan="3" width=51%>Read Signature</td><td colspan="2">python embeddedprog.py --processor "your Processor" --speed 2 </td></tr>
-<tr><td colspan="3">Flash</td><td colspan="2">python embeddedprog.py --processor "your Processor" --flash-write /tmp/yourprog.hex</td></tr>
+<tr><td colspan="3">Flash</td><td colspan="2">python embeddedprog.py --processor "your Processor" --flash-write yourprog.hex</td></tr>
 <tr><td colspan="3">Start openocd</td><td colspan="2">python embeddedprog.py --processor "your Processor" --gdb "start"</td></tr>
 <tr><td colspan="3">Stop openocd</td><td colspan="2">python embeddedprog.py --processor "your Processor" --gdb "stop"</td></tr>
 <tr><td colspan="3">Dump Memory</td><td colspan="2">python embeddedprog.py --processor "your Processor" --dump "mdw addr count"</td></tr>
@@ -918,15 +921,18 @@ echo render_firmware_table();
 <tr ><td colspan="5" >
 
 <table width="100%" border="0" style="border: 0px solid black; display:none"   colspan="5" name="avr_area" id="avr_area">
-<tr><td colspan="3" width=51%>Read Signature</td><td colspan="2">python embeddedprog.py --processor "your Processor" --speed 2 </td></tr>
-<tr><td colspan="3">Flash</td><td colspan="2">python embeddedprog.py --processor "your Processor" --flash-write /tmp/yourprog.hex</td></tr>
-<tr><td>Erase</td><td colspan="4">python embeddedprog.py --processor "your Processor" --delete</td></tr>
-<tr><td>Read Fuse High</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-read-high</td></tr>
-<tr><td>Read Fuse Low</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-read-low</td></tr>
-<tr><td>Read Fuse Extended</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-read-extended</td></tr>
-<tr><td>Write Fuse High</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-write-high "fusebits"</td></tr>
-<tr><td>Write Fuse Low</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-write-low "fusebits"</td></tr>
-<tr><td>Write Fuse Extended</td><td colspan="4">python embeddedprog.py --processor "your Processor" --fuse-write-extended "fusebits"</td></tr>
+<tr><td colspan="3"  width=51%>Read Signature</td><td colspan="2">python embeddedprog.py --processor "your Processor" --speed 2 </td></tr>
+<tr><td colspan="3">Flash write</td><td colspan="2">python embeddedprog.py --processor "your Processor" --flash-write yourprog.hex</td></tr>
+<tr><td colspan="3">Flash read</td><td colspan="2">python embeddedprog.py --processor "your Processor" --flash-read yourprog.hex</td></tr>
+<tr><td colspan="3">EEPROM write</td><td colspan="2">python embeddedprog.py --processor "your Processor" --eeprom-write yourprog.hex</td></tr>
+<tr><td colspan="3">EEPROM read</td><td colspan="2">python embeddedprog.py --processor "your Processor" --eeprom-read yourprog.hex</td></tr>
+<tr><td colspan="3">Erase</td><td colspan="2">python embeddedprog.py --processor "your Processor" --delete</td></tr>
+<tr><td colspan="3">Read Fuse High</td><td colspan="2">python embeddedprog.py --processor "your Processor" --fuse-read-high</td></tr>
+<tr><td colspan="3">Read Fuse Low</td><td colspan="2">python embeddedprog.py --processor "your Processor" --fuse-read-low</td></tr>
+<tr><td colspan="3">Read Fuse Extended</td><td colspan="2">python embeddedprog.py --processor "your Processor" --fuse-read-extended</td></tr>
+<tr><td colspan="3">Write Fuse High</td><td colspan="2">python embeddedprog.py --processor "your Processor" --fuse-write-high "fusebits"</td></tr>
+<tr><td colspan="3">Write Fuse Low</td><td colspan="2">python embeddedprog.py --processor "your Processor" --fuse-write-low "fusebits"</td></tr>
+<tr><td colspan="3">Write Fuse Extended</td><td colspan="2">python embeddedprog.py --processor "your Processor" --fuse-write-extended "fusebits"</td></tr>
 </table>
 </td></tr>
 
@@ -941,7 +947,7 @@ echo render_firmware_table();
 <center><i style="color:#BBB">embeddedprog created by <a href="http://shop.embedded-projects.net" target="_blank" style="color:#bbb;">embedded projects GmbH</a>. Based on GNU/Linux, OpenOCD, avrdude and many other Open Source projects. <a href="http://www.usbprog.org" style="color:#bbb;" target="_blank">Homepage</a></i></center>
 <br>
 <center><i style="color:#BBB">
-USBprog 5.0 OpenOCD, Version <?php 
+USBprog 5.0, Version <?php 
 $i=file('/var/www/tmp/processor');
 $software=$_GET['software'];
 if ($software == 'atmel'){ 
