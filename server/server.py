@@ -348,6 +348,7 @@ def logica(code,connection):
 		os.system('killall openocd')
 
 #oneliners (fuses + delete)
+
 		if code['v']>=2:
 			print "avr dude"
 		lisr=[]
@@ -557,6 +558,7 @@ def logica(code,connection):
 				print "write flash"
 
 
+
                         namefw=code['flash-write']
 	
                         if './'  in namefw:
@@ -675,7 +677,7 @@ def logica(code,connection):
 
 #starts gdb for eclipse debugging
 		if code['eclipse']==True:
-			with open('/var/www/tmp/port','r') as r:
+				with open('/var/www/tmp/port','r') as r:
 					gdb=r.readline()
 					gdb.replace('\n','')
 					gdb.replace('\r','')
