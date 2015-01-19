@@ -185,7 +185,7 @@ def inpt():
 			"browser":False,
 			"atmel-studio":None,
 			#"eclipse":False
-			"api"=False
+			"api":False
                 }
 		#submiting input values into dictionary
 		lis["v"]=args.verbose
