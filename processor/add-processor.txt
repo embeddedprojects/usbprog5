@@ -1,0 +1,19 @@
+#first copy the conf files into the folder
+cp /root/avrdude-6.1/avrdude.conf /root/makeprocessor/
+cp /root/openocd-code/tcl/target/* /root/makeprocessor/tcl/target/
+cp /root/openocd-code/tcl/board/* /root/makeprocessor/tcl/board/
+
+#add changes to avrdude.conf 
+
+#goto /root/makeprocessor/
+cd /root/makeprocessor/
+#make the new conf
+python makeprocessor.py	
+
+#copy the results
+
+cp /root/makeprocessor/avrdude.conf /root/avrdude-6.1/avrdude.conf
+cp /root/makeprocessor/processor.php /var/www
+cp /root/makeprocessor/avrdude.rc /var/www
+cp /root/makeprocessor/openocd.rc /var/www
+

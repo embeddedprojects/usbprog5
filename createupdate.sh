@@ -2,7 +2,8 @@
 mkdir -p /tmp/build/var/www/tmp
 mkdir -p /tmp/build/root/avrdude-6.1
 mkdir -p /tmp/build/root/openocd-code/src
-
+mkdir -p /tmp/build/root/makeprocessor/tcl/target
+mkdir -p /tmp/build/root/makeprocessor/tcl/board
 
 
 cp  update/updatescript.sh /tmp/build/var/www
@@ -10,6 +11,8 @@ cp  update/updatescript.sh /tmp/build/var/www
 cp  processor/processor.php /tmp/build/var/www
 cp  processor/avrdude.rc /tmp/build/var/www
 cp  processor/openocd.rc /tmp/build/var/www
+cp  processor/makeprocessor.py /tmp/build/root/makeprocessor
+cp  processor/add-processor.txt /tmp/build/root
 
 cp  web/server.php /tmp/build/var/www
 cp  web/client.php /tmp/build/var/www
@@ -27,11 +30,14 @@ cp  web/atmel_einstellungen.png /tmp/build/var/www
 
 cp version /tmp/build/root/version
 
+
+
 cp  server/server.py /tmp/build/root/server.py
 
 cp openocd-0.8.0/src/openocd /tmp/build/root/openocd-code/src
 
 cp avrdude-6.1/avrdude /tmp/build/root/avrdude-6.1
+cp processor/avrdude.conf /tmp/build/root/avrdude-6.1
 
 cp client/embeddedprog.py /tmp/build/var/www/tmp
 cp client/windows/installer/setup.exe /tmp/build/var/www/tmp

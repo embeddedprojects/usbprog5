@@ -78,7 +78,7 @@ switch($cmd)
   break;
   case "save-conf":
     #echo embeddedprog_save($vendor,$processor,$voltage,$speed,$save);
-    echo save($processor,$speed,$save,$voltage,$eeprom);
+    echo save($processor,$speed,$save,$voltage,$eeprom,$i);
   break;
   case "upload":
     #echo exec_upload($vendor,$processor,$voltage,$speed,$i);

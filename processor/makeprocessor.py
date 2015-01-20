@@ -84,7 +84,7 @@ def parseavr():
 			i=i+1
 		else: 
 			if temp['name'] != '' and '???' not in temp['name'] :
-				temp['name']=tempname+"("+tempid+")"
+				temp['name']=tempname+"&nbsp;("+tempid+")"
 				code.append(temp)
 				#if len(temp['name'])>namelen:
 				#	namelen=len(temp['name'])
@@ -249,9 +249,9 @@ def makehtml(count,spalten):
 					i=i+1
 				
 				except Exception as e: 
-					print "error"
+					#print "error"
 				
-					print e,i
+					#print e,i
     				
 				
 					help=False
@@ -274,9 +274,9 @@ def makehtml(count,spalten):
 					i=i+1
 				
 				except Exception as e: 
-					print "error"
+					#print "error"
 				
-					print e,i
+					#print e,i
     				
 				
 					help=False

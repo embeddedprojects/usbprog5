@@ -59,6 +59,7 @@ function art(string){
   avr3 = document.getElementById('avr_area');
   ocd3 = document.getElementById('ocd_area');
   eeprom=document.getElementById('eeprom2');
+  fuses=document.getElementById('fuse-button');
 
     if (string==1) {
 
@@ -69,6 +70,7 @@ function art(string){
         ocd3.style.display='none';
         avr3.style.display='';
 	eeprom.style.display='';
+	fuses.style.display='';
       }
     if (string==2) {
 	ocd.style.display='';
@@ -78,6 +80,7 @@ function art(string){
 	ocd3.style.display='';
 	avr3.style.display='none';
 	eeprom.style.display='none';	
+	fuses.style.display='none';
 	}
 
 
@@ -171,6 +174,15 @@ function SendCommand(command, i, help, eproo)
 
 
     if(command=='save-conf'){ 
+
+	if(i==1){
+		var help = i;
+		var i = prompt("Please add Fuses in following form:\n0xFF,0xFF,0xFF\n(low,high,extended)\nif this processor doesnt support an extended fuse write:\n0xFF,0xFF,",""); 
+		if((i==null)||(i=="")||(i==help)){document.getElementById('loading').style.display="none";return;}
+	}
+	else{
+	i="";
+	}
     var save = prompt("Please add a description","");   
     }
 
@@ -841,7 +853,7 @@ echo render_temp();
 </td>
 <td colspan="1" align="left">
 <input type="button" class="myButton"  value="safe profile" onclick="SendCommand('save-conf')">
-
+<input id=fuse-button type="button" class="myButton"  value="safe profile with Fuses" onclick="SendCommand('save-conf',1)">
 <br>
 <br>
 

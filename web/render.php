@@ -82,6 +82,7 @@ function render_firmware_table()
 {
   $eeprom="";
   $line=" ";
+  $fuses='';
   $lines=file('/var/www/save/eeprog.rc');
   
   unset($lines[0]);
@@ -89,6 +90,13 @@ function render_firmware_table()
   foreach($lines as $i=>$value)
   {
 	$code=json_decode($lines[$i],true);
+	if((($code['fuse-write-low']=='undefined')||($code['fuse-write-low']==''))&&(($code['fuse-write-high']=='undefined')||($code['fuse-write-high']==''))&&(($code['fuse-write-extended']=='undefined')||($code['fuse-write-extended']==''))){$fuses='';}else{
+				
+				$fuses="Fuses:".$code['fuse-write-low'].",".$code['fuse-write-high'].",".$code['fuse-write-extended']."; ";
+				$fuses=str_replace("undefined","",$fuses);
+				}
+				
+
 	if($code['desc']=='')
 	{
 		if($code['eeprom']==0)
@@ -118,7 +126,7 @@ function render_firmware_table()
 	$part=pathinfo($code['flash-write']);
     if($row%2)$style="even"; else $style="odd";
 	$datei=$part['basename'];
-	echo '<tr class="'.$style.'"><td onclick="SendCommand(\'desc\',\'' . $i . '\')">' . $code['desc'] . '</td><td>' . $eeprom . $datei . '</td><td>' . $code['processor'] . '</td><td>' . (filesize($code['flash-write'])/1000) . 'kb</td><td style="padding-top: 5px"><img src="icon_del_gr_20x20_004.png" onclick="SendCommand(\'del-conf\', ' . $i . ')"/>&nbsp;<img src="download_icon.png" onclick="window.open(\'download.php?name='. urlencode($datei) .'&path=safe&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png"  onclick="SendCommand(\'programm\', ' . $i . ')"/></td></tr>';
+	echo '<tr class="'.$style.'"><td onclick="SendCommand(\'desc\',\'' . $i . '\')">' . $code['desc'] . '</td><td>' . $eeprom . $fuses . $datei . '</td><td>' . $code['processor'] . '</td><td>' . (filesize($code['flash-write'])/1000) . 'kb</td><td style="padding-top: 5px"><img src="icon_del_gr_20x20_004.png" onclick="SendCommand(\'del-conf\', ' . $i . ')"/>&nbsp;<img src="download_icon.png" onclick="window.open(\'download.php?name='. urlencode($datei) .'&path=safe&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png"  onclick="SendCommand(\'programm\', ' . $i . ')"/></td></tr>';
     $row++;
   }
 #  <img src="icon_del_gr_20x20_004.png" />

@@ -161,8 +161,10 @@ return $retur;
 }
 
 
-function save($processor,$speed,$save,$voltage,$eeprom)
+function save($processor,$speed,$save,$voltage,$eeprom,$i)
 {
+
+$fuses=explode(",",$i);
 $address =	"127.0.0.1";
 $service_port =	8888;
 $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -179,9 +181,17 @@ if ($result === false) {
 } else {
     #echo "OK.\n";
 }
-
+if(($fuses[0]=='')||($fuses[0]=='-')||($fuses[0]==' ')||($fuses[0]=='no')||($fuses[0]=='none')||($fuses[0]=='null' )) {
 $in ='{"load": null, "fuse-write-low": null, "fuse-read-extended": false, "fuse-write-extended": null, "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": null, "speed": '.$speed.', "processor": "'.$processor.'", "del-conf": null, "flash-read": null, "safe": "'.$save.'", "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": null, "eeprom-write": null, "fuse-read-low": false, "eeprog_ip": null, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": null, "delete": false,"web": true,"rename": null,"dump": null,"voltage": '.$voltage.', "eeprom": ' . $eeprom . '}';
-
+}else{
+if(($fuses[1]=='')||($fuses[1]=='-')||($fuses[1]==' ')||($fuses[1]=='no')||($fuses[1]=='none')||($fuses[1]=='null' )) {
+$in ='{"load": null, "fuse-write-low": "'.$fuses[0].'", "fuse-read-extended": false, "fuse-write-extended": null, "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": null, "speed": '.$speed.', "processor": "'.$processor.'", "del-conf": null, "flash-read": null, "safe": "'.$save.'", "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": null, "eeprom-write": null, "fuse-read-low": false, "eeprog_ip": null, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": null, "delete": false,"web": true,"rename": null,"dump": null,"voltage": '.$voltage.', "eeprom": ' . $eeprom . '}';
+}else{
+if(($fuses[2]=='')||($fuses[2]=='-')||($fuses[2]==' ')||($fuses[2]=='no')||($fuses[2]=='none')||($fuses[2]=='null' )) {
+$in ='{"load": null, "fuse-write-low": "'.$fuses[0].'", "fuse-read-extended": false, "fuse-write-extended": null, "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": null, "speed": '.$speed.', "processor": "'.$processor.'", "del-conf": null, "flash-read": null, "safe": "'.$save.'", "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": "'.$fuses[1].'", "eeprom-write": null, "fuse-read-low": false, "eeprog_ip": null, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": null, "delete": false,"web": true,"rename": null,"dump": null,"voltage": '.$voltage.', "eeprom": ' . $eeprom . '}';
+}else{
+$in ='{"load": null, "fuse-write-low": "'.$fuses[0].'", "fuse-read-extended": false, "fuse-write-extended": "'.$fuses[2].'", "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": null, "speed": '.$speed.', "processor": "'.$processor.'", "del-conf": null, "flash-read": null, "safe": "'.$save.'", "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": "'.$fuses[1].'", "eeprom-write": null, "fuse-read-low": false, "eeprog_ip": null, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": null, "delete": false,"web": true,"rename": null,"dump": null,"voltage": '.$voltage.', "eeprom": ' . $eeprom . '}';
+}}}
 
 $retur="";
 #echo "HTTP HEAD request senden ...";

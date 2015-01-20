@@ -113,7 +113,7 @@ def inpt():
 
 		parser.add_argument("--api", help="enables api: write(flash firmware)/read signature;", action="store_true")
 		parser.add_argument("--browser", help="Open The Web Browser of USBprog 5 OpenOCD;", action="store_true")
-		#parser.ass_argument("--eclipse", help="Opens gdb/telnet and stays open;", action="store_true")
+		#parser.add_argument("--eclipse", help="Opens gdb/telnet and stays open;", action="store_true")
                 parser.add_argument("--processor", help="select target processor;")
 		parser.add_argument("--voltage", help="select target voltage (1 for 1V8;3 for 3V3;5 for 5V5)",type=int,default=3)
                 parser.add_argument("--eeprog-ip",  help="select target ip (default via usb 10.0.0.1) ;saved in eeprog.cfg")
@@ -185,7 +185,7 @@ def inpt():
 			"browser":False,
 			"atmel-studio":None,
 			#"eclipse":False
-			"api"=False
+			"api":False
                 }
 		#submiting input values into dictionary
 		lis["v"]=args.verbose
