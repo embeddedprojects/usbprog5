@@ -228,10 +228,10 @@ def processor(code,connection):
 	if code['v']>=1:
 		print "choose mode via processor"
 	with open('/var/www/openocd.rc','r') as f:
-		print "render arm"
+		print "render avr"
 		processoropenocd=f.read().splitlines()
 	with open('/var/www/avrdude.rc','r') as f:
-		print "render avr"
+		print "render ocd"
 		processoravr=f.read().splitlines()
 	if code['show-all'] or code['processor']== None:
 		if code['processor']== None:
@@ -348,6 +348,7 @@ def logica(code,connection):
 		os.system('killall openocd')
 
 #oneliners (fuses + delete)
+
 		if code['v']>=2:
 			print "avr dude"
 		lisr=[]
@@ -374,7 +375,7 @@ def logica(code,connection):
 
 
 
-		code['execute']="/root/avrdude-6.1/avrdude -p "+code['processor']+" -c usbprog5 -i "+code['speed']+" -C /root/avrdude-6.1/avrdude.conf"
+		code['execute']="/root/avrdude-6.1/avrdude -p "+code['processor']+" -c usbprog5 -i "+code['speed']
 
 
 		if code['v']>=2:
@@ -568,6 +569,7 @@ def logica(code,connection):
 				print "write flash"
 
 
+
                         namefw=code['flash-write']
 	
                         if './'  in namefw:
@@ -686,12 +688,13 @@ def logica(code,connection):
 
 #starts gdb for eclipse debugging
 		#if code['eclipse']==True:
-		#	with open('/var/www/tmp/port','r') as r:
-		#			gdb=r.readline()
-		#			gdb.replace('\n','')
-		#			gdb.replace('\r','')
-		#			tel=r.readline()
-		#	subprocess.Popen(['/root/openocd-code/src/openocd','-f','/root/openocd-code/tcl/interface/embeddedprog.cfg','-f','/root/openocd-code/tcl/target/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
+		if code['eclipse']==True:
+			with open('/var/www/tmp/port','r') as r:
+					gdb=r.readline()
+					gdb.replace('\n','')
+					gdb.replace('\r','')
+					tel=r.readline()
+				subprocess.Popen(['/root/openocd-code/src/openocd','-f','/root/openocd-code/tcl/interface/embeddedprog.cfg','-f','/root/openocd-code/tcl/target/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
 
 #start/stop gdb/telnet
 		if code['gdb']!= None:
