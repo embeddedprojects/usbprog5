@@ -127,11 +127,14 @@ def inpt():
                 parser.add_argument("--fuse-read-high", help="read fuse_high ",action="store_true")
                 parser.add_argument("--fuse-read-extended", help="read fuse_extended ",action="store_true")
 		#parser.add_argument("--fuse-read-all", help="read fuses in following order: low, high, extended ",action="store_true")
+		parser.add_argument("--lockbits-read", help="read lockbits ", action="store_true")
                 parser.add_argument("--flash-write", help="write flash , needs complete path to file")
                 parser.add_argument("--eeprom-write",  help="write eeprom , needs complete path to file")
                 parser.add_argument("--fuse-write-low",  help="write fuse_low ")
                 parser.add_argument("--fuse-write-high",  help="write fuse_high ")
                 parser.add_argument("--fuse-write-extended",  help="write fuse_extended ")
+                parser.add_argument("--lockbits-write", help="write lockbits ")
+                parser.add_argument("--lockbits-write-erase", help="write lockbits (erase the device) ")
                 parser.add_argument("--show-all", help="shows all processors",action="store_true")
                 parser.add_argument("--raw",  help='not implemented')
 		parser.add_argument("--mode",help="to change mode (openocd,avrdude), it will set itself via the chosen processor")
@@ -164,11 +167,14 @@ def inpt():
                         "fuse-read-high":None,
                         "fuse-read-extended":None,
 			#"fuse-read-all":None,
+			"lockbits-read":None,
                         "flash-write":None,
                         "eeprom-write":None,
                         "fuse-write-low":None,
                         "fuse-write-high":None,
                         "fuse-write-extended":None,
+                        "lockibts-write":None,
+                        "lockibts-write-erase":None,
                         "show-all":None,
                         "raw":None,
 			"mode":None,
@@ -200,11 +206,14 @@ def inpt():
                 lis["fuse-read-high"]=args.fuse_read_high
                 lis["fuse-read-extended"]=args.fuse_read_extended
 		#lis["fuse-read-all"]=args.fuse_read_all
+		lis["lockbits-read"]=args.lockbits_read
                 lis["flash-write"]=args.flash_write
                 lis["eeprom-write"]=args.eeprom_write
                 lis["fuse-write-low"]=args.fuse_write_low
                 lis["fuse-write-high"]=args.fuse_write_high
                 lis["fuse-write-extended"]=args.fuse_write_extended
+                lis["lockbits-write"]=args.lockbits_write
+                lis["lockbits-write-erase"]=args.lockbits_write_erase
                 lis["show-all"]=args.show_all
                 lis["raw"]=args.raw
 		lis["mode"]=args.mode

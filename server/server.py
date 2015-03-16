@@ -348,6 +348,7 @@ def logica(code,connection):
 		os.system('killall openocd')
 
 #oneliners (fuses + delete)
+
 		if code['v']>=2:
 			print "avr dude"
 		lisr=[]
@@ -401,6 +402,12 @@ def logica(code,connection):
 				print code['execute']
 			if code['v']>=2:
 				print code['execute']
+		if code['lockbits-read']:
+			if code['v']>=1:
+				print "read lockbits"
+			code['execute']=code['execute']+" -U lock:r:-:h"
+			if code['v']>=2:
+				print code['execute']		
 
 
 
@@ -422,7 +429,18 @@ def logica(code,connection):
 			code['execute']=code['execute']+" -U efuse:w:"+code['fuse-write-extended']+":m"
                 	if code['v']>=2:
 				print code['execute']
-
+		if code['lockbits-write']!= None:
+			if code['v']>=1:
+				print "write lockbits"
+			code['execute']=code['execute']+" -U lock:w:"+code['lockbits-write']+":m"
+                	if code['v']>=2:
+				print code['execute']
+		if code['lockbits-write-erase']!= None:
+			if code['v']>=1:
+				print "write lockbits (Erasing the device)"
+			code['execute']=code['execute']+" -e -U lock:w:"+code['lockbits-write-erase']+":m"
+                	if code['v']>=2:
+				print code['execute']
  
 		if code['v']>=2:
 			print "nach fuse"
@@ -557,6 +575,7 @@ def logica(code,connection):
 				print "write flash"
 
 
+
                         namefw=code['flash-write']
 	
                         if './'  in namefw:
@@ -680,8 +699,8 @@ def logica(code,connection):
 		#			gdb.replace('\n','')
 		#			gdb.replace('\r','')
 		#			tel=r.readline()
-		#	subprocess.Popen(['/root/openocd-code/src/openocd','-f','/root/openocd-code/tcl/interface/embeddedprog.cfg','-f','/root/openocd-code/tcl/target/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
 
+		#	subprocess.Popen(['/root/openocd-code/src/openocd','-f','/root/openocd-code/tcl/interface/embeddedprog.cfg','-f','/root/openocd-code/tcl/target/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
 #start/stop gdb/telnet
 		if code['gdb']!= None:
 		
