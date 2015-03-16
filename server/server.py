@@ -401,6 +401,12 @@ def logica(code,connection):
 				print code['execute']
 			if code['v']>=2:
 				print code['execute']
+		if code['lockbits-read']:
+			if code['v']>=1:
+				print "read lockbits"
+			code['execute']=code['execute']+" -U lock:r:-:h"
+			if code['v']>=2:
+				print code['execute']		
 
 
 
@@ -422,7 +428,12 @@ def logica(code,connection):
 			code['execute']=code['execute']+" -U efuse:w:"+code['fuse-write-extended']+":m"
                 	if code['v']>=2:
 				print code['execute']
-
+		if code['lockbits-write']!= None:
+			if code['v']>=1:
+				print "write lockbits"
+			code['execute']=code['execute']+" -U lock:w:"+code['lockbits-write']+":m"
+                	if code['v']>=2:
+				print code['execute']
  
 		if code['v']>=2:
 			print "nach fuse"

@@ -78,6 +78,9 @@ eeprog --fuse-write-low 0x12
 eeprog --fuse-write-high 0x22
 eeprog --fuse-write-extended 0x22 // optional immer fuer alle fuse befehle
 
+eeprog --lockbits-read
+eeprog --lockbits-write
+
 GDB starten:
 ===========================
 
