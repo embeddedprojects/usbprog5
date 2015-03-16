@@ -80,6 +80,7 @@ eeprog --fuse-write-extended 0x22 // optional immer fuer alle fuse befehle
 
 eeprog --lockbits-read
 eeprog --lockbits-write
+eeprog --lockbits-write-erase
 
 GDB starten:
 ===========================

@@ -435,6 +435,12 @@ def logica(code,connection):
 			code['execute']=code['execute']+" -U lock:w:"+code['lockbits-write']+":m"
                 	if code['v']>=2:
 				print code['execute']
+		if code['lockbits-write-erase']!= None:
+			if code['v']>=1:
+				print "write lockbits (Erasing the device)"
+			code['execute']=code['execute']+" -e -U lock:w:"+code['lockbits-write-erase']+":m"
+                	if code['v']>=2:
+				print code['execute']
  
 		if code['v']>=2:
 			print "nach fuse"
