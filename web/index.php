@@ -945,6 +945,9 @@ echo render_firmware_table();
 <tr><td colspan="3">Write Fuse High</td><td colspan="2">python embeddedprog.py --processor "your Processor" --fuse-write-high "fusebits"</td></tr>
 <tr><td colspan="3">Write Fuse Low</td><td colspan="2">python embeddedprog.py --processor "your Processor" --fuse-write-low "fusebits"</td></tr>
 <tr><td colspan="3">Write Fuse Extended</td><td colspan="2">python embeddedprog.py --processor "your Processor" --fuse-write-extended "fusebits"</td></tr>
+<tr><td colspan="3">Read Lockbits</td><td colspan="2">python embeddedprog.py --processor "your Processor" --lockbits-read "lockbits"</td></tr>
+<tr><td colspan="3">Write Lockbits</td><td colspan="2">python embeddedprog.py --processor "your Processor" --lockbits-write "lockbits"</td></tr>
+<tr><td colspan="3">Write Lockbits Erase</td><td colspan="2">python embeddedprog.py --processor "your Processor" --lockbits-write-erase "lockbits"</td></tr>
 </table>
 </td></tr>
 

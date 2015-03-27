@@ -11,6 +11,8 @@ import threading
 import signal
 import pwd, os
 
+template_json='{"load": null, "rename": null, "fuse-write-low": null, "fuse-read-high": false, "show-all": false, "dump": null, "fuse-read-extended": false, "signature": false, "fuse-write-extended": null, "flash-read": null, "raw": null, "gdb": null, "api": false, "voltage": 3, "eeprog_port": null, "lockbits-write": null, "browser": false, "lockbits-read": false, "speed": 2, "eeprog-port": 8888, "fuse-write-high": null, "web": null, "safe": null, "eeprom-write": null, "eeprom-read": null, "flash-write": null, "fuse-read-low": false, "atmel-studio": null, "eeprog_ip": null, "eeprog-ip": "10.0.0.1", "del-conf": null, "mode": null, "v": 3, "lockbits-write-erase": null, "desc": null, "processor": null, "delete": false}'
+
 
 
 
@@ -187,7 +189,8 @@ def get_file(code,connection):
 #decodes json code
 def decodejson(content):
         print "decode"
-        decoded=json.loads(str(content))
+	decoded=json.loads(template_json)
+        decoded.update(json.loads(str(content)))
 	if decoded['v']>2:
 		print decoded
         return decoded
@@ -402,7 +405,12 @@ def logica(code,connection):
 			if code['v']>=2:
 				print code['execute']
 
-
+		if code['lockbits-read']:
+			if code['v']>=1:
+				print "read lockbits"
+			code['execute']=code['execute']+" -U lock:r:-:h"
+			if code['v']>=2:
+				print code['execute'] 
 
 		if code['fuse-write-low']!= None:
 			if code['v']>=1:
@@ -421,6 +429,18 @@ def logica(code,connection):
 				print "write fuse-extended"
 			code['execute']=code['execute']+" -U efuse:w:"+code['fuse-write-extended']+":m"
                 	if code['v']>=2:
+				print code['execute']
+		if code['lockbits-write']!= None:
+			if code['v']>=1:
+				print "write lockbits"
+			code['execute']=code['execute']+" -U lock:w:"+code['lockbits-write']+":m"
+			if code['v']>=2:
+				print code['execute']
+		if code['lockbits-write-erase']!= None:
+			if code['v']>=1:
+				print "write lockbits (Erasing the device)"
+			code['execute']=code['execute']+" -e -U lock:w:"+code['lockbits-write-erase']+":m"
+			if code['v']>=2:
 				print code['execute']
 
  
@@ -788,7 +808,7 @@ def conf (code):
                                                
 		except:
                             pass
-		codeneu=json.loads(new)
+		codeneu=decodejson(new)
 		codeneu['desc']=code['rename']
 		i=0
 		with open("/var/www/save/eeprog.rc",'w') as w:
@@ -850,7 +870,7 @@ def conf (code):
                         with open("/var/www/save/eeprog.rc",'r') as r:
                                 i=0                                
                                 line=r.readline()
-                        safe=json.loads(line)
+                        safe=decodejson(line)
 			if safe['eeprom']==1:
 				code['eeprom']=1
 				safe['backflash']=safe['eeprom-write']
@@ -899,7 +919,7 @@ def conf (code):
 		i=0
 		for line in lines:
 			if ((code["del-conf"] == 0)and(i<1)):
-				f.write('{"load": null, "fuse-write-low": null, "fuse-read-extended": false, "fuse-write-extended": null, "signature": false, "raw": null, "gdb": null, "eeprog_port": null, "flash-write": null, "speed": 2, "processor": null, "del-conf": null, "flash-read": null, "safe": null, "show-all": false, "fuse-read-high": false, "eeprog-port": 8888, "desc": null, "fuse-write-high": null, "eeprom-write": null, "fuse-read-low": false, "eeprog_ip": null, "eeprog-ip": "127.0.0.1", "mode": null, "v": 0, "eeprom-read": null, "delete": false, "web": true,"rename": null,"dump": null,"voltage": 3}\n')
+				f.write(json_template+'\n')
 			else:	
 				if (i)!=(code["del-conf"]):
 					f.write(line)
@@ -935,7 +955,8 @@ def conf (code):
 						print i,line
 			except:
 				pass
-			codeneu=json.loads(line)
+			
+			codeneu=decodejson(line)
 			
 			if code['load']==0:
 				if code['v']>=2:
