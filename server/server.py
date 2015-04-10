@@ -11,7 +11,7 @@ import threading
 import signal
 import pwd, os
 
-template_json='{"load": null, "rename": null, "fuse-write-low": null, "fuse-read-high": false, "show-all": false, "dump": null, "fuse-read-extended": false, "signature": false, "fuse-write-extended": null, "flash-read": null, "raw": null, "gdb": null, "api": false, "voltage": 3, "eeprog_port": null, "lockbits-write": null, "browser": false, "lockbits-read": false, "speed": 2, "eeprog-port": 8888, "fuse-write-high": null, "web": null, "safe": null, "eeprom-write": null, "eeprom-read": null, "flash-write": null, "fuse-read-low": false, "atmel-studio": null, "eeprog_ip": null, "eeprog-ip": "10.0.0.1", "del-conf": null, "mode": null, "v": 3, "lockbits-write-erase": null, "desc": null, "processor": null, "delete": false}'
+template_json='{"load": null, "rename": null, "fuse-write-low": null, "fuse-read-high": false, "show-all": false, "dump": null, "fuse-read-extended": false, "signature": false, "fuse-write-extended": null, "flash-read": null, "raw": null, "gdb": null, "api": false, "voltage": 3, "eeprog_port": null, "lockbits-write": null, "browser": false, "lockbits-read": false, "speed": 2, "eeprog-port": 8888, "fuse-write-high": null, "web": null, "safe": null, "eeprom-write": null, "eeprom-read": null, "flash-write": null, "fuse-read-low": false, "atmel-studio": null, "eeprog_ip": null, "eeprog-ip": "10.0.0.1", "del-conf": null, "mode": null, "v": 0, "lockbits-write-erase": null, "desc": null, "processor": null, "delete": false}'
 
 
 
@@ -689,7 +689,15 @@ def logica(code,connection):
 		if code['v']>=1:
 			print "openocd"
 
-		code['execute']='/root/openocd-code/src/openocd -f /root/openocd-code/tcl/interface/embeddedprog.cfg -f /root/openocd-code/tcl/target/'+code['processor']+'.cfg'
+		#Board links
+		if os.path.isfile( '/root/openocd-code/tcl/target/'+code['processor']+'.cfg') == True:
+			path_ocd='target'
+		else:
+			path_ocd='board'
+
+
+
+		code['execute']='/root/openocd-code/src/openocd -f /root/openocd-code/tcl/interface/embeddedprog.cfg -f /root/openocd-code/tcl/'+path_ocd+'/'+code['processor']+'.cfg'
 		if code['dump']!= None:
 			code['execute']=code['execute']+' -c "init;halt;'+code['dump']+';exit"'
 
@@ -792,6 +800,17 @@ def logica(code,connection):
 
 
 def conf (code):
+
+	#extra for corrupt save file
+	f=open("/var/www/save/eeprog.rc","r")
+	lines=f.readlines()
+	f.close
+	if lines==[] or lines==None:
+		f=open("/var/www/save/eeprog.rc","w")
+		f.write(template_json+'\n')
+		f.close
+
+
 	if code['v']>=1:
 		print "conf"
 	if(code['rename']!=None):
@@ -919,7 +938,7 @@ def conf (code):
 		i=0
 		for line in lines:
 			if ((code["del-conf"] == 0)and(i<1)):
-				f.write(json_template+'\n')
+				f.write(template_json+'\n')
 			else:	
 				if (i)!=(code["del-conf"]):
 					f.write(line)

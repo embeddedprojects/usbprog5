@@ -1,0 +1,35 @@
+Status:
+
+Signature: OK
+
+
+------------------------------------
+
+read signature:
+
+connect port
+connecting to 10.0.0.1 port 8888
+send code to server
+go
+recieve output in 'realtime'
+ Open On-Chip Debugger 0.8.0 (2014-10-24-11:13)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.sourceforge.net/doc/doxygen/bugs.html
+Info : only one transport option; autoselect 'jtag'
+adapter speed: 100 kHz
+init_targets
+Warning - assuming default core clock 12MHz! Flashing may fail if actual core clock is different.
+trst_and_srst separate srst_gates_jtag trst_push_pull srst_open_drain connect_deassert_srst
+adapter_nsrst_delay: 100
+jtag_ntrst_delay: 100
+adapter speed: 1500 kHz
+Info : clock speed 1500 kHz
+Info : JTAG tap: lpc2103.cpu tap/device found: 0x4f1f0f0f (mfg: 0x787, part: 0xf1f0, ver: 0x4)
+Info : Embedded ICE version 4
+Info : lpc2103.cpu: hardware has 2 breakpoint/watchpoint units
+in procedure 'exit'
+
+
+
+
