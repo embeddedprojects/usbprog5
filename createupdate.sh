@@ -29,6 +29,7 @@ cp  web/jquery.flexselect.js /tmp/build/var/www
 cp  web/liquidmetal.js /tmp/build/var/www
 cp  web/flexselect.css /tmp/build/var/www
 cp  web/download_icon.png /tmp/build/var/www
+cp  web/icon_help.png /tmp/build/var/www
 cp  web/update.php /tmp/build/var/www
 cp  web/atmel_einstellungen.png /tmp/build/var/www
 

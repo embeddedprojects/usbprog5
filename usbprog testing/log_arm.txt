@@ -78,7 +78,7 @@ Info : Padding image section 0 with 28 bytes
 Info : Padding image section 1 with 28 bytes
 Warn : Verification will fail since checksum in image (0xffffffff) to be written to flash is different from calculated vector checksum (0x1a600fee).
 Warn : To remove this warning modify build tools on developer PC to inject correct LPC vector checksum.
-wrote 4096 bytes from file /tmp/LPC_H2103_BLINKING_LED.hex in 0.895227s (4.468 KiB/s)
+wrote 4096 bytes from file /tmp/LPC_H2103_BLINKING_LED.hex in 0.884447s (4.523 KiB/s)
 ** Programming Finished **
 ** Resetting Target **
 Info : JTAG tap: lpc2103.cpu tap/device found: 0x4f1f0f0f (mfg: 0x787, part: 0xf1f0, ver: 0x4)

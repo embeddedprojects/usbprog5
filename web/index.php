@@ -343,6 +343,29 @@ function UpdateValues(index)
 .even { background-color:white;}
 .odd{ background-color:lightgrey;}
 
+.part {
+	border: 5px solid white; 
+	height:100%;
+	width:100%;
+
+
+	background-color:#ECECEC;
+	
+
+}
+
+table.part tr td:first-child {
+padding-left: 10px;
+}
+
+.headline {
+	font-size:17px;
+	font-family: Arial,Helvetica,sans-serif;
+	color:#656565;
+	font-weight:700;
+	text-transform:uppercase;
+}
+
 .myButton {
     -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
     -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
@@ -391,7 +414,7 @@ function UpdateValues(index)
 
 <form name="myForm" id="myForm"  method="post" enctype="multipart/form-data">
 
-<table width="1000" border="0" cellpadding="5" style="border-right: 1px solid #BBB; border-left: 1px solid #BBB;border-bottom: 1px solid #BBB; background-color:#f5f5f5;" cellspacing="0"  align="center">
+<table width="1000" border="0" cellpadding="5" style="border-right: 1px solid #BBB; border-left: 1px solid #BBB;border-bottom: 1px solid #BBB; background-color:white" cellspacing="0"  align="center">
 <tr><td colspan="5" style="padding:10px; background: url('bg_header.jpg') repeat-y scroll left top rgb(67, 187, 209);"><img src="ep_logo_web.png" height="50"></td></tr>
 
 <tr style="background:black; color:white;">
@@ -476,21 +499,21 @@ function UpdateValues(index)
 
 
 
-
-
+<tr valign="center" ><td colspan="5">
+<table class=part valign="center">
 
 <tr valign="center" 
 <?php 
 $avr=file('/var/www/avrdude.rc');        
 $i=file('/var/www/tmp/processor');
 if(in_array ($i[3],$avr)){
-echo  "style=\"background:#BBB;\"";
+echo  "";
 }
 else{
-echo "style=\"background:#BBB;display:none\"";
+echo "style=\"display:none\"";
 }
  ?>
- id="avr2"><td colspan="5">Commands: <a style="color:white"  href="javascript:show_popup('helpcommands') ">?</a></td></tr>
+ id="avr2" colspan="5"><td colspan="5"><a class="headline">Commands: </a><a style="color:white"  href="javascript:show_popup('helpcommands') "><img src="icon_help.png"></a></td></tr>
 <tr id="avr" 
 <?php 
 $avr=file('/var/www/avrdude.rc');        
@@ -560,14 +583,14 @@ echo "style=\"display:none\"";
 $ocd=file('/var/www/openocd.rc');        
 $i=file('/var/www/tmp/processor');
 if(in_array ($i[3],$ocd)){
-echo  "style=\"background:#BBB;\"";
+echo  "";
 }
 else{
-echo "style=\"background:#BBB;display:none\"";
+echo "style=\"display:none\"";
 }
  ?>
 
- id="ocd2"><td colspan="3">Commands: <a style="color:white"  href="javascript:show_popup('helpocd') ">?</a></td><td colspan="3"></td></tr>
+ id="ocd2"><td colspan="3"><a class="headline">Commands: </a><a style="color:white"  href="javascript:show_popup('helpocd') "><img src="icon_help.png"></a></td><td colspan="3"></td></tr>
 <tr id="ocd" 
 
 <?php 
@@ -585,9 +608,9 @@ echo "style=\"display:none\"";
 <br>
 
 <input type="button" class="myButton"  value="Read Signature" onclick="SendCommand('readsignature')">
-&nbsp;&nbsp;&nbsp;
+&nbsp;
 <input type="button" class="myButton" value="Dump Memory" onclick="SendCommand('dump')">
-&nbsp;&nbsp;&nbsp;
+&nbsp;
 <input type="button"  onclick="SendCommand('start-gdb')" value="Start openocd"
 <?php
  //$test=render_processors();
@@ -599,12 +622,12 @@ else{
 echo 'class="myButton"';
 }
 ?>>
-&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
 <input type="button" class="myButton" value="Stop openocd"  onclick="SendCommand('stop-gdb' )">
-&nbsp;&nbsp;&nbsp;
+&nbsp
 GDB-Port:&nbsp;<b onclick="SendCommand('port','1' )"> <?php echo render_gdb() ?> </b>&nbsp;
 <input type="button" class="myButton" value="change"  onclick="SendCommand('port','1' )">
-&nbsp;&nbsp;&nbsp;
+&nbsp;
 Telnet-Port:&nbsp;<b onclick="SendCommand('port','-1' )">  <?php echo render_tel() ?> </b>&nbsp;
 <input type="button" class="myButton" value="change"  onclick="SendCommand('port','-1' )">
 
@@ -613,7 +636,8 @@ Telnet-Port:&nbsp;<b onclick="SendCommand('port','-1' )">  <?php echo render_tel
 </td>
 
 </tr>
-
+</td></tr>
+</table>
 
 
 <img src="loading.gif" id="loading"  style="display:none;position:absolute;width:40px;height:40px;left:48%;top:42%" >
@@ -820,26 +844,38 @@ the client is used to communicate --via shell(command line)-- with the embeddedp
 
 
 
-<tr valign="top" style="background:#BBB"><td colspan="5">Upload Firmware: <a style="color:white"  href="javascript:show_popup('helptemp') ">?</a></td></tr>
-<tr valign="top"><td colspan="5" align="">
-<table width="100%" border="0" style="border: 0px solid black">
-<tr><td style="width:15%">Description*</td><td style="width:25%">Firmware</td><td style="width:15%">Processor</td><td style="width:10%">Size</td><td style="width:10%">Action</td><td style="width:10%">Flash</td></tr>
+
+<tr valign="center">
+	<td colspan="5">
+		<table class="part" valign="center">
+			<tr valign="top" >
+				<td colspan="5">
+					<a class="headline">Upload Firmware: </a>
+					<a style="color:white"  href="javascript:show_popup('helptemp') "><img src="icon_help.png"></a>
+				</td>
+			</tr>
+			<tr>
+				<td style="width:15%">Description*</td>
+				<td style="width:25%">Firmware</td>
+				<td style="width:15%">Processor</td>
+				<td style="width:10%">Size</td>
+				<td style="width:10%">Action</td>
+				<td style="width:10%">Flash</td>
+			</tr>
 <?php
 echo render_temp();
 ?>
 
-</table>
 
 
-<br>
 </td>
-<tr valign="top"><td colspan="3" align="right">
+<tr ><td colspan="2" align="right">
 
 
 <input type="file" value="" name="datei" >
 <input type="submit" value="Upload File" class="myButton" >
 </td>
-<td colspan="1" >
+<td colspan="2" >
 <input type="checkbox" name="flashdirect" value="1" >
 
 &nbsp;Autoflash after upload
@@ -852,6 +888,7 @@ echo render_temp();
 </a>
 </td>
 <td colspan="1" align="left">
+<br>
 <input type="button" class="myButton"  value="safe profile" onclick="SendCommand('save-conf')">
 <input id=fuse-button type="button" class="myButton"  value="safe profile with Fuses" onclick="SendCommand('save-conf',1)">
 <br>
@@ -859,12 +896,13 @@ echo render_temp();
 
 </td>
 </tr>
+</table>
 
 
 
-<tr valign="top" style="background:#BBB"><td colspan="5">Flash Archive: <a style="color:white"  href="javascript:show_popup('helparch') ">?</a></td></tr>
-<tr valign="top"><td colspan="5" align="">
-<table width="100%" border="0" style="border: 0px solid black">
+<tr valign="center"><td colspan="5" >
+<table  class="part" valign="center">
+<tr valign="top" "><td colspan="5"><a class="headline">Flash Archive: </a><a style="color:white"  href="javascript:show_popup('helparch') "><img src="icon_help.png"></a></td></tr>
 <tr><td style="width:15%">Description*</td><td style="width:25%">Firmware</td><td style="width:15%">Processor</td><td style="width:10%">Size</td><td style="width:10%">Action</td><td style="width:10%">Flash</td></tr>
 <?php
 
@@ -873,15 +911,16 @@ echo render_firmware_table();
 
 ?>
 
+
+<tr><td colspan="5">
+<i><a>*The description can be changed by clicking on it</a></i>
+</tr></td>
 </table>
 
-<i><a>*The description can be changed by clicking on it</a></i>
-
-
-
 </td></tr>
-
-<tr valign="top" style="background:#BBB"><td colspan="3">Update programmer:&nbsp;<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td><td colspan="1">Settings:&nbsp;<a style="color:white"  href="javascript:show_popup('helpUp') ">?</a></td><td colspan="1">Atmel Studio 6&nbsp;<a style="color:white"  href="javascript:show_popup('helpatmel_studio') ">?</a></td></tr>
+<tr valign="center"><td colspan="5">
+<table class ="part" valign="center">
+<tr valign="top" ><td colspan="3"><a class=headline> Update programmer:<a>&nbsp;<a style="color:white"  href="javascript:show_popup('helpUp') "><img src="icon_help.png"></a></td><td colspan="1"><a class=headline >Downloads:&nbsp;</a><a style="color:white"  href="javascript:show_popup('helpUp') "><img src="icon_help.png"></a></td><td colspan="1">Atmel Studio 6&nbsp;<a style="color:white"  href="javascript:show_popup('helpatmel_studio') "><img src="icon_help.png"></a></td></tr>
 <tr><td colspan="3" align="">
 <br>
 
@@ -912,12 +951,14 @@ echo render_firmware_table();
 
 
 </tr>
+</table >
+</tr></td>
 
-<tr valign="top" style="background:#43BBD1;"><td colspan="5">Command Lines:</td></tr>
 
-<tr ><td colspan="5" >
+<tr valign="center" name="ocd_area" id="ocd_area" style=" display:none"><td colspan="5" >
 
-<table width="100%" border="0" style="border: 0px solid black; display:none"   colspan="5" name="ocd_area" id="ocd_area">
+<table class="part" valign="center">
+<tr valign="top" ><td colspan="5"><a class="headline" style="">Command Lines: </a><br><br></td></tr>
 <tr><td colspan="3" width=51%>Read Signature</td><td colspan="2">python embeddedprog.py --processor "your Processor" --speed 2 </td></tr>
 <tr><td colspan="3">Flash</td><td colspan="2">python embeddedprog.py --processor "your Processor" --flash-write yourprog.hex</td></tr>
 <tr><td colspan="3">Start openocd</td><td colspan="2">python embeddedprog.py --processor "your Processor" --gdb "start"</td></tr>
@@ -930,9 +971,10 @@ echo render_firmware_table();
 
 
 
-<tr ><td colspan="5" >
+<tr valign="center" name="avr_area" id="avr_area" style=" display:none"><td colspan="5" >
 
-<table width="100%" border="0" style="border: 0px solid black; display:none"   colspan="5" name="avr_area" id="avr_area">
+<table   class="part"     valign="center">
+<tr valign="top" ><td colspan="5"><a class="headline" style="">Command Lines: </a><br><br></td></tr>
 <tr><td colspan="3"  width=51%>Read Signature</td><td colspan="2">python embeddedprog.py --processor "your Processor" --speed 2 </td></tr>
 <tr><td colspan="3">Flash write</td><td colspan="2">python embeddedprog.py --processor "your Processor" --flash-write yourprog.hex</td></tr>
 <tr><td colspan="3">Flash read</td><td colspan="2">python embeddedprog.py --processor "your Processor" --flash-read yourprog.hex</td></tr>
