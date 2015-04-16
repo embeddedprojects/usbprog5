@@ -54,7 +54,7 @@ Reading | ################################################## | 100% 0.00s
 avrdude: Device signature = 0x1e9403
 avrdude: reading flash memory:
 
-Reading | ################################################## | 100% 11.31s
+Reading | ################################################## | 100% 11.27s
 
 avrdude: writing output file "/tmp/flash.hex"
 
@@ -118,7 +118,7 @@ avrdude: load data lfuse data from input file 0xc1:
 avrdude: input file 0xc1 contains 1 bytes
 avrdude: reading on-chip lfuse data:
 
-Reading | ################################################## | 100% 0.00s
+Reading | ################################################## | 100% 0.01s
 
 avrdude: verifying ...
 avrdude: 1 bytes of lfuse verified
@@ -200,14 +200,14 @@ avrdude: load data lfuse data from input file 0xe4:
 avrdude: input file 0xe4 contains 1 bytes
 avrdude: reading on-chip lfuse data:
 
-Reading | ################################################## | 100% 0.00s
+Reading | ################################################## | 100% 0.01s
 
 avrdude: verifying ...
 avrdude: 1 bytes of lfuse verified
 avrdude: reading input file "0xd9"
 avrdude: writing hfuse (1 bytes):
 
-Writing | ################################################## | 100% 0.00s
+Writing | ################################################## | 100% 0.01s
 
 avrdude: 1 bytes of hfuse written
 avrdude: verifying hfuse memory against 0xd9:
@@ -308,7 +308,7 @@ avrdude: load data lock data from input file 0x1f:
 avrdude: input file 0x1f contains 1 bytes
 avrdude: reading on-chip lock data:
 
-Reading | ################################################## | 100% 0.00s
+Reading | ################################################## | 100% 0.01s
 
 avrdude: verifying ...
 avrdude: 1 bytes of lock verified
@@ -360,7 +360,7 @@ Reading | ################################################## | 100% 0.00s
 avrdude: Device signature = 0x1e9403
 avrdude: reading flash memory:
 
-Reading | ################################################## | 100% 11.27s
+Reading | ################################################## | 100% 11.42s
 
 avrdude: writing output file "/tmp/flash.hex"
 
@@ -440,7 +440,7 @@ avrdude: erasing chip
 avrdude: reading input file "/tmp/flash.hex"
 avrdude: writing flash (234 bytes):
 
-Writing | ################################################## | 100% 0.33s
+Writing | ################################################## | 100% 0.20s
 
 avrdude: 234 bytes of flash written
 avrdude: verifying flash memory against /tmp/flash.hex:
@@ -448,7 +448,7 @@ avrdude: load data flash data from input file /tmp/flash.hex:
 avrdude: input file /tmp/flash.hex contains 234 bytes
 avrdude: reading on-chip flash data:
 
-Reading | ################################################## | 100% 0.38s
+Reading | ################################################## | 100% 0.39s
 
 avrdude: verifying ...
 avrdude: 234 bytes of flash verified
@@ -477,7 +477,7 @@ avrdude: Device signature = 0x1e9403
 avrdude: reading input file "/tmp/eeprom.hex"
 avrdude: writing eeprom (512 bytes):
 
-Writing | ################################################## | 100% 0.41s
+Writing | ################################################## | 100% 0.40s
 
 avrdude: 512 bytes of eeprom written
 avrdude: verifying eeprom memory against /tmp/eeprom.hex:
@@ -485,7 +485,7 @@ avrdude: load data eeprom data from input file /tmp/eeprom.hex:
 avrdude: input file /tmp/eeprom.hex contains 512 bytes
 avrdude: reading on-chip eeprom data:
 
-Reading | ################################################## | 100% 0.42s
+Reading | ################################################## | 100% 0.39s
 
 avrdude: verifying ...
 avrdude: 512 bytes of eeprom verified

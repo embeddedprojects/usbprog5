@@ -81,7 +81,114 @@ def signature():
 	log("read signature:",out,status)
 	return returnv	
 
+def flash():
+	returnv=1
+	status="flash-write: OK"
+	out=go("--flash-write LPC_H2103_BLINKING_LED.hex")
+	print out
+	if "ERROR" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "ERROR" in line:
+				print line
+				status=status+line+"\n"
+		returnv=0
+	if "Error" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "Error" in line:
+				status=status+line+"\n"
+		returnv=0
+	if "error" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "error" in line:
+				status=status+line+"\n"
+		returnv=0
+	if "Yikes!" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "Yikes!" in line:
+				status=status+line+"\n"
+		returnv=0
+	if "not found" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "not found" in line:
+				status=status+line+"\n"
+		returnv=0		
+	if "timeout" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "timeout" in line:
+				status=status+line+"\n"
+		returnv=0
+	log("flash write:",out,status)
+	return returnv		
+
+
+def dump():
+	returnv=1
+	status="dump memory: OK"
+	out=go("--dump 'mdw 0 10'")
+	print out
+	if "ERROR" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "ERROR" in line:
+				print line
+				status=status+line+"\n"
+		returnv=0
+	if "Error" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "Error" in line:
+				status=status+line+"\n"
+		returnv=0
+	if "error" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "error" in line:
+				status=status+line+"\n"
+		returnv=0
+	if "Yikes!" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "Yikes!" in line:
+				status=status+line+"\n"
+		returnv=0
+	if "not found" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "not found" in line:
+				status=status+line+"\n"
+		returnv=0		
+	if "timeout" in out:
+		if ": OK" in status:
+			status =""
+		for line in out.split('\n'):
+			if "timeout" in line:
+				status=status+line+"\n"
+		returnv=0
+	log("dump memory:",out,status)
+	return returnv		
+	
 running=signature()
+running=flash()
+running=dump()
+
+
 #if running==1:
 #	running=flash_read()
 

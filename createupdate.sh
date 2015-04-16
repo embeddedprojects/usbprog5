@@ -2,6 +2,8 @@
 mkdir -p /tmp/build/var/www/tmp
 mkdir -p /tmp/build/root/avrdude-6.1
 mkdir -p /tmp/build/root/openocd-code/src
+mkdir -p /tmp/build/root/openocd-code/tcl/target
+mkdir -p /tmp/build/root/openocd-code/tcl/board
 mkdir -p /tmp/build/root/makeprocessor/tcl/target
 mkdir -p /tmp/build/root/makeprocessor/tcl/board
 
@@ -13,6 +15,8 @@ cp  processor/avrdude.rc /tmp/build/var/www
 cp  processor/openocd.rc /tmp/build/var/www
 cp  processor/makeprocessor.py /tmp/build/root/makeprocessor
 cp  processor/add-processor.txt /tmp/build/root
+cp -r  processor/tcl /tmp/build/root/openocd-code/
+
 
 cp  web/server.php /tmp/build/var/www
 cp  web/client.php /tmp/build/var/www

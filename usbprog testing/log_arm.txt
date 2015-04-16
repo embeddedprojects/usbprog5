@@ -1,6 +1,8 @@
 Status:
 
 Signature: OK
+flash-write: OK
+dump memory: OK
 
 
 ------------------------------------
@@ -28,6 +30,95 @@ Info : clock speed 1500 kHz
 Info : JTAG tap: lpc2103.cpu tap/device found: 0x4f1f0f0f (mfg: 0x787, part: 0xf1f0, ver: 0x4)
 Info : Embedded ICE version 4
 Info : lpc2103.cpu: hardware has 2 breakpoint/watchpoint units
+in procedure 'exit'
+
+
+
+
+flash write:
+
+connect port
+connecting to 10.0.0.1 port 8888
+send code to server
+set_file
+send file
+go
+recieve output in 'realtime'
+ Open On-Chip Debugger 0.8.0 (2014-10-24-11:13)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.sourceforge.net/doc/doxygen/bugs.html
+Info : only one transport option; autoselect 'jtag'
+adapter speed: 100 kHz
+init_targets
+Warning - assuming default core clock 12MHz! Flashing may fail if actual core clock is different.
+trst_and_srst separate srst_gates_jtag trst_push_pull srst_open_drain connect_deassert_srst
+adapter_nsrst_delay: 100
+jtag_ntrst_delay: 100
+adapter speed: 1500 kHz
+Info : clock speed 1500 kHz
+Info : JTAG tap: lpc2103.cpu tap/device found: 0x4f1f0f0f (mfg: 0x787, part: 0xf1f0, ver: 0x4)
+Info : Embedded ICE version 4
+Info : lpc2103.cpu: hardware has 2 breakpoint/watchpoint units
+Info : JTAG tap: lpc2103.cpu tap/device found: 0x4f1f0f0f (mfg: 0x787, part: 0xf1f0, ver: 0x4)
+target state: halted
+target halted in ARM state due to debug-request, current mode: Supervisor
+cpsr: 0x000000d3 pc: 0x00000000
+Warn : NOTE! DCC downloads have not been enabled, defaulting to slow memory writes. Type 'help dcc'.
+Warn : NOTE! Severe performance degradation without fast memory access enabled. Type 'help fast'.
+Info : JTAG tap: lpc2103.cpu tap/device found: 0x4f1f0f0f (mfg: 0x787, part: 0xf1f0, ver: 0x4)
+target state: halted
+target halted in ARM state due to debug-request, current mode: Supervisor
+cpsr: 0x000000d3 pc: 0x00000000
+Warn : NOTE! DCC downloads have not been enabled, defaulting to slow memory writes. Type 'help dcc'.
+Warn : NOTE! Severe performance degradation without fast memory access enabled. Type 'help fast'.
+** Programming Started **
+auto erase enabled
+Info : Padding image section 0 with 28 bytes
+Info : Padding image section 1 with 28 bytes
+Warn : Verification will fail since checksum in image (0xffffffff) to be written to flash is different from calculated vector checksum (0x1a600fee).
+Warn : To remove this warning modify build tools on developer PC to inject correct LPC vector checksum.
+wrote 4096 bytes from file /tmp/LPC_H2103_BLINKING_LED.hex in 0.895227s (4.468 KiB/s)
+** Programming Finished **
+** Resetting Target **
+Info : JTAG tap: lpc2103.cpu tap/device found: 0x4f1f0f0f (mfg: 0x787, part: 0xf1f0, ver: 0x4)
+Warn : NOTE! DCC downloads have not been enabled, defaulting to slow memory writes. Type 'help dcc'.
+Warn : NOTE! Severe performance degradation without fast memory access enabled. Type 'help fast'.
+shutdown command invoked
+Warn : target not halted
+in procedure 'resume'
+
+
+
+
+dump memory:
+
+connect port
+connecting to 10.0.0.1 port 8888
+send code to server
+go
+recieve output in 'realtime'
+ Open On-Chip Debugger 0.8.0 (2014-10-24-11:13)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.sourceforge.net/doc/doxygen/bugs.html
+Info : only one transport option; autoselect 'jtag'
+adapter speed: 100 kHz
+init_targets
+Warning - assuming default core clock 12MHz! Flashing may fail if actual core clock is different.
+trst_and_srst separate srst_gates_jtag trst_push_pull srst_open_drain connect_deassert_srst
+adapter_nsrst_delay: 100
+jtag_ntrst_delay: 100
+adapter speed: 1500 kHz
+Info : clock speed 1500 kHz
+Info : JTAG tap: lpc2103.cpu tap/device found: 0x4f1f0f0f (mfg: 0x787, part: 0xf1f0, ver: 0x4)
+Info : Embedded ICE version 4
+Info : lpc2103.cpu: hardware has 2 breakpoint/watchpoint units
+target state: halted
+target halted in Thumb state due to debug-request, current mode: System
+cpsr: 0x200000ff pc: 0x00000116
+0x00000000: e59ff018 ffffffff ffffffff ffffffff ffffffff 1a600fee ffffffff ffffffff 
+0x00000020: 00000088 ffffffff 
 in procedure 'exit'
 
 
