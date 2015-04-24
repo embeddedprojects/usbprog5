@@ -84,6 +84,7 @@ def parseavr():
 			i=i+1
 		else: 
 			if temp['name'] != '' and '???' not in temp['name'] :
+			  if 'common' not in temp['name'] and 'Common' not in temp['name'] :
 				temp['name']=tempname+"&nbsp;("+tempid+")"
 				code.append(temp)
 				#if len(temp['name'])>namelen:
@@ -117,7 +118,7 @@ def parseocd():
 			print temp
 			i=i+1
 		else: 
-			if temp['name'] != '':
+			if temp['name'] != '' and '.py' not in temp['name']:
 				code.append(temp)			
 	 if buf == '' and p.poll()!= None:
 		status='done'
@@ -145,7 +146,7 @@ def parseocd():
 			#print temp
 			i=i+1
 		else: 
-			if temp['name'] != '':
+			if temp['name'] != '' and '.py' not in temp['name']:
 				code.append(temp)			
 		if buf == '' and p.poll()!= None:
 			status='done'
@@ -232,14 +233,14 @@ def makehtml(count,spalten):
 	
 	help=True
 	with open('processor_table.html','w')as w:
-		w.write("<h1>AVR</h1>\n<table>\n<tr>\n")
+		w.write('<h1>AVR</h1>\n<table width="100%">\n<tr valign="top">\n')
 		#avr	
 		print spalten
 		print count
 		print aktuelle_spalte,spalten
 		while aktuelle_spalte<=spalten:
 			
-		    	w.write('<td>\n<ul>\n')
+		    	w.write('<td width="33%">\n<ul>\n')
 
 		    	while (help==True)and(i<(avr_pro_spalte*aktuelle_spalte)):
 			
@@ -262,9 +263,9 @@ def makehtml(count,spalten):
 		i=0
 		aktuelle_spalte=1
 		    
-		w.write('</tr></table>\n<h1>ARM</h1>\n<table><tr>')
+		w.write('</tr></table>\n<h1>ARM</h1>\n<table width="100%"><tr valign="top">')
 		while aktuelle_spalte<=spalten:
-		    	w.write('<td>\n<ul>\n')
+		    	w.write('<td width="33%">\n<ul>\n')
 			
 		    	while (help==True)and(i<(arm_pro_spalte*aktuelle_spalte)):
 			

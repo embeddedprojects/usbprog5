@@ -15,6 +15,9 @@ for line in lines:
 			for tmp_line in tmp_lines:
 				if "interface" in tmp_line or "Interface" in tmp_line :
 					pass
-					print line
+					print tmp_line
+				if "transport select hla_jtag" in tmp_line:
+					pass
+					print tmp_line
 				else:
 					w.write(tmp_line) 
