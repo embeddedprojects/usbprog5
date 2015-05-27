@@ -119,8 +119,8 @@ def inpt():
 		#parser.add_argument("--eclipse", help="Opens gdb/telnet and stays open;", action="store_true")
                 parser.add_argument("--processor", help="select target processor;")
 		parser.add_argument("--voltage", help="select target voltage (1 for 1V8;3 for 3V3;5 for 5V5)",type=int,default=3)
-                parser.add_argument("--eeprog-ip",  help="select target ip (default via usb 10.0.0.1) ;saved in eeprog.cfg")
-                parser.add_argument("--eeprog-port",type=int,  help="select target port (default 8888); saved in eeprog.cfg ",default=8888)
+                parser.add_argument("--eeprog-ip",  help="select target ip (default via usb 10.0.0.1) ;saved in eeprog.rc")
+                parser.add_argument("--eeprog-port",type=int,  help="select target port (default 8888); saved in eeprog.rc ",default=8888)
                 parser.add_argument("--signature",  help="not needed at the time... for signature just input processor only",action="store_true")
                 parser.add_argument("--speed",type=int,default=2, help="changes speed; 2 is default setting, 1=(B=1), 2=(B=10), 3=(b=100)")
                 parser.add_argument("--atmel-studio", help="(atmel-studio)write flash, needs complete path to file ")		
@@ -242,7 +242,7 @@ def inpt():
 				if lis['v']>= 2:
 					print "open file to read ip-config"
 				try:
-					with open("/var/www/eeprog.rc",'r') as r:
+					with open("eeprog.rc",'r') as r:
 						if lis['v']>= 3:	
 							print "getline"
 						a=r.readline()
@@ -258,7 +258,7 @@ def inpt():
 				lis['eeprog-port']=int(a['eeprog-port'])
 			except:
 				if lis['v']>= 2:
-					print "no conf file aviable, you can use --eeprog-ip and --eeprog-port to set the ip and port;default port = 8888;default ip 10.0.0.1"
+					print "no conf file aviable, you can use --eeprog-ip and --eeprog-port to set the ip and port;\nnow using defaults\ndefault port = 8888\ndefault ip 10.0.0.1"
 				lis['eeprog-ip']="10.0.0.1"
 				lis['eeprog-port']=8888
 		else:
@@ -266,11 +266,11 @@ def inpt():
 			if lis['v']>= 2:
 				print "saving ip in file"
 			try:			
-				with open("/var/www/eeprog.rc",'r') as r:
+				with open("eeprog.rc",'r') as r:
 					lines=r.readlines()
 			except:
 				pass
-			with open("/var/www/eeprog.rc",'w') as w:
+			with open("eeprog.rc",'w') as w:
 				w.write("{'eeprog-ip': '"+lis['eeprog-ip']+"' , 'eeprog-port':"+str(lis['eeprog-port'])+"}\n")
 				i=0
 				try:
