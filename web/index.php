@@ -28,7 +28,7 @@ exit;
 
 <html>
 <head>
-<title>embeddedprog GUI</title>
+<title>USBprog5.0 GUI</title>
 <?php
 echo render_options()
 ?>
@@ -408,6 +408,7 @@ padding-left: 10px;
 }
 
 </style>
+<link rel="shortcut icon" href="embedded_zeichen.jpg" type="image/x-icon" />
 </head>
 
 <body onload="set_options();SendCommand('pro');" style="font: 9pt Arial,sans-serif; margin-top:0px;">
@@ -684,22 +685,24 @@ The fuse calc button relinks you to an fuse calculator
 </div>
 </div>
 
-    <div align="left">
-<div id="update" style="display:none;border:0px solid gray;padding:.3em;background-color:white;position:absolute;width:80%;height:80%;left:10%;top:10%">
+<div align="left">
+	<div id="update" style="display:none;border:0px solid gray;padding:.3em;background-color:white;position:absolute;width:80%;height:80%;left:10%;top:10%">
 
 
 
-<a style="color:black;font-family:Ubuntu Mono,Terminus Font,GNU Unifont;size:5;" ><center>
-<font size="7">
-update in progress
-</font>
-</center>
-</a>
+		<a style="color:black;font-family:Ubuntu Mono,Terminus Font,GNU Unifont; font-size:40px !important;" >
+			<center style="color:black;font-family:Ubuntu Mono,Terminus Font,GNU Unifont; font-size:40px !important;">
+			
+				update in progress
+			
+			</center>
+		</a>
 
 
-<img id="update_loading" src="loading.gif" style="display:none;position:absolute;width:40px;height:40px;left:48%;top:42%" / >
-</tr></td>
-</div></div>
+		<img id="update_loading" src="loading.gif" style="display:none;position:absolute;width:40px;height:40px;left:48%;top:42%" / >
+
+	</div>
+</div>
 
 
 

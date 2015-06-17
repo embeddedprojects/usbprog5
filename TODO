@@ -1,29 +1,5 @@
-Prio 1:
-- togl beispiel testen: ist das wirklich 50ns aktuell schnell?
+- 
+
+-csv datei mit eintrag und seriennummer
 
 
-Prio 2:
-- add openocd 0.8
-- FUSE bits aufeinmal lesen
-- Prozessorliste nach Alphabet
-- Darstellung Prozessor in Firmwarearchiv statt m16 eher ATMEGA16 (wie in Prozessorliste)
-- Letzte firmware loeschbar / im tmp bereich
-- Download Link pro Firmware
-- Download Link auf bei Temp File
-- Laufen die Gnublin Tools?
-- embeddedprog.py tool bringt Fehler nach Download (es wird nicht alles heruntergeladen)
-- embeddedprog.py soll 10.0.0.1 verwenden wenn nichts angegeben ist
-- sichtbar ob openocd laeuft oder nicht
-- Hilfe Texte saeubern
-- erase in embeddedprog tool geht nicht bzw. heisst es delete
-
-
-Prio 3 
-- vor dem loeschen Fragen ob man wirklich loeschen will
-
-
-Prio 4
-- openocd speed einstellbar (3 stufen);
-- update prozess sicher und schoen (prio) + die Datei muss gerade update.tar.gz heissen (auch dateien mit update(1).tar.gz usw.. erlauben, da der firefox gleiche dateien so nennt)
-- inet adresse/wlan (change ip mit 
-	

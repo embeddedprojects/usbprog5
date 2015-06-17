@@ -14,10 +14,10 @@
 
 
 
-<a style="color:black;font-family:Ubuntu Mono,Terminus Font,GNU Unifont;size:5;" ><center>
-<font size="7">
+<a style="color:black;font-family:Ubuntu Mono,Terminus Font,GNU Unifont;font-size:40px;" ><center>
+
 update in progress
-</font>
+
 </center>
 </a>
 

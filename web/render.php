@@ -80,6 +80,7 @@ include("processor.php");
 
 function render_firmware_table()
 {
+include("processor.php");	
   $eeprom="";
   $line=" ";
   $fuses='';
@@ -126,7 +127,7 @@ function render_firmware_table()
 	$part=pathinfo($code['flash-write']);
     if($row%2)$style="even"; else $style="odd";
 	$datei=$part['basename'];
-	echo '<tr class="'.$style.'"><td onclick="SendCommand(\'desc\',\'' . $i . '\')">' . $code['desc'] . '</td><td>' . $eeprom . $fuses . $datei . '</td><td>' . $code['processor'] . '</td><td>' . (filesize($code['flash-write'])/1000) . 'kb</td><td style="padding-top: 5px"><img src="icon_del_gr_20x20_004.png" onclick="SendCommand(\'del-conf\', ' . $i . ')"/>&nbsp;<img src="download_icon.png" onclick="window.open(\'download.php?name='. urlencode($datei) .'&path=safe&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png"  onclick="SendCommand(\'programm\', ' . $i . ')"/></td></tr>';
+	echo '<tr class="'.$style.'"><td onclick="SendCommand(\'desc\',\'' . $i . '\')">' . $code['desc'] . '</td><td>' . $eeprom . $fuses . $datei . '</td><td>' . $renders[$code['processor']] . '</td><td>' . (filesize($code['flash-write'])/1000) . 'kb</td><td style="padding-top: 5px"><img src="icon_del_gr_20x20_004.png" onclick="SendCommand(\'del-conf\', ' . $i . ')"/>&nbsp;<img src="download_icon.png" onclick="window.open(\'download.php?name='. urlencode($datei) .'&path=safe&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png"  onclick="SendCommand(\'programm\', ' . $i . ')"/></td></tr>';
     $row++;
   }
 #  <img src="icon_del_gr_20x20_004.png" />
@@ -137,6 +138,7 @@ function render_firmware_table()
 
 function render_temp()
 {
+include("processor.php");	
   $line=" ";
   $eeprom="";
   $lines=file('/var/www/save/eeprog.rc');
@@ -159,7 +161,7 @@ function render_temp()
 		$part['extension'] = 'diesefile sollte nicht existieren';
 	}
 
-$line= $line . '<tr><td><b>Temp File</b></td><td><b>'. $eeprom . $datei . '</b></td><td><b>' . $code['processor'] .' </b></td><td><b>' . (filesize('/var/www/tmp/tmp.'. $part['extension'])/1000) . 'kb</b></td><td><img src="icon_del_gr_20x20_004.png" onclick="SendCommand(\'del-conf\', 0)"/>&nbsp;<img src="download_icon.png" onclick="window.open(\'download.php?name=tmp.'. $part['extension'] .'&path=tmp&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png" value="program" onclick="SendCommand(\'programm\', ' . '0' . ')"></td></tr>';
+$line= $line . '<tr><td><b>Temp File</b></td><td><b>'. $eeprom . $datei . '</b></td><td><b>' . $renders[$code['processor']] .' </b></td><td><b>' . (filesize('/var/www/tmp/tmp.'. $part['extension'])/1000) . 'kb</b></td><td><img src="icon_del_gr_20x20_004.png" onclick="SendCommand(\'del-conf\', 0)"/>&nbsp;<img src="download_icon.png" onclick="window.open(\'download.php?name=tmp.'. $part['extension'] .'&path=tmp&\'+1*new Date(),\'_top\');"></td><td><img src="button_002.png" value="program" onclick="SendCommand(\'programm\', ' . '0' . ')"></td></tr>';
 return $line;
 } 
 

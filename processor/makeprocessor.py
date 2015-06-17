@@ -211,9 +211,31 @@ def makephp():
 				
 				print e,i
     				
+				z=1
 				
-				help=False
-				w.write(")\n?>")
+				w.write(");\n")
+				w.close()
+
+				with open('./processor.php','a') as w:
+				 w.write("$renders = array(")
+				 while help==True:
+				  try:
+					tempid=test[z]['processor']
+					tempname=test[z]['name']
+					tempvendor=test[z]['vendor']
+					tempprogram=test[z]['program']
+					tempid=filter(lambda x: x in string.printable, tempid)
+
+					tempname=filter(lambda x: x in string.printable, tempname)		
+					if len(tempvendor)>2:
+						tempvendor=tempvendor+',&nbsp;'		
+					w.write("'"+unicode(tempid)+"'=>'"+unicode(tempname)+"',")
+					z=z+1
+				  except Exception as e: 
+					print "error"
+					print e,i
+					help=False
+					w.write(");\n?>")
 				return count
 
 

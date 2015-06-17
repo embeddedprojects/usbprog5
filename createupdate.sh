@@ -15,7 +15,7 @@ cp  processor/avrdude.rc /tmp/build/var/www
 cp  processor/openocd.rc /tmp/build/var/www
 cp  processor/makeprocessor.py /tmp/build/root/makeprocessor
 cp  processor/add-processor.txt /tmp/build/root
-cp -r  processor/tcl /tmp/build/root/openocd-code/
+
 
 
 cp  web/server.php /tmp/build/var/www
@@ -31,6 +31,7 @@ cp  web/flexselect.css /tmp/build/var/www
 cp  web/download_icon.png /tmp/build/var/www
 cp  web/icon_help.png /tmp/build/var/www
 cp  web/update.php /tmp/build/var/www
+cp  web/embedded_zeichen.jpg /tmp/build/var/www
 cp  web/atmel_einstellungen.png /tmp/build/var/www
 
 cp version /tmp/build/root/version
@@ -39,7 +40,9 @@ cp version /tmp/build/root/version
 
 cp  server/server.py /tmp/build/root/server.py
 
-cp openocd-0.8.0/src/openocd /tmp/build/root/openocd-code/src
+cp -r openocd-0.9.0/src/openocd /tmp/build/root/openocd-code/src/
+
+cp -r  processor/tcl /tmp/build/root/openocd-code/
 
 cp avrdude-6.1/avrdude /tmp/build/root/avrdude-6.1
 cp processor/avrdude.conf /tmp/build/root/avrdude-6.1

@@ -343,9 +343,9 @@ def logica(code,connection):
 			return " "
 
 
-#
-#AVRdude(AVR)
-#
+#############################################################################
+#AVRdude(AVR)								    #
+#############################################################################
 	if 'avrdude' in code['mode']:
 		#kills openocd and unexports used ports 
 		os.system('killall openocd')
@@ -673,9 +673,9 @@ def logica(code,connection):
 
 
 
-#
-#Openocd(ARM)
-#	
+##############################################################################
+#Openocd(ARM)                                                                #
+##############################################################################	
 	if "openocd" in  code['mode']:
 
 
@@ -728,7 +728,7 @@ def logica(code,connection):
 					gdb.replace('\n','')
 					gdb.replace('\r','')
 					tel=r.readline()
-				subprocess.Popen(['/root/openocd-code/src/openocd','-f','/root/openocd-code/tcl/interface/embeddedprog.cfg','-f','/root/openocd-code/tcl/target/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
+				subprocess.Popen(['/root/openocd-code/src/openocd','-f','/root/openocd-code/tcl/interface/embeddedprog.cfg','-f','/root/openocd-code/tcl/'+path_ocd+'/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
 		
 				if code['web']!=True:
 					connection.sendall("{'v':"+str(code['v'])+",'mode':'exit'}")
