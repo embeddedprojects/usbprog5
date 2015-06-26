@@ -1,0 +1,11 @@
+JTAG-to-SWDswitch_seq
+SWD queue return value: 00Wrong parity detected - is: 0 should: 1SWD queue return value: fffffffcJTAG-to-SWDswitch_seq
+SWD queue return value: 00Wrong parity detected - is: 0 should: 1SWD queue return value: fffffffcJTAG-to-SWDswitch_seq
+SWD queue return value: 00Wrong parity detected - is: 0 should: 1SWD queue return value: fffffffcJTAG-to-SWDswitch_seq
+SWD queue return value: 00Wrong parity detected - is: 0 should: 1SWD queue return value: fffffffcJTAG-to-SWDswitch_seq
+SWD queue return value: 00Wrong parity detected - is: 0 should: 1SWD queue return value: fffffffcJTAG-to-SWDswitch_seq
+SWD queue return value: 00Wrong parity detected - is: 0 should: 1SWD queue return value: fffffffcJTAG-to-SWDswitch_seq
+SWD queue return value: 00Wrong parity detected - is: 0 should: 1SWD queue return value: fffffffcJTAG-to-SWDswitch_seq
+SWD queue return value: 00Wrong parity detected - is: 0 should: 1SWD queue return value: fffffffcJTAG-to-SWDswitch_seq
+SWD queue return value: 00Wrong parity detected - is: 0 should: 1SWD queue return value: fffffffcJTAG-to-SWDswitch_seq
+SWD queue return value: 00Wrong parity detected - is: 0 should: 1SWD queue return value: fffffffc

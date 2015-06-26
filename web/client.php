@@ -1,6 +1,6 @@
 <?php
 
-function read_sig($processor,$speed,$voltage)
+function read_sig($processor,$speed,$voltage,$swd)
 {
 $address =	"127.0.0.1";
 $service_port =	8888;
@@ -19,7 +19,7 @@ if ($result === false) {
     #echo "OK.\n";
 }
 
-$in ='{"speed": '.$speed.', "processor": "'.$processor.'", "web": true, "voltage": '.$voltage.'}';
+$in ='{"speed": '.$speed.', "processor": "'.$processor.'", "web": true, "voltage": '.$voltage.', "swd": "'.$swd.'"}';
 
 
 $retur="";
@@ -161,7 +161,7 @@ return $retur;
 }
 
 
-function save($processor,$speed,$save,$voltage,$eeprom,$i)
+function save($processor,$speed,$save,$voltage,$eeprom,$i,$swd)
 {
 
 $fuses=explode(",",$i);
@@ -182,7 +182,7 @@ if ($result === false) {
     #echo "OK.\n";
 }
 if(($fuses[0]=='')||($fuses[0]=='-')||($fuses[0]==' ')||($fuses[0]=='no')||($fuses[0]=='none')||($fuses[0]=='null' )) {
-$in ='{"speed": '.$speed.', "processor": "'.$processor.'", "safe": "'.$save.'", "eeprog-port": 8888, "eeprog-ip": "127.0.0.1", "v": 0, "web": true,"voltage": '.$voltage.', "eeprom": ' . $eeprom . '}';
+$in ='{"speed": '.$speed.', "processor": "'.$processor.'", "safe": "'.$save.'", "eeprog-port": 8888, "eeprog-ip": "127.0.0.1", "v": 0, "web": true,"voltage": '.$voltage.', "eeprom": ' . $eeprom . ', "swd": "'.$swd.'"}';
 }else{
 if(($fuses[1]=='')||($fuses[1]=='-')||($fuses[1]==' ')||($fuses[1]=='no')||($fuses[1]=='none')||($fuses[1]=='null' )) {
 $in ='{"fuse-write-low": "'.$fuses[0].'", "speed": '.$speed.', "processor": "'.$processor.'", "safe": "'.$save.'", "eeprog-port": 8888, "eeprog-ip": "127.0.0.1", "v": 0, "web": true,"voltage": '.$voltage.', "eeprom": ' . $eeprom . '}';
@@ -213,7 +213,7 @@ return $retur;
 
 
 
-function gdb_start($processor,$speed,$voltage)
+function gdb_start($processor,$speed,$voltage,$swd)
 {
 $address =	"127.0.0.1";
 $service_port =	8888;
@@ -232,7 +232,7 @@ if ($result === false) {
     echo "OK.\n";
 }
 
-$in ='{"gdb": "start", "speed": '.$speed.', "processor": "'.$processor.'", "eeprog-port": 8888, "eeprog-ip": "127.0.0.1", "v": 0, "web": true,"voltage": '.$voltage.'}';
+$in ='{"gdb": "start", "speed": '.$speed.', "processor": "'.$processor.'", "eeprog-port": 8888, "eeprog-ip": "127.0.0.1", "v": 0, "web": true,"voltage": '.$voltage.', "swd": "'.$swd.'"}';
 
 
 $retur="";
@@ -335,7 +335,7 @@ return $retur;
 }
 
 
-function upload($processor,$speed,$datei,$voltage,$eeprom)
+function upload($processor,$speed,$datei,$voltage,$eeprom,$swd)
 {
 $address =	"127.0.0.1";
 $service_port =	8888;
@@ -357,8 +357,18 @@ if ($result === false) {
 $parts=pathinfo($datei);
 
 
+$i=file('/var/www/tmp/processor');
 
-$in ='{"flash-write": "'. $datei .'", "speed": ' . $speed . ', "processor": "'.$processor.'", "safe": "/var/www/tmp/tmp.' . $parts['extension'] . '", "eeprog-port": 8888, "eeprog-ip": "127.0.0.1", "v": 0,  "web": true,"voltage": '.$voltage.', "eeprom": ' . $eeprom . '}';
+$volta=$i[1];
+
+if ($i[4]==2){
+$SWD='on';
+
+}else{
+$SWD='no';
+} 
+
+$in ='{"flash-write": "'. $datei .'", "speed": ' . $speed . ', "processor": "'.$processor.'", "safe": "/var/www/tmp/tmp.' . $parts['extension'] . '", "eeprog-port": 8888, "eeprog-ip": "127.0.0.1", "v": 0,  "web": true,"voltage": '.$volta.', "eeprom": ' . $eeprom . ', "swd": "'.$SWD.'"}';
 
 
 
@@ -531,7 +541,7 @@ return $retur;
 }
 
 
-function desc($processor,$save,$i,$voltage)
+function desc($processor,$save,$i,$voltage,$swd)
 {
 $address =	"127.0.0.1";
 $service_port =	8888;
@@ -550,7 +560,7 @@ if ($result === false) {
     #echo "OK.\n";
 }
 
-$in ='{"load": '.$i.', "processor": "'.$processor.'", "rename": "'.$save.'", "eeprog-port": 8888, "eeprog-ip": "127.0.0.1", "v": 0, "web": true,"voltage": '.$voltage.'}';
+$in ='{"load": '.$i.', "processor": "'.$processor.'", "rename": "'.$save.'", "eeprog-port": 8888, "eeprog-ip": "127.0.0.1", "v": 0, "web": true,"voltage": '.$voltage.', "swd": "'.$swd.'"}';
 
 
 $retur="";
@@ -572,7 +582,7 @@ return $retur;
 
 
 
-function dump($processor,$save,$speed,$voltage)
+function dump($processor,$save,$speed,$voltage,$swd)
 {
 $address =	"127.0.0.1";
 $service_port =	8888;
@@ -593,7 +603,7 @@ if ($result === false) {
 echo $speed;
 echo $processor;
 echo $save;
-$in ='{"speed": '.$speed.', "processor": "'.$processor.'", "eeprog-port": 8888, "eeprog-ip": "127.0.0.1", "v": 3,  "web": true,"dump": "'.$save.'","voltage": '.$voltage.'}';
+$in ='{"speed": '.$speed.', "processor": "'.$processor.'", "eeprog-port": 8888, "eeprog-ip": "127.0.0.1", "v": 3,  "web": true,"dump": "'.$save.'","voltage": '.$voltage.', "swd": "'.$swd.'"}';
 
 
 $retur="";

@@ -58,6 +58,10 @@ function art(string){
   ocd2 = document.getElementById('ocd2');
   avr3 = document.getElementById('avr_area');
   ocd3 = document.getElementById('ocd_area');
+  avr4  = document.getElementById('ps');
+  ocd4  = document.getElementById('swd');
+  avr5 = document.getElementById('ps2');
+  ocd5 = document.getElementById('swd2'); 
   eeprom=document.getElementById('eeprom2');
   fuses=document.getElementById('fuse-button');
 
@@ -69,6 +73,10 @@ function art(string){
         avr2.style.display='';
         ocd3.style.display='none';
         avr3.style.display='';
+        ocd4.style.display='none';
+        avr4.style.display='';
+        ocd5.style.display='none';
+        avr5.style.display='';
 	eeprom.style.display='';
 	fuses.style.display='';
       }
@@ -79,6 +87,10 @@ function art(string){
 	avr2.style.display='none';
 	ocd3.style.display='';
 	avr3.style.display='none';
+	ocd4.style.display='';
+	avr4.style.display='none';
+	ocd5.style.display='';
+	avr5.style.display='none';
 	eeprom.style.display='none';	
 	fuses.style.display='none';
 	}
@@ -170,6 +182,7 @@ function SendCommand(command, i, help, eproo)
     var speed = $("select#speed option").filter(":selected").val();
     var pointer = '';
     var voltage = $('input[name=voltage]:checked', '#myForm').val();
+    var swd = $('input[name=SWD]:checked', '#myForm').val();
     var safe = '';
 
 
@@ -242,13 +255,13 @@ if (command=='upload'){
 		var eeprom = 0;
 	}
 }
- 
+
 
 
 
 
      $.ajax({
-        'url' : 'server.php?cmd=' + command + '&processor=' + processor + '&voltage='+ voltage + '&speed=' + speed + '&i=' + i + '&save=' + save + '&pointer=' + pointer + '&eeprom=' + eeprom + '&' + 1*new Date(),
+        'url' : 'server.php?cmd=' + command + '&processor=' + processor + '&voltage='+ voltage + '&speed=' + speed + '&i=' + i + '&save=' + save + '&pointer=' + pointer + '&eeprom=' + eeprom + '&swd=' + swd + '&' + 1*new Date(),
         'type' : 'GET',
         'data' : {
         },
@@ -433,15 +446,35 @@ padding-left: 10px;
 	echo render_processors()
 	?>
 	</select></td>
-	
-	<?php
 
-	?>
 
-	
 
-	<td>Programmer Speed:</td>
-	<td><select name="speed" id="speed" onchange="SendCommand('pro')">
+	<td id="swd" style="display:none";>Programmer Type:</td>
+	<td id="swd2" style="display:none";>
+			
+		<input type="radio" name="SWD" id="1swd" value=1 onchange="SendCommand('pro')"
+
+<?php
+                if($_POST['SWD'] == 1){
+                        echo 'checked="checked"';}
+
+?>
+
+>&nbsp;JTAG
+		<input type="radio" name="SWD" id="2swd" value=2 onchange="SendCommand('pro')"
+
+<?php
+                if($_POST['SWD'] == 0){
+                        echo 'checked="checked"';}
+
+?>
+
+>&nbsp;SWD
+
+	</td>	
+
+	<td id="ps">Programmer Speed:</td>
+	<td id="ps2"><select name="speed" id="speed" onchange="SendCommand('pro')">
 <option value=3
 <?php
                 if(isset($_POST['speed']) && $_POST['speed'] == 3){
@@ -464,8 +497,8 @@ padding-left: 10px;
 ?>
 >Fast</option></select></td>
 
-	<td>Voltage:&nbsp;
-		<input type="radio" name="voltage" id=1v value=1 onchange="SendCommand('pro')"
+	<td>Voltage:</td>
+		<td><input type="radio" name="voltage" id=1v value=1 onchange="SendCommand('pro')"
 
 <?php
                 if($_POST['voltage'] == 1){

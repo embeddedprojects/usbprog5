@@ -1,8 +1,8 @@
 /*
- * USBprog 5.0 JTAG driver
- * heavily based on JTAG to VPI driver
+ * USBprog 5.0 JTAG/SWD driver
+ * heavily based on JTAG to VPI, bitbang and JLink driver
  *
- * Copyright (C) 2014 Benedikt Heinz, <Zn000h@gmail.com>
+ * Copyright (C) 2014, 2015 Benedikt Heinz, <Zn000h@gmail.com>
  * Copyright (C) 2013 Franck Jullien, <elec4fun@gmail.com>
  *
  * See file CREDITS for list of people who contributed to this
@@ -25,6 +25,8 @@
 #endif
 
 #include <jtag/interface.h>
+#include <jtag/swd.h>
+#include <jtag/commands.h>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -40,7 +42,7 @@
 #include <assert.h>
 
 #define NO_TAP_SHIFT	0
-#define TAP_SHIFT	1
+#define TAP_SHIFT		1
 
 volatile uint32_t *iomem;
 
@@ -164,6 +166,8 @@ static void udelay(uint32_t val) {
 }
 
 static uint32_t tck_halfcycle_delay = 10;
+static int swd_mode = 0;
+static int queued_retval = ERROR_OK;
 
 static void spi_init(uint32_t freq)
 {
@@ -354,14 +358,15 @@ static const unsigned char bitrev[] =
   * tap_shift: set TMS hi during last bit
   */
 /* bit order: least significant first */
-static int usbp5_tdi_seq(uint8_t *bits, int nb_bits, int tap_shift)
+static int usbp5_tdi_seq(const uint8_t *txbits, uint8_t *rxbits, int nb_bits, int tap_shift)
 {
-	uint8_t rxbuf, txbuf = 0xff;
+	uint8_t rxbuf, txbuf = 0; //OR: swd_en ? 0 : 0xff;
 	int i, ofs, n_bytes_rx, n_bytes_tx;
-	/* special handling for dummy data (bits == NULL) during RUNTEST */
-	int stride = bits ? 1 : 0;
-	uint8_t *rxptr = stride ? bits : &rxbuf;
-	uint8_t *txptr = stride ? bits : &txbuf;
+	/* special handling for dummy data (tx/rxbits == NULL) during RUNTEST, etc. */
+	int txstride = txbits ? 1 : 0;
+	int rxstride = rxbits ? 1 : 0;
+	uint8_t *rxptr = rxstride ? rxbits : &rxbuf;
+	const uint8_t *txptr = txstride ? txbits : &txbuf;
 	uint32_t status;
 		
 	if(!nb_bits)
@@ -385,7 +390,7 @@ static int usbp5_tdi_seq(uint8_t *bits, int nb_bits, int tap_shift)
 	/* remainder - handled w/ bitbanging */
 	nb_bits -= n_bytes_rx<<3;
 	
-	for( ; n_bytes_tx ; n_bytes_tx-- , txptr+=stride) {
+	for( ; n_bytes_tx ; n_bytes_tx-- , txptr+=txstride) {
 		
 		/* busywait
 		 * - receive one byte if possible to avoid RX overflows
@@ -395,7 +400,7 @@ static int usbp5_tdi_seq(uint8_t *bits, int nb_bits, int tap_shift)
 			status = spimem[SPI_STATUS];
 			if(!(status&(1<<SPI_STATUS_RXEMPTY))) {
 				*rxptr = bitrev[spimem[SPI_FIFO_DATA]];
-				rxptr+=stride;
+				rxptr+=rxstride;
 				n_bytes_rx--;
 			}
 		} while(status&(1<<SPI_STATUS_TXFULL));
@@ -409,7 +414,7 @@ static int usbp5_tdi_seq(uint8_t *bits, int nb_bits, int tap_shift)
 		status = spimem[SPI_STATUS];
 		if(!(status&(1<<SPI_STATUS_RXEMPTY))) {
 			*rxptr = bitrev[spimem[SPI_FIFO_DATA]];
-			rxptr+=stride;
+			rxptr+=rxstride;
 			n_bytes_rx--;
 		}
 	} while(n_bytes_rx);
@@ -580,11 +585,11 @@ static int usbp5_scan(struct scan_command *cmd)
 	}
 
 	if (cmd->end_state == TAP_DRSHIFT) {
-		retval = usbp5_tdi_seq(buf, scan_bits, NO_TAP_SHIFT);
+		retval = usbp5_tdi_seq(buf, buf, scan_bits, NO_TAP_SHIFT);
 		if (retval != ERROR_OK)
 			return retval;
 	} else {
-		retval = usbp5_tdi_seq(buf, scan_bits, TAP_SHIFT);
+		retval = usbp5_tdi_seq(buf, buf, scan_bits, TAP_SHIFT);
 		if (retval != ERROR_OK)
 			return retval;
 	}
@@ -628,7 +633,7 @@ static int usbp5_runtest(int cycles, tap_state_t state)
 	if (retval != ERROR_OK)
 		return retval;
 
-	retval = usbp5_tdi_seq(NULL, cycles, NO_TAP_SHIFT);
+	retval = usbp5_tdi_seq(NULL, NULL, cycles, NO_TAP_SHIFT);
 	if (retval != ERROR_OK)
 		return retval;
 
@@ -637,7 +642,7 @@ static int usbp5_runtest(int cycles, tap_state_t state)
 
 static int usbp5_stableclocks(int cycles)
 {
-	return usbp5_tdi_seq(NULL, cycles, NO_TAP_SHIFT);
+	return usbp5_tdi_seq(NULL, NULL, cycles, NO_TAP_SHIFT);
 }
 
 static int usbp5_execute_queue(void)
@@ -685,7 +690,8 @@ static int usbp5_execute_queue(void)
 static int usbp5_khz(int khz, int *jtag_speed)
 {
 	spi_init(khz*1000);
-	*jtag_speed=khz;
+	if(jtag_speed)
+		*jtag_speed=khz;
 	return ERROR_OK;
 }
 
@@ -718,15 +724,167 @@ static int usbp5_quit(void)
 	return ERROR_OK;
 }
 
+/* YUK! - but this is currently a global.... */
+extern struct jtag_interface *jtag_interface;
+
+static void swd_clear_sticky_errors(struct adiv5_dap *dap)
+{
+	const struct swd_driver *swd = jtag_interface->swd;
+	assert(swd);
+
+	swd->write_reg(dap, swd_cmd(false,  false, DP_ABORT),
+		STKCMPCLR | STKERRCLR | WDERRCLR | ORUNERRCLR);
+}
+
+static void usbp5_swd_cmd(struct adiv5_dap *dap, uint8_t cmd, uint32_t *dst, uint32_t data)
+{
+	uint32_t buf32[2];
+	uint8_t *buf8 = (uint8_t *)buf32;
+	uint8_t ack;
+	int parity=0;
+	
+	if (queued_retval != ERROR_OK)
+		return;
+
+	cmd |= SWD_CMD_START | SWD_CMD_PARK;
+	usbp5_tdi_seq(&cmd, NULL, 8, NO_TAP_SHIFT);
+
+	/* read */
+	if (cmd & SWD_CMD_RnW) {
+		usbp5_tdi_seq(NULL, &ack, 3+1, NO_TAP_SHIFT);
+		ack>>=1;
+		usbp5_tdi_seq(NULL, buf8, 32 + 1 + 1, NO_TAP_SHIFT);
+		parity = buf8[4];
+		if (parity != parity_u32(*buf32)) {
+			LOG_DEBUG("Wrong parity detected - is: %x should: %x",parity,parity_u32(*buf32));
+			queued_retval = ERROR_FAIL;
+		}
+		if(dst)
+			*dst = *buf32;
+		
+	/* write */
+	} else {
+		usbp5_tdi_seq(NULL, &ack, 3+1+1, NO_TAP_SHIFT);
+		ack>>=1;
+		ack&=7;
+		*buf32 = data;
+		buf8[4] = parity_u32(data);
+		usbp5_tdi_seq(buf8, NULL, 32 + 1, NO_TAP_SHIFT);
+	}
+
+	/* Insert idle cycles after AP accesses to avoid WAIT */
+	if (cmd & SWD_CMD_APnDP)
+		usbp5_tdi_seq(NULL, NULL, dap->memaccess_tck, NO_TAP_SHIFT);
+	
+	switch (ack) {
+	 case SWD_ACK_OK:
+		break;
+	 case SWD_ACK_WAIT:
+		LOG_DEBUG("SWD_ACK_WAIT");
+		swd_clear_sticky_errors(dap);
+		break;
+	 case SWD_ACK_FAULT:
+		LOG_DEBUG("SWD_ACK_FAULT");
+		queued_retval = ack;
+		break;
+	 default:
+		LOG_DEBUG("No valid acknowledge: ack=%d", ack);
+		queued_retval = ack;
+		break;
+	}
+}
+
+static int usbp5_swd_init(void)
+{
+	LOG_INFO("USBprog5 SWD mode enabled");
+	swd_mode = 1;
+	return ERROR_OK;
+}
+
+static int_least32_t usbp5_swd_frequency(struct adiv5_dap *dap, int_least32_t hz)
+{
+	if (hz > 0)
+		usbp5_khz(hz / 1000, NULL);
+
+	return hz;
+}
+
+static int usbp5_swd_switch_seq(struct adiv5_dap *dap, enum swd_special_seq seq)
+{
+	const uint8_t *s;
+	unsigned int s_len;
+
+	switch (seq) {
+	case LINE_RESET:
+		LOG_DEBUG("SWD line reset");
+		s = swd_seq_line_reset;
+		s_len = swd_seq_line_reset_len;
+		break;
+	case JTAG_TO_SWD:
+		LOG_DEBUG("JTAG-to-SWD");
+		s = swd_seq_jtag_to_swd;
+		s_len = swd_seq_jtag_to_swd_len;
+		break;
+	case SWD_TO_JTAG:
+		LOG_DEBUG("SWD-to-JTAG");
+		s = swd_seq_swd_to_jtag;
+		s_len = swd_seq_swd_to_jtag_len;
+		break;
+	default:
+		LOG_ERROR("Sequence %d not supported", seq);
+		return ERROR_FAIL;
+	}
+
+	usbp5_tdi_seq(s, NULL, s_len, NO_TAP_SHIFT);
+
+	return ERROR_OK;
+}
+
+static void usbp5_swd_read_reg(struct adiv5_dap *dap, uint8_t cmd, uint32_t *value)
+{
+	assert(cmd & SWD_CMD_RnW);
+	usbp5_swd_cmd(dap, cmd, value, 0);
+}
+
+static void usbp5_swd_write_reg(struct adiv5_dap *dap, uint8_t cmd, uint32_t value)
+{
+	assert(!(cmd & SWD_CMD_RnW));
+	usbp5_swd_cmd(dap, cmd, NULL, value);
+}
+
+static int usbp5_swd_run_queue(struct adiv5_dap *dap)
+{
+	int retval;
+	/* A transaction must be followed by another transaction or at least 8 idle cycles to
+	 * ensure that data is clocked through the AP. */
+	usbp5_tdi_seq(NULL, NULL, 8, NO_TAP_SHIFT);
+	retval = queued_retval;
+	queued_retval = ERROR_OK;
+	LOG_DEBUG("SWD queue return value: %02x", retval);
+	return retval;
+}
+
 static const struct command_registration usbp5_command_handlers[] = {
 	COMMAND_REGISTRATION_DONE
+};
+
+static const char * const usbp5_transports[] = {"jtag", "swd", NULL};
+
+static const struct swd_driver usbprog5_swd = {
+	.init = usbp5_swd_init,
+	.frequency = usbp5_swd_frequency,
+	.switch_seq = usbp5_swd_switch_seq,
+	.read_reg = usbp5_swd_read_reg,
+	.write_reg = usbp5_swd_write_reg,
+	.run = usbp5_swd_run_queue
 };
 
 struct jtag_interface usbprog5_interface = {
 	.name = "usbprog5",
 	.supported = DEBUG_CAP_TMS_SEQ,
 	.commands = usbp5_command_handlers,
-	.transports = jtag_only,
+	.transports = usbp5_transports,
+	.swd = &usbprog5_swd,
 
 	.khz = usbp5_khz,
 	.speed = usbp5_speed,

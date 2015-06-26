@@ -4,6 +4,7 @@ mkdir -p /tmp/build/root/avrdude-6.1
 mkdir -p /tmp/build/root/openocd-code/src
 mkdir -p /tmp/build/root/openocd-code/tcl/target
 mkdir -p /tmp/build/root/openocd-code/tcl/board
+mkdir -p /tmp/build/root/openocd-code/tcl/interface
 mkdir -p /tmp/build/root/makeprocessor/tcl/target
 mkdir -p /tmp/build/root/makeprocessor/tcl/board
 
@@ -41,6 +42,8 @@ cp version /tmp/build/root/version
 cp  server/server.py /tmp/build/root/server.py
 
 cp -r openocd-0.9.0/src/openocd /tmp/build/root/openocd-code/src/
+
+cp -r openocd-0.9.0/tcl/interface /tmp/build/root/openocd-code/tcl/
 
 cp -r  processor/tcl /tmp/build/root/openocd-code/
 

@@ -150,7 +150,7 @@ def inpt():
 		parser.add_argument("--verbose",'-v',action='count',help="verbose output -v,-vv,-vvv ")
 		parser.add_argument("--gdb",help="'start's or 'stop's gdb (openocd)")
 		parser.add_argument("--dump",help="Please insert the command in following form: \n mdw [phys] addr [count] \n\n   mdw = 32-bit word\n   mdh = 16-bit halfword\n   mdb = 8-bit byte\n\nWhen the current target has an MMU which is present and active, addr is interpreted as a virtual address. Otherwise, or if the optional phys flag is specified, addr is interpreted as a physical address. If count is specified, displays that many units")
-		
+		parser.add_argument("--swd",help="write 'on' to use swd",default="no")
 
 
 
@@ -194,7 +194,8 @@ def inpt():
 			"browser":False,
 			"atmel-studio":None,
 			#"eclipse":False
-			"api":False
+			"api":False,
+			"swd":'no'
                 }
 		#submiting input values into dictionary
 		lis["v"]=args.verbose
@@ -231,6 +232,7 @@ def inpt():
 		lis["browser"]=args.browser
 		lis["atmel-studio"]=args.atmel_studio
 		#lis["eclipse"]=args.eclipse
+		lis["swd"]=args.swd
 
 		if args.erase==True:
 			lis["delete"]=args.erase

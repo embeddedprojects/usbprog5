@@ -14,7 +14,14 @@ $i=$_GET['i'];
 $save=$_GET['save'];
 $pointer=$_GET['pointer'];
 $eeprom=$_GET['eeprom'];
+$swd=$_GET['swd'];
 
+if ($swd==2){
+$SWD='on';
+
+}else{
+$SWD='no';
+}
 
 switch($cmd)
 {
@@ -26,11 +33,11 @@ switch($cmd)
   break; 
   case "dump":
     #echo embeddedprog_read($vendor,$processor,$voltage,$speed,$save);
-	echo dump($processor,$save,$speed,$voltage);
+	echo dump($processor,$save,$speed,$voltage,$SWD);
   break;
   case "desc":
     #echo embeddedprog_read($vendor,$processor,$voltage,$speed,$save);
-    echo desc($processor,$save,$i,$voltage);
+    echo desc($processor,$save,$i,$voltage,$SWD);
   break;   
 
   case "read-fuse":
@@ -43,11 +50,11 @@ switch($cmd)
   break; 
   case "pro":
     #echo embeddedprog_signature($vendor,$processor,$voltage,$speed);
-    echo pro($processor,$i,$voltage,$speed);
+    echo pro($processor,$i,$voltage,$speed,$swd);
   break;  
   case "readsignature":
     #echo embeddedprog_signature($vendor,$processor,$voltage,$speed);
-    echo read_sig($processor,$speed,$voltage);
+    echo read_sig($processor,$speed,$voltage,$SWD);
   break;
   case "erase":
     #echo embeddedprog_erase($vendor,$processor,$voltage,$speed);
@@ -58,7 +65,7 @@ switch($cmd)
   break;
   case "start-gdb":
     #echo embeddedprog_startgdb($vendor,$processor,$voltage,$speed);
-    echo gdb_start($processor,$speed,$voltage);
+    echo gdb_start($processor,$speed,$voltage,$SWD);
   break;
   case "stop-gdb":
     #echo embeddedprog_stopgdb($vendor,$processor,$voltage,$speed);
@@ -82,7 +89,7 @@ switch($cmd)
   break;
   case "upload":
     #echo exec_upload($vendor,$processor,$voltage,$speed,$i);
-    echo upload($processor,$speed,$i,$voltage,$eeprom);
+    echo upload($processor,$speed,$i,$voltage,$eeprom,$SWD);
   break;
   case "port":
     #echo embeddedprog_read($vendor,$processor,$voltage,$speed,$save);

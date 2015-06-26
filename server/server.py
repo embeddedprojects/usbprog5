@@ -11,7 +11,7 @@ import threading
 import signal
 import pwd, os
 
-template_json='{"load": null, "rename": null, "fuse-write-low": null, "fuse-read-high": false, "show-all": false, "dump": null, "fuse-read-extended": false, "signature": false, "fuse-write-extended": null, "flash-read": null, "raw": null, "gdb": null, "api": false, "voltage": 3, "eeprog_port": null, "lockbits-write": null, "browser": false, "lockbits-read": false, "speed": 2, "eeprog-port": 8888, "fuse-write-high": null, "web": null, "safe": null, "eeprom-write": null, "eeprom-read": null, "flash-write": null, "fuse-read-low": false, "atmel-studio": null, "eeprog_ip": null, "eeprog-ip": "10.0.0.1", "del-conf": null, "mode": null, "v": 0, "lockbits-write-erase": null, "desc": null, "processor": null, "delete": false}'
+template_json='{"load": null, "rename": null, "fuse-write-low": null, "fuse-read-high": false, "show-all": false, "dump": null, "fuse-read-extended": false, "signature": false, "fuse-write-extended": null, "flash-read": null, "raw": null, "gdb": null, "api": false, "voltage": 3, "eeprog_port": null, "lockbits-write": null, "browser": false, "lockbits-read": false, "speed": 2, "eeprog-port": 8888, "fuse-write-high": null, "web": null, "safe": null, "eeprom-write": null, "eeprom-read": null, "flash-write": null, "fuse-read-low": false, "atmel-studio": null, "eeprog_ip": null, "eeprog-ip": "10.0.0.1", "del-conf": null, "mode": null, "v": 0, "lockbits-write-erase": null, "desc": null, "processor": null, "delete": false, "swd": "no"}'
 
 
 
@@ -678,7 +678,10 @@ def logica(code,connection):
 ##############################################################################	
 	if "openocd" in  code['mode']:
 
-
+	  	if "on" == code['swd'].lower():
+	  		config_adrr="/root/openocd-code/tcl/interface/usbprog5_swd.cfg"
+	  	else:
+			config_adrr="/root/openocd-code/tcl/interface/embeddedprog.cfg"
 
 		if code['flash-read']!=None:
 			connection.sendall("{'v':"+str(code['v'])+",'msg':'flash-read not implemented for openocd'}")
@@ -697,7 +700,7 @@ def logica(code,connection):
 
 
 
-		code['execute']='/root/openocd-code/src/openocd -f /root/openocd-code/tcl/interface/embeddedprog.cfg -f /root/openocd-code/tcl/'+path_ocd+'/'+code['processor']+'.cfg'
+		code['execute']='/root/openocd-code/src/openocd -f '+config_adrr+' -f /root/openocd-code/tcl/'+path_ocd+'/'+code['processor']+'.cfg'
 		if code['dump']!= None:
 			code['execute']=code['execute']+' -c "init;halt;'+code['dump']+';exit"'
 
@@ -728,7 +731,7 @@ def logica(code,connection):
 					gdb.replace('\n','')
 					gdb.replace('\r','')
 					tel=r.readline()
-				subprocess.Popen(['/root/openocd-code/src/openocd','-f','/root/openocd-code/tcl/interface/embeddedprog.cfg','-f','/root/openocd-code/tcl/'+path_ocd+'/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
+				subprocess.Popen(['/root/openocd-code/src/openocd','-f',config_adrr,'-f','/root/openocd-code/tcl/'+path_ocd+'/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
 		
 				if code['web']!=True:
 					connection.sendall("{'v':"+str(code['v'])+",'mode':'exit'}")
@@ -890,6 +893,10 @@ def conf (code):
                                 i=0                                
                                 line=r.readline()
                         safe=decodejson(line)
+			code['voltage']=safe['voltage']
+			code['speed']=safe['speed']	
+			code['swd']=safe['swd']	
+			code['processor']=safe['processor']		
 			if safe['eeprom']==1:
 				code['eeprom']=1
 				safe['backflash']=safe['eeprom-write']
@@ -1019,7 +1026,7 @@ try:
 	subprocess.call(["touch", "/var/www/tmp/processor"])
 	subprocess.call(["chmod", "777", "/var/www/tmp/processor"])
 	with open("/var/www/tmp/processor",'w') as w:
-		w.write("0\n3\n1\nSearch Processor ...\n")
+		w.write("0\n3\n1\nSearch Processor ...\n1\n")
 	subprocess.call(["/bin/rm", "/tmp/gdb_runs"])
 	subprocess.call(["touch", "/tmp/update_done"])
 	subprocess.call(["chmod", "777", "/tmp/update_done"])

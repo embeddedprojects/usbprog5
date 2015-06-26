@@ -54,7 +54,7 @@ Reading | ################################################## | 100% 0.00s
 avrdude: Device signature = 0x1e9403
 avrdude: reading flash memory:
 
-Reading | ################################################## | 100% 11.27s
+Reading | ################################################## | 100% 11.31s
 
 avrdude: writing output file "/tmp/flash.hex"
 
@@ -82,7 +82,7 @@ Reading | ################################################## | 100% 0.00s
 avrdude: Device signature = 0x1e9403
 avrdude: reading eeprom memory:
 
-Reading | ################################################## | 100% 0.37s
+Reading | ################################################## | 100% 0.39s
 
 avrdude: writing output file "/tmp/eeprom.hex"
 
@@ -118,7 +118,7 @@ avrdude: load data lfuse data from input file 0xc1:
 avrdude: input file 0xc1 contains 1 bytes
 avrdude: reading on-chip lfuse data:
 
-Reading | ################################################## | 100% 0.00s
+Reading | ################################################## | 100% 0.01s
 
 avrdude: verifying ...
 avrdude: 1 bytes of lfuse verified
@@ -360,7 +360,7 @@ Reading | ################################################## | 100% 0.00s
 avrdude: Device signature = 0x1e9403
 avrdude: reading flash memory:
 
-Reading | ################################################## | 100% 11.30s
+Reading | ################################################## | 100% 11.31s
 
 avrdude: writing output file "/tmp/flash.hex"
 
@@ -438,20 +438,20 @@ avrdude: NOTE: "flash" memory has been specified, an erase cycle will be perform
          To disable this feature, specify the -D option.
 avrdude: erasing chip
 avrdude: reading input file "/tmp/flash.hex"
-avrdude: writing flash (276 bytes):
+avrdude: writing flash (5272 bytes):
 
-Writing | ################################################## | 100% 0.24s
+Writing | ################################################## | 100% 3.67s
 
-avrdude: 276 bytes of flash written
+avrdude: 5272 bytes of flash written
 avrdude: verifying flash memory against /tmp/flash.hex:
 avrdude: load data flash data from input file /tmp/flash.hex:
-avrdude: input file /tmp/flash.hex contains 276 bytes
+avrdude: input file /tmp/flash.hex contains 5272 bytes
 avrdude: reading on-chip flash data:
 
-Reading | ################################################## | 100% 0.42s
+Reading | ################################################## | 100% 3.47s
 
 avrdude: verifying ...
-avrdude: 276 bytes of flash verified
+avrdude: 5272 bytes of flash verified
 
 avrdude done.  Thank you.
 
@@ -477,7 +477,7 @@ avrdude: Device signature = 0x1e9403
 avrdude: reading input file "/tmp/eeprom.hex"
 avrdude: writing eeprom (512 bytes):
 
-Writing | ################################################## | 100% 0.40s
+Writing | ################################################## | 100% 0.41s
 
 avrdude: 512 bytes of eeprom written
 avrdude: verifying eeprom memory against /tmp/eeprom.hex:
@@ -485,7 +485,7 @@ avrdude: load data eeprom data from input file /tmp/eeprom.hex:
 avrdude: input file /tmp/eeprom.hex contains 512 bytes
 avrdude: reading on-chip eeprom data:
 
-Reading | ################################################## | 100% 0.40s
+Reading | ################################################## | 100% 0.41s
 
 avrdude: verifying ...
 avrdude: 512 bytes of eeprom verified

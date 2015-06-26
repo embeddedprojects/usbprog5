@@ -49,15 +49,17 @@ libocdjtagdrivers_la-usbprog5.lo: usbprog5.c ../../../config.h \
  ../../../src/jtag/minidriver_imp.h ../../../src/jtag/commands.h \
  ../../../src/target/armv7m_trace.h ../../../src/target/target.h \
  ../../../src/helper/list.h ../../../src/helper/command.h \
- /usr/include/sys/ioctl.h /usr/include/bits/ioctls.h \
- /usr/include/asm/ioctls.h /usr/include/asm/ioctl.h \
- /usr/include/asm-generic/ioctl.h /usr/include/bits/ioctl-types.h \
- /usr/include/sys/ttydefaults.h /usr/include/sys/mman.h \
- /usr/include/bits/mman.h /usr/include/linux/types.h \
- /usr/include/asm/types.h /usr/include/asm-generic/int-ll64.h \
- /usr/include/asm/bitsperlong.h /usr/include/asm-generic/bitsperlong.h \
- /usr/include/linux/posix_types.h /usr/include/linux/stddef.h \
- /usr/include/asm/posix_types.h /usr/include/linux/spi/spidev.h
+ ../../../src/jtag/swd.h ../../../src/target/arm_adi_v5.h \
+ ../../../src/target/arm_jtag.h /usr/include/sys/ioctl.h \
+ /usr/include/bits/ioctls.h /usr/include/asm/ioctls.h \
+ /usr/include/asm/ioctl.h /usr/include/asm-generic/ioctl.h \
+ /usr/include/bits/ioctl-types.h /usr/include/sys/ttydefaults.h \
+ /usr/include/sys/mman.h /usr/include/bits/mman.h \
+ /usr/include/linux/types.h /usr/include/asm/types.h \
+ /usr/include/asm-generic/int-ll64.h /usr/include/asm/bitsperlong.h \
+ /usr/include/asm-generic/bitsperlong.h /usr/include/linux/posix_types.h \
+ /usr/include/linux/stddef.h /usr/include/asm/posix_types.h \
+ /usr/include/linux/spi/spidev.h
 
 ../../../config.h:
 
@@ -258,6 +260,12 @@ libocdjtagdrivers_la-usbprog5.lo: usbprog5.c ../../../config.h \
 ../../../src/helper/list.h:
 
 ../../../src/helper/command.h:
+
+../../../src/jtag/swd.h:
+
+../../../src/target/arm_adi_v5.h:
+
+../../../src/target/arm_jtag.h:
 
 /usr/include/sys/ioctl.h:
 

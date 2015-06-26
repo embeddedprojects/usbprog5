@@ -193,6 +193,21 @@ for (var i = 1 ; i < 6 ; i=i+2){
         break;
     }
 }
+
+
+
+for (var i = 1 ; i < 3 ; i=i+1){
+  if (  i == " . $i[4] . ") {
+        radiobtn = document.getElementById((i.toString()+'swd'));
+	radiobtn.checked = true;
+        break;
+    }
+
+
+  }
+
+
+
 }
 
 </script>";

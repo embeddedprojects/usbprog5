@@ -118,7 +118,7 @@ function embeddedprog_stopgdb($vendor,$processor,$voltage,$speed,$i)
 }
 
 
-function pro($processor,$i,$voltage,$speed)
+function pro($processor,$i,$voltage,$speed,$swd)
 {
 	
 	$avr=file('/var/www/avrdude.rc');        
@@ -128,6 +128,7 @@ function pro($processor,$i,$voltage,$speed)
  	$lol=shell_exec('echo ' . $voltage . ' >> /var/www/tmp/processor');
  	$lol=shell_exec('echo ' . $speed . ' >> /var/www/tmp/processor');
 	$lol=shell_exec('echo ' . $processor . ' >> /var/www/tmp/processor');
+	$lol=shell_exec('echo ' . $swd . ' >> /var/www/tmp/processor');
 	
 	if (in_array ($processor."\n",$avr)){
 	return 1;

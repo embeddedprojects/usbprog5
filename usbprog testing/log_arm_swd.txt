@@ -1,0 +1,107 @@
+Status:
+
+Signature: OK
+flash-write: OK
+dump memory: OK
+
+
+------------------------------------
+
+read signature:
+
+connect port
+connecting to 10.0.0.1 port 8888
+send code to server
+go
+recieve output in 'realtime'
+ Open On-Chip Debugger 0.9.0 (2015-06-15-18:32)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+adapter speed: 100 kHz
+Info : USBprog5 SWD mode enabled
+swd
+adapter speed: 1000 kHz
+adapter_nsrst_delay: 100
+none separate
+cortex_m reset_config sysresetreq
+Info : clock speed 1000 kHz
+Info : SWD IDCODE 0x1ba01477
+Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints
+
+
+
+
+flash write:
+
+connect port
+connecting to 10.0.0.1 port 8888
+send code to server
+set_file
+send file
+go
+recieve output in 'realtime'
+ Open On-Chip Debugger 0.9.0 (2015-06-15-18:32)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+adapter speed: 100 kHz
+Info : USBprog5 SWD mode enabled
+swd
+adapter speed: 1000 kHz
+adapter_nsrst_delay: 100
+none separate
+cortex_m reset_config sysresetreq
+Info : clock speed 1000 kHz
+Info : SWD IDCODE 0x1ba01477
+Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints
+target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08000044 msp: 0x20002000
+target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08000044 msp: 0x20002000
+** Programming Started **
+auto erase enabled
+Info : device id = 0x10016420
+Info : flash size = 128kbytes
+Warn : no flash bank found for address 0
+wrote 0 bytes from file /tmp/test_arm_lpc2103.py in 0.010528s (0.000 KiB/s)
+** Programming Finished **
+** Resetting Target **
+Warn : target not halted
+
+
+
+
+
+dump memory:
+
+connect port
+connecting to 10.0.0.1 port 8888
+send code to server
+go
+recieve output in 'realtime'
+ Open On-Chip Debugger 0.9.0 (2015-06-15-18:32)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+adapter speed: 100 kHz
+Info : USBprog5 SWD mode enabled
+swd
+adapter speed: 1000 kHz
+adapter_nsrst_delay: 100
+none separate
+cortex_m reset_config sysresetreq
+Info : clock speed 1000 kHz
+Info : SWD IDCODE 0x1ba01477
+Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints
+target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x61000000 pc: 0x08000074 msp: 0x20001ff0
+0x00000000: 20002000 08000045 08000041 08000041 08000041 08000041 08000041 00000000 
+0x00000020: 00000000 00000000 
+
+
+
+
