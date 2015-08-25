@@ -766,6 +766,8 @@ def logica(code,connection):
                                 ende ="reset"
 
 			code['name']=namefw
+			if code['v']>=2:
+                                print "Name == "+namefw
 			if code['web']!=True:
                         	connection.sendall("{'v':"+str(code['v'])+",'mode':'set_file','path':'"+code['flash-write']+"'}")
                         if code['v']>=2:
@@ -789,11 +791,13 @@ def logica(code,connection):
 			#if code['eclipse']==True:
 			#	code['execute']=code['execute']+' -c "init";resume'
 			#else:
+			raw=code['execute']
 			code['execute']=code['execute']+' -c "init;exit;quit"'
 #prototype raw input
                 if code['raw']!= None:
 			print "try raw mode"
-                        code['execute']="/home/eproo/openocd-0.8.0-rc1/src/openocd -f /home/eproo/openocd-0.8.0-rc1/tcl/interface/ftdi/olimex-arm-usb-ocd.cfg "+code['raw']
+                        code['execute']=raw+"  "+code['raw']
+			print "Code == "+code['execute']
 		if code['web']!=True:
                 	connection.sendall("{'v':"+str(code['v'])+",'mode':'go'}")
                 go(code,connection)

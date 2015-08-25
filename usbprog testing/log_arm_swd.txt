@@ -21,11 +21,11 @@ For bug reports, read
 adapter speed: 100 kHz
 Info : USBprog5 SWD mode enabled
 swd
-adapter speed: 1000 kHz
+adapter speed: 100 kHz
 adapter_nsrst_delay: 100
 none separate
 cortex_m reset_config sysresetreq
-Info : clock speed 1000 kHz
+Info : clock speed 100 kHz
 Info : SWD IDCODE 0x1ba01477
 Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints
 
@@ -48,11 +48,11 @@ For bug reports, read
 adapter speed: 100 kHz
 Info : USBprog5 SWD mode enabled
 swd
-adapter speed: 1000 kHz
+adapter speed: 100 kHz
 adapter_nsrst_delay: 100
 none separate
 cortex_m reset_config sysresetreq
-Info : clock speed 1000 kHz
+Info : clock speed 100 kHz
 Info : SWD IDCODE 0x1ba01477
 Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints
 target state: halted
@@ -65,8 +65,7 @@ xPSR: 0x01000000 pc: 0x08000044 msp: 0x20002000
 auto erase enabled
 Info : device id = 0x10016420
 Info : flash size = 128kbytes
-Warn : no flash bank found for address 0
-wrote 0 bytes from file /tmp/test_arm_lpc2103.py in 0.010528s (0.000 KiB/s)
+wrote 1024 bytes from file /tmp/main.elf in 0.345606s (2.893 KiB/s)
 ** Programming Finished **
 ** Resetting Target **
 Warn : target not halted
@@ -89,11 +88,11 @@ For bug reports, read
 adapter speed: 100 kHz
 Info : USBprog5 SWD mode enabled
 swd
-adapter speed: 1000 kHz
+adapter speed: 100 kHz
 adapter_nsrst_delay: 100
 none separate
 cortex_m reset_config sysresetreq
-Info : clock speed 1000 kHz
+Info : clock speed 100 kHz
 Info : SWD IDCODE 0x1ba01477
 Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints
 target state: halted

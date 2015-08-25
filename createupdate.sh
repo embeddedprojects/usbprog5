@@ -34,6 +34,8 @@ cp  web/icon_help.png /tmp/build/var/www
 cp  web/update.php /tmp/build/var/www
 cp  web/embedded_zeichen.jpg /tmp/build/var/www
 cp  web/atmel_einstellungen.png /tmp/build/var/www
+cp -av  web/target /tmp/build/var/www
+cp -av  web/target /tmp/build
 
 cp version /tmp/build/root/version
 
@@ -55,7 +57,7 @@ cp client/windows/installer/setup.exe /tmp/build/var/www/tmp
 
 cd /tmp/build
 chmod -R 777 /tmp/build/ 
-tar cvfz update.tar.gz var/ root/ 
+tar cvfz update.tar.gz var/ root/ target
 cd -
 mv /tmp/build/update.tar.gz update/
 

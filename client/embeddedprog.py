@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 import socket
 import sys
 import json
@@ -193,7 +193,7 @@ def inpt():
 			"voltage":None,
 			"browser":False,
 			"atmel-studio":None,
-			#"eclipse":False
+			#"eclipse":False,
 			"api":False,
 			"swd":'no'
                 }

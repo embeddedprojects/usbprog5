@@ -84,7 +84,7 @@ def signature():
 def flash():
 	returnv=1
 	status="flash-write: OK"
-	out=go("--flash-write /home/eproo/git/usbprog5/usbprog\ testing/test_arm_lpc2103.py")
+	out=go("--flash-write /home/eproo/test_swd/EmbSys2-master/Software/0_aufgabe_makefile/main.elf")
 	print out
 	if "ERROR" in out:
 		if ": OK" in status:

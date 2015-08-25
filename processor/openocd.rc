@@ -195,6 +195,7 @@ lpc11xx
 lpc12xx
 lpc13xx
 lpc17xx
+lpc1830
 lpc1850
 lpc1850_spifi_generic
 lpc1xxx
