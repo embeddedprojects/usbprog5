@@ -216,7 +216,7 @@ def processor(code,connection):
 				lines=f.read().splitlines()
 				try:
 					if (lines[3] == '') or (lines[3] == 'None') or ('Search' in lines[3]):
-						connection.sendall("{'v':"+str(code['v'])+",'mode':'browser','msg':'to use this program an processor needs to be set','eeprog-ip':'"+code['eeprog-ip']+"'}")
+						connection.sendall("{'v':"+str(code['v'])+",'mode':'browser','msg':'to use this program an processor needs to be set'}")
 						
 						return code
 				
@@ -226,7 +226,7 @@ def processor(code,connection):
 					code['speed']=lines[2]
 					code['flash-write']=code['atmel-studio']
 				except:
-					connection.sendall("{'v':"+str(code['v'])+",'mode':'browser','msg':'to use this program an processor needs to be set','eeprog-ip':'"+code['eeprog-ip']+"'}")
+					connection.sendall("{'v':"+str(code['v'])+",'mode':'browser','msg':'to use this program an processor needs to be set'}")
 					return code
 	if code['v']>=1:
 		print "choose mode via processor"
@@ -237,19 +237,20 @@ def processor(code,connection):
 		print "render avr"
 		processoravr=f.read().splitlines()
 	if code['show-all'] or code['processor']== None:
-		if code['processor']== None:
-			if code['web']!=True:
-				connection.sendall("{'v':"+str(code['v'])+",'mode':'show','msg':'to use this program an processor needs to be set'}")
                 d = dict()
 		d['mode']='show-all'
-		d['v']=0
+		d['v']=3
                 a = ['1', '2']
                 for i in processoravr:
                         d.setdefault("avr", []).append(i)
 		for i in processoropenocd:
 			d.setdefault("ocd",[]).append(i)
-		d['mode']='show-all'	
+		d['mode']='show-all'
+		print "show all 249"	
 		connection.sendall(str(d))
+		if code['processor']== None:
+			if code['web']!=True:
+				connection.sendall("{'v':"+str(code['v'])+",'mode':'show','msg':'to use this program an processor needs to be set'}")
 
 
 
@@ -283,7 +284,7 @@ def processor(code,connection):
                 		for i in processoropenocd:
                         		d.setdefault("ocd",[]).append(i)
                 
-
+				print "show all 287"
                 		connection.sendall(str(d))
 
 

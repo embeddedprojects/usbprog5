@@ -575,9 +575,13 @@ try:
 			
 			temp='a'
 			if(('show-all' in code)or("'ocd': ['" in code)or("'avr': ['" in code) ):
-			 while '}' not in temp :
+			 if '}' not in code:
+			  while '}' not in temp :
 				temp=sock.recv(8192)
 				code=code+temp
+				if '}' in temp:
+					temp, added, helper =temp.partition('}')
+					temp=temp+added
 			code=ast.literal_eval(code)
 			code['help']=helper
 			if code['v']>= 2:
