@@ -1,0 +1,3 @@
+libavrdude_la-crc16.lo: crc16.c crc16.h
+
+crc16.h:

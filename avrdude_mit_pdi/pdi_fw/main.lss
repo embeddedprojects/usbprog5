@@ -1,0 +1,2360 @@
+
+main.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         0000000e  00800100  00000ab2  00000b46  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         00000ab2  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .bss          00000126  0080010e  0080010e  00000b54  2**0
+                  ALLOC
+  3 .comment      00000011  00000000  00000000  00000b54  2**0
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000080  00000000  00000000  00000b65  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00001ded  00000000  00000000  00000be5  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000851  00000000  00000000  000029d2  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000004f4  00000000  00000000  00003223  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  000003c0  00000000  00000000  00003718  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000957  00000000  00000000  00003ad8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00001370  00000000  00000000  0000442f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000068  00000000  00000000  0000579f  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	2b c0       	rjmp	.+86     	; 0x58 <__ctors_end>
+   2:	51 c0       	rjmp	.+162    	; 0xa6 <__vector_1>
+   4:	44 c0       	rjmp	.+136    	; 0x8e <__bad_interrupt>
+   6:	43 c0       	rjmp	.+134    	; 0x8e <__bad_interrupt>
+   8:	42 c0       	rjmp	.+132    	; 0x8e <__bad_interrupt>
+   a:	41 c0       	rjmp	.+130    	; 0x8e <__bad_interrupt>
+   c:	40 c0       	rjmp	.+128    	; 0x8e <__bad_interrupt>
+   e:	3f c0       	rjmp	.+126    	; 0x8e <__bad_interrupt>
+  10:	3e c0       	rjmp	.+124    	; 0x8e <__bad_interrupt>
+  12:	3d c0       	rjmp	.+122    	; 0x8e <__bad_interrupt>
+  14:	3c c0       	rjmp	.+120    	; 0x8e <__bad_interrupt>
+  16:	3b c0       	rjmp	.+118    	; 0x8e <__bad_interrupt>
+  18:	3a c0       	rjmp	.+116    	; 0x8e <__bad_interrupt>
+  1a:	39 c0       	rjmp	.+114    	; 0x8e <__bad_interrupt>
+  1c:	38 c0       	rjmp	.+112    	; 0x8e <__bad_interrupt>
+  1e:	37 c0       	rjmp	.+110    	; 0x8e <__bad_interrupt>
+  20:	36 c0       	rjmp	.+108    	; 0x8e <__bad_interrupt>
+  22:	73 c0       	rjmp	.+230    	; 0x10a <__vector_17>
+  24:	34 c0       	rjmp	.+104    	; 0x8e <__bad_interrupt>
+  26:	33 c0       	rjmp	.+102    	; 0x8e <__bad_interrupt>
+  28:	32 c0       	rjmp	.+100    	; 0x8e <__bad_interrupt>
+  2a:	31 c0       	rjmp	.+98     	; 0x8e <__bad_interrupt>
+  2c:	30 c0       	rjmp	.+96     	; 0x8e <__bad_interrupt>
+  2e:	2f c0       	rjmp	.+94     	; 0x8e <__bad_interrupt>
+  30:	2e c0       	rjmp	.+92     	; 0x8e <__bad_interrupt>
+  32:	2d c0       	rjmp	.+90     	; 0x8e <__bad_interrupt>
+  34:	08 c5       	rjmp	.+2576   	; 0xa46 <main+0x23a>
+  36:	b9 c4       	rjmp	.+2418   	; 0x9aa <main+0x19e>
+  38:	c1 c4       	rjmp	.+2434   	; 0x9bc <main+0x1b0>
+  3a:	c5 c4       	rjmp	.+2442   	; 0x9c6 <main+0x1ba>
+  3c:	db c4       	rjmp	.+2486   	; 0x9f4 <main+0x1e8>
+  3e:	ec c4       	rjmp	.+2520   	; 0xa18 <main+0x20c>
+  40:	12 c5       	rjmp	.+2596   	; 0xa66 <main+0x25a>
+  42:	11 c5       	rjmp	.+2594   	; 0xa66 <main+0x25a>
+  44:	10 c5       	rjmp	.+2592   	; 0xa66 <main+0x25a>
+  46:	0f c5       	rjmp	.+2590   	; 0xa66 <main+0x25a>
+  48:	0e c5       	rjmp	.+2588   	; 0xa66 <main+0x25a>
+  4a:	0d c5       	rjmp	.+2586   	; 0xa66 <main+0x25a>
+  4c:	0c c5       	rjmp	.+2584   	; 0xa66 <main+0x25a>
+  4e:	0b c5       	rjmp	.+2582   	; 0xa66 <main+0x25a>
+  50:	0a c5       	rjmp	.+2580   	; 0xa66 <main+0x25a>
+  52:	09 c5       	rjmp	.+2578   	; 0xa66 <main+0x25a>
+  54:	9a c4       	rjmp	.+2356   	; 0x98a <main+0x17e>
+  56:	b9 c4       	rjmp	.+2418   	; 0x9ca <main+0x1be>
+
+00000058 <__ctors_end>:
+  58:	11 24       	eor	r1, r1
+  5a:	1f be       	out	0x3f, r1	; 63
+  5c:	cf ef       	ldi	r28, 0xFF	; 255
+  5e:	d2 e0       	ldi	r29, 0x02	; 2
+  60:	de bf       	out	0x3e, r29	; 62
+  62:	cd bf       	out	0x3d, r28	; 61
+
+00000064 <__do_copy_data>:
+  64:	11 e0       	ldi	r17, 0x01	; 1
+  66:	a0 e0       	ldi	r26, 0x00	; 0
+  68:	b1 e0       	ldi	r27, 0x01	; 1
+  6a:	e2 eb       	ldi	r30, 0xB2	; 178
+  6c:	fa e0       	ldi	r31, 0x0A	; 10
+  6e:	02 c0       	rjmp	.+4      	; 0x74 <__do_copy_data+0x10>
+  70:	05 90       	lpm	r0, Z+
+  72:	0d 92       	st	X+, r0
+  74:	ae 30       	cpi	r26, 0x0E	; 14
+  76:	b1 07       	cpc	r27, r17
+  78:	d9 f7       	brne	.-10     	; 0x70 <__do_copy_data+0xc>
+
+0000007a <__do_clear_bss>:
+  7a:	22 e0       	ldi	r18, 0x02	; 2
+  7c:	ae e0       	ldi	r26, 0x0E	; 14
+  7e:	b1 e0       	ldi	r27, 0x01	; 1
+  80:	01 c0       	rjmp	.+2      	; 0x84 <.do_clear_bss_start>
+
+00000082 <.do_clear_bss_loop>:
+  82:	1d 92       	st	X+, r1
+
+00000084 <.do_clear_bss_start>:
+  84:	a4 33       	cpi	r26, 0x34	; 52
+  86:	b2 07       	cpc	r27, r18
+  88:	e1 f7       	brne	.-8      	; 0x82 <.do_clear_bss_loop>
+  8a:	c0 d3       	rcall	.+1920   	; 0x80c <main>
+  8c:	10 c5       	rjmp	.+2592   	; 0xaae <_exit>
+
+0000008e <__bad_interrupt>:
+  8e:	b8 cf       	rjmp	.-144    	; 0x0 <__vectors>
+
+00000090 <checksum>:
+	XNVM_CMD_ERASE_AND_WRITE_APP_SECTION,
+	XNVM_CMD_ERASE_AND_WRITE_BOOT_PAGE,
+	XNVM_CMD_ERASE_AND_WRITE_EEPROM
+};
+
+static uint8_t checksum(const volatile uint8_t *d, uint16_t len) {
+  90:	fc 01       	movw	r30, r24
+  92:	68 0f       	add	r22, r24
+  94:	79 1f       	adc	r23, r25
+	uint8_t val = 0x55;
+  96:	85 e5       	ldi	r24, 0x55	; 85
+	for(;len;len--,d++)
+  98:	e6 17       	cp	r30, r22
+  9a:	f7 07       	cpc	r31, r23
+  9c:	19 f0       	breq	.+6      	; 0xa4 <checksum+0x14>
+		val ^= *d;
+  9e:	91 91       	ld	r25, Z+
+  a0:	89 27       	eor	r24, r25
+  a2:	fa cf       	rjmp	.-12     	; 0x98 <checksum+0x8>
+	return val;
+}
+  a4:	08 95       	ret
+
+000000a6 <__vector_1>:
+#define DST_MASK		3
+
+static volatile uint8_t rx_complete=0;
+
+ISR(INT0_vect)
+{
+  a6:	1f 92       	push	r1
+  a8:	0f 92       	push	r0
+  aa:	0f b6       	in	r0, 0x3f	; 63
+  ac:	0f 92       	push	r0
+  ae:	11 24       	eor	r1, r1
+  b0:	2f 93       	push	r18
+  b2:	8f 93       	push	r24
+  b4:	9f 93       	push	r25
+	uint8_t edge=(EICRA & (1<<ISC00));
+  b6:	80 91 69 00 	lds	r24, 0x0069
+	
+	// falling edge: load SPDR with current status, set pointer if not busy
+	if(!edge) {
+  ba:	28 2f       	mov	r18, r24
+  bc:	21 70       	andi	r18, 0x01	; 1
+  be:	80 fd       	sbrc	r24, 0
+  c0:	15 c0       	rjmp	.+42     	; 0xec <__vector_1+0x46>
+		SPDR = status;
+  c2:	80 91 10 01 	lds	r24, 0x0110
+  c6:	8e bd       	out	0x2e, r24	; 46
+		spiptr = (status&STATUS_READY) ? spibuf : NULL;
+  c8:	80 91 10 01 	lds	r24, 0x0110
+  cc:	87 ff       	sbrs	r24, 7
+  ce:	03 c0       	rjmp	.+6      	; 0xd6 <__vector_1+0x30>
+  d0:	81 e1       	ldi	r24, 0x11	; 17
+  d2:	91 e0       	ldi	r25, 0x01	; 1
+  d4:	02 c0       	rjmp	.+4      	; 0xda <__vector_1+0x34>
+  d6:	80 e0       	ldi	r24, 0x00	; 0
+  d8:	90 e0       	ldi	r25, 0x00	; 0
+  da:	90 93 01 01 	sts	0x0101, r25
+  de:	80 93 00 01 	sts	0x0100, r24
+		status = 0; // clear ready flag
+  e2:	10 92 10 01 	sts	0x0110, r1
+		PORTB &= ~(1<<PB1); // set busy flag
+  e6:	29 98       	cbi	0x05, 1	; 5
+		PORTD|=(1<<PD7); // busy LED
+  e8:	5f 9a       	sbi	0x0b, 7	; 11
+  ea:	03 c0       	rjmp	.+6      	; 0xf2 <__vector_1+0x4c>
+	}
+	else
+		rx_complete=1;
+  ec:	81 e0       	ldi	r24, 0x01	; 1
+  ee:	80 93 0f 01 	sts	0x010F, r24
+	
+	EICRA = edge ^ (1<<ISC00);
+  f2:	81 e0       	ldi	r24, 0x01	; 1
+  f4:	82 27       	eor	r24, r18
+  f6:	80 93 69 00 	sts	0x0069, r24
+}
+  fa:	9f 91       	pop	r25
+  fc:	8f 91       	pop	r24
+  fe:	2f 91       	pop	r18
+ 100:	0f 90       	pop	r0
+ 102:	0f be       	out	0x3f, r0	; 63
+ 104:	0f 90       	pop	r0
+ 106:	1f 90       	pop	r1
+ 108:	18 95       	reti
+
+0000010a <__vector_17>:
+
+ISR(SPI_STC_vect)
+{
+ 10a:	1f 92       	push	r1
+ 10c:	0f 92       	push	r0
+ 10e:	0f b6       	in	r0, 0x3f	; 63
+ 110:	0f 92       	push	r0
+ 112:	11 24       	eor	r1, r1
+ 114:	8f 93       	push	r24
+ 116:	9f 93       	push	r25
+ 118:	ef 93       	push	r30
+ 11a:	ff 93       	push	r31
+	if(spiptr) {
+ 11c:	e0 91 00 01 	lds	r30, 0x0100
+ 120:	f0 91 01 01 	lds	r31, 0x0101
+ 124:	30 97       	sbiw	r30, 0x00	; 0
+ 126:	b1 f0       	breq	.+44     	; 0x154 <__vector_17+0x4a>
+		uint8_t tmp = SPDR;
+ 128:	8e b5       	in	r24, 0x2e	; 46
+		SPDR = *spiptr;
+ 12a:	90 81       	ld	r25, Z
+ 12c:	9e bd       	out	0x2e, r25	; 46
+		*spiptr = tmp;
+ 12e:	e0 91 00 01 	lds	r30, 0x0100
+ 132:	f0 91 01 01 	lds	r31, 0x0101
+ 136:	81 93       	st	Z+, r24
+		spiptr++;
+		if(spiptr >= (spibuf+SPI_BUFSIZE))
+ 138:	82 e0       	ldi	r24, 0x02	; 2
+ 13a:	ee 31       	cpi	r30, 0x1E	; 30
+ 13c:	f8 07       	cpc	r31, r24
+ 13e:	28 f4       	brcc	.+10     	; 0x14a <__vector_17+0x40>
+{
+	if(spiptr) {
+		uint8_t tmp = SPDR;
+		SPDR = *spiptr;
+		*spiptr = tmp;
+		spiptr++;
+ 140:	f0 93 01 01 	sts	0x0101, r31
+ 144:	e0 93 00 01 	sts	0x0100, r30
+ 148:	08 c0       	rjmp	.+16     	; 0x15a <__vector_17+0x50>
+		if(spiptr >= (spibuf+SPI_BUFSIZE))
+			spiptr=NULL;
+ 14a:	10 92 01 01 	sts	0x0101, r1
+ 14e:	10 92 00 01 	sts	0x0100, r1
+ 152:	03 c0       	rjmp	.+6      	; 0x15a <__vector_17+0x50>
+	}
+	else
+		SPDR = status;
+ 154:	80 91 10 01 	lds	r24, 0x0110
+ 158:	8e bd       	out	0x2e, r24	; 46
+}
+ 15a:	ff 91       	pop	r31
+ 15c:	ef 91       	pop	r30
+ 15e:	9f 91       	pop	r25
+ 160:	8f 91       	pop	r24
+ 162:	0f 90       	pop	r0
+ 164:	0f be       	out	0x3f, r0	; 63
+ 166:	0f 90       	pop	r0
+ 168:	1f 90       	pop	r1
+ 16a:	18 95       	reti
+
+0000016c <pdi_init>:
+ *
+ * Initialize the peripeherals necessary to communicate with the ATxmega
+ *  PDI.
+ */
+void pdi_init( uint8_t div )
+{
+ 16c:	cf 93       	push	r28
+ 16e:	c8 2f       	mov	r28, r24
+	div = (div <= 4) ? div : 4;
+ 170:	85 30       	cpi	r24, 0x05	; 5
+ 172:	08 f0       	brcs	.+2      	; 0x176 <pdi_init+0xa>
+ 174:	c4 e0       	ldi	r28, 0x04	; 4
+ * \retval true always assume that it went ok
+ */
+static inline bool usart_synchronous_set_baudrate(uint32_t baud, uint32_t cpu_hz)
+{
+	uint16_t brreg = (cpu_hz / baud / 2) - 1;
+	UBRR0H = (brreg >> 8) & 0xFF;
+ 176:	10 92 c5 00 	sts	0x00C5, r1
+	/* Enable USRT. */
+	pdi_set_baud_rate(PDI_BAUD_RATE>>div);
+ 17a:	20 e4       	ldi	r18, 0x40	; 64
+ 17c:	32 e4       	ldi	r19, 0x42	; 66
+ 17e:	4f e0       	ldi	r20, 0x0F	; 15
+ 180:	50 e0       	ldi	r21, 0x00	; 0
+ 182:	0c 2e       	mov	r0, r28
+ 184:	04 c0       	rjmp	.+8      	; 0x18e <pdi_init+0x22>
+ 186:	56 95       	lsr	r21
+ 188:	47 95       	ror	r20
+ 18a:	37 95       	ror	r19
+ 18c:	27 95       	ror	r18
+ 18e:	0a 94       	dec	r0
+ 190:	d2 f7       	brpl	.-12     	; 0x186 <pdi_init+0x1a>
+ *
+ * \retval true always assume that it went ok
+ */
+static inline bool usart_synchronous_set_baudrate(uint32_t baud, uint32_t cpu_hz)
+{
+	uint16_t brreg = (cpu_hz / baud / 2) - 1;
+ 192:	60 e0       	ldi	r22, 0x00	; 0
+ 194:	79 e0       	ldi	r23, 0x09	; 9
+ 196:	8d e3       	ldi	r24, 0x3D	; 61
+ 198:	90 e0       	ldi	r25, 0x00	; 0
+ 19a:	67 d4       	rcall	.+2254   	; 0xa6a <__udivmodsi4>
+ 19c:	56 95       	lsr	r21
+ 19e:	47 95       	ror	r20
+ 1a0:	37 95       	ror	r19
+ 1a2:	27 95       	ror	r18
+ 1a4:	21 50       	subi	r18, 0x01	; 1
+ 1a6:	31 09       	sbc	r19, r1
+	UBRR0H = (brreg >> 8) & 0xFF;
+	UBRR0L = brreg & 0xFF;
+ 1a8:	20 93 c4 00 	sts	0x00C4, r18
+ *  \param _parityMode   The parity Mode. Use USART_PMODE_t type.
+ *  \param _twoStopBits  Enable two stop bit mode. Use bool type.
+ */
+static inline void usart_format_set(USART_CHSIZE_t _charSize, USART_PMODE_t _parityMode, bool _twoStopBits)
+{
+	UCSR0C = (uint8_t) _charSize | _parityMode |                      \
+ 1ac:	8e e2       	ldi	r24, 0x2E	; 46
+ 1ae:	80 93 c2 00 	sts	0x00C2, r24
+ */
+static inline void usart_set_polarity_bit(bool set)
+{
+	if(set)
+	{
+		UCSR0C |= (1 << UCPOL0);
+ 1b2:	80 91 c2 00 	lds	r24, 0x00C2
+ 1b6:	81 60       	ori	r24, 0x01	; 1
+ 1b8:	80 93 c2 00 	sts	0x00C2, r24
+	pdi_configure();
+
+	/* Enter PDI mode. */
+	pdi_pin_init();
+ 1bc:	51 9a       	sbi	0x0a, 1	; 10
+ 1be:	59 98       	cbi	0x0b, 1	; 11
+ 1c0:	54 9a       	sbi	0x0a, 4	; 10
+ 1c2:	5c 9a       	sbi	0x0b, 4	; 11
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 1c4:	45 e8       	ldi	r20, 0x85	; 133
+ 1c6:	4a 95       	dec	r20
+ 1c8:	f1 f7       	brne	.-4      	; 0x1c6 <pdi_init+0x5a>
+ 1ca:	00 00       	nop
+	_delay_us(100);
+
+	pdi_data_tx_high();
+ 1cc:	59 9a       	sbi	0x0b, 1	; 11
+ 1ce:	00 c0       	rjmp	.+0      	; 0x1d0 <pdi_init+0x64>
+ 1d0:	00 c0       	rjmp	.+0      	; 0x1d2 <pdi_init+0x66>
+ *
+ *  \param _usart    Pointer to the USART module
+ */
+static inline void usart_rx_enable(void)
+{
+	UCSR0B |= (1 << RXEN0);
+ 1d2:	80 91 c1 00 	lds	r24, 0x00C1
+ 1d6:	80 61       	ori	r24, 0x10	; 16
+ 1d8:	80 93 c1 00 	sts	0x00C1, r24
+ *  - 0x1        : Synchronous mode.
+ *  - 0x3        : Master SPI mode.
+ */
+static inline void usart_set_mode(USART_CMODE_t _usartmode)
+{
+	UCSR0C = (UCSR0C & (~USART_CMODE_gm)) | _usartmode;
+ 1dc:	90 91 c2 00 	lds	r25, 0x00C2
+ 1e0:	9f 73       	andi	r25, 0x3F	; 63
+ 1e2:	90 64       	ori	r25, 0x40	; 64
+ 1e4:	90 93 c2 00 	sts	0x00C2, r25
+	_delay_us(1);
+
+	/* Enable the PDI_CLK and let it run for at leat 16 cycles. */
+	pdi_enable_rx();
+	pdi_enable_clk();
+	div = (1<<div)+1;
+ 1e8:	21 e0       	ldi	r18, 0x01	; 1
+ 1ea:	30 e0       	ldi	r19, 0x00	; 0
+ 1ec:	0c 2e       	mov	r0, r28
+ 1ee:	01 c0       	rjmp	.+2      	; 0x1f2 <pdi_init+0x86>
+ 1f0:	22 0f       	add	r18, r18
+ 1f2:	0a 94       	dec	r0
+ 1f4:	ea f7       	brpl	.-6      	; 0x1f0 <pdi_init+0x84>
+ 1f6:	80 e0       	ldi	r24, 0x00	; 0
+ 1f8:	90 e0       	ldi	r25, 0x00	; 0
+ 1fa:	51 e0       	ldi	r21, 0x01	; 1
+ 1fc:	45 e1       	ldi	r20, 0x15	; 21
+ 1fe:	4a 95       	dec	r20
+ 200:	f1 f7       	brne	.-4      	; 0x1fe <pdi_init+0x92>
+ 202:	00 00       	nop
+ 204:	01 96       	adiw	r24, 0x01	; 1
+ 206:	45 2f       	mov	r20, r21
+ 208:	48 1b       	sub	r20, r24
+ 20a:	42 0f       	add	r20, r18
+	for(;div;div--)
+ 20c:	b9 f7       	brne	.-18     	; 0x1fc <pdi_init+0x90>
+		_delay_us(16);
+}
+ 20e:	cf 91       	pop	r28
+ 210:	08 95       	ret
+
+00000212 <pdi_write>:
+ *
+ *  \param _usart     The USART module.
+ */
+static inline bool usart_rx_is_complete(void)
+{
+	return UCSR0A & (1 << RXC0);
+ 212:	20 91 c0 00 	lds	r18, 0x00C0
+{
+	uint16_t i;
+	uint8_t dummy_read = 0;
+
+	/* Empty any old data in the RX register. */
+	while (usart_rx_is_complete()) {
+ 216:	27 ff       	sbrs	r18, 7
+ 218:	03 c0       	rjmp	.+6      	; 0x220 <pdi_write+0xe>
+ *
+ *  \return The received data
+ */
+static inline uint8_t usart_get(void)
+{
+	return UDR0;
+ 21a:	20 91 c6 00 	lds	r18, 0x00C6
+ 21e:	f9 cf       	rjmp	.-14     	; 0x212 <pdi_write>
+ *
+ *  \param _usart Pointer to the USART module.
+ */
+static inline void usart_tx_enable(void)
+{
+	UCSR0B |= (1 << TXEN0);
+ 220:	20 91 c1 00 	lds	r18, 0x00C1
+ 224:	28 60       	ori	r18, 0x08	; 8
+ 226:	20 93 c1 00 	sts	0x00C1, r18
+		dummy_read = usart_get();
+	}
+
+	pdi_enable_tx();
+
+	for (i = 0; i < length; i++) {
+ 22a:	20 e0       	ldi	r18, 0x00	; 0
+ 22c:	30 e0       	ldi	r19, 0x00	; 0
+ 22e:	26 17       	cp	r18, r22
+ 230:	37 07       	cpc	r19, r23
+ 232:	09 f1       	breq	.+66     	; 0x276 <pdi_write+0x64>
+ *
+ *  \param _usart      The USART module.
+ */
+static inline bool usart_data_register_is_empty(void)
+{
+	return UCSR0A & (1 << UDRE0);
+ 234:	40 91 c0 00 	lds	r20, 0x00C0
+		while (!usart_data_register_is_empty());
+ 238:	45 ff       	sbrs	r20, 5
+ 23a:	fc cf       	rjmp	.-8      	; 0x234 <pdi_write+0x22>
+ 23c:	fc 01       	movw	r30, r24
+ 23e:	e2 0f       	add	r30, r18
+ 240:	f3 1f       	adc	r31, r19
+		usart_put(data[i]);
+ 242:	40 81       	ld	r20, Z
+ *  \param usart     The USART module.
+ *  \param txdata    The data to be transmited.
+ */
+static inline void usart_put(uint8_t txdata)
+{
+	UDR0 = txdata;
+ 244:	40 93 c6 00 	sts	0x00C6, r20
+ *
+ *  \param _usart     The USART module.
+ */
+static inline bool usart_rx_is_complete(void)
+{
+	return UCSR0A & (1 << RXC0);
+ 248:	40 91 c0 00 	lds	r20, 0x00C0
+
+		while (!usart_rx_is_complete());
+ 24c:	47 ff       	sbrs	r20, 7
+ 24e:	fc cf       	rjmp	.-8      	; 0x248 <pdi_write+0x36>
+ *
+ *  \return The received data
+ */
+static inline uint8_t usart_get(void)
+{
+	return UDR0;
+ 250:	50 91 c6 00 	lds	r21, 0x00C6
+		dummy_read = usart_get();
+
+		/* Check that the transmission was successful. */
+		if (dummy_read != data[i]) {
+ 254:	40 81       	ld	r20, Z
+ 256:	54 17       	cp	r21, r20
+ 258:	59 f0       	breq	.+22     	; 0x270 <pdi_write+0x5e>
+ *
+ *  \param _usart Pointer to the USART module.
+ */
+static inline void usart_tx_disable(void)
+{
+	UCSR0B &= ~(1 << TXEN0);
+ 25a:	80 91 c1 00 	lds	r24, 0x00C1
+ 25e:	87 7f       	andi	r24, 0xF7	; 247
+ 260:	80 93 c1 00 	sts	0x00C1, r24
+			// Set TX to tri-state
+			pdi_disable_tx();
+			pdi_data_tx_input();
+ 264:	82 e0       	ldi	r24, 0x02	; 2
+ 266:	8b b9       	out	0x0b, r24	; 11
+ 268:	51 98       	cbi	0x0a, 1	; 10
+			pdi_data_tx_low();
+ 26a:	59 98       	cbi	0x0b, 1	; 11
+
+			return ERR_IO_ERROR;
+ 26c:	8f ef       	ldi	r24, 0xFF	; 255
+ 26e:	08 95       	ret
+		dummy_read = usart_get();
+	}
+
+	pdi_enable_tx();
+
+	for (i = 0; i < length; i++) {
+ 270:	2f 5f       	subi	r18, 0xFF	; 255
+ 272:	3f 4f       	sbci	r19, 0xFF	; 255
+ 274:	dc cf       	rjmp	.-72     	; 0x22e <pdi_write+0x1c>
+ 276:	80 91 c1 00 	lds	r24, 0x00C1
+ 27a:	87 7f       	andi	r24, 0xF7	; 247
+ 27c:	80 93 c1 00 	sts	0x00C1, r24
+		}
+	}
+
+	/* Set TX to tri-state */
+	pdi_disable_tx();
+	pdi_data_tx_input();
+ 280:	82 e0       	ldi	r24, 0x02	; 2
+ 282:	8b b9       	out	0x0b, r24	; 11
+ 284:	51 98       	cbi	0x0a, 1	; 10
+	pdi_data_tx_low();
+ 286:	59 98       	cbi	0x0b, 1	; 11
+
+	return STATUS_OK;
+ 288:	80 e0       	ldi	r24, 0x00	; 0
+}
+ 28a:	08 95       	ret
+
+0000028c <pdi_read>:
+ *
+ * \retval non-zero the length of data.
+ * \retval zero read fail.
+ */
+uint16_t pdi_read( uint8_t *data, uint16_t length, uint32_t retries )
+{
+ 28c:	0f 93       	push	r16
+ 28e:	1f 93       	push	r17
+ 290:	cf 93       	push	r28
+ 292:	df 93       	push	r29
+ 294:	d9 01       	movw	r26, r18
+	uint32_t count;
+	uint16_t bytes_read = 0;
+ 296:	e0 e0       	ldi	r30, 0x00	; 0
+ 298:	f0 e0       	ldi	r31, 0x00	; 0
+	uint16_t i;
+
+	for (i = 0; i < length; i++) {
+ 29a:	e6 17       	cp	r30, r22
+ 29c:	f7 07       	cpc	r31, r23
+ 29e:	d1 f0       	breq	.+52     	; 0x2d4 <pdi_read+0x48>
+ 2a0:	8d 01       	movw	r16, r26
+ 2a2:	9a 01       	movw	r18, r20
+		count = retries;
+		while (count != 0) {
+ 2a4:	01 15       	cp	r16, r1
+ 2a6:	11 05       	cpc	r17, r1
+ 2a8:	21 05       	cpc	r18, r1
+ 2aa:	31 05       	cpc	r19, r1
+ 2ac:	81 f0       	breq	.+32     	; 0x2ce <pdi_read+0x42>
+ *
+ *  \param _usart     The USART module.
+ */
+static inline bool usart_rx_is_complete(void)
+{
+	return UCSR0A & (1 << RXC0);
+ 2ae:	c0 91 c0 00 	lds	r28, 0x00C0
+			if (usart_rx_is_complete()) {
+ 2b2:	c7 ff       	sbrs	r28, 7
+ 2b4:	07 c0       	rjmp	.+14     	; 0x2c4 <pdi_read+0x38>
+ *
+ *  \return The received data
+ */
+static inline uint8_t usart_get(void)
+{
+	return UDR0;
+ 2b6:	20 91 c6 00 	lds	r18, 0x00C6
+				*(data + i) = usart_get();
+ 2ba:	ec 01       	movw	r28, r24
+ 2bc:	29 93       	st	Y+, r18
+ 2be:	ce 01       	movw	r24, r28
+				bytes_read++;
+ 2c0:	31 96       	adiw	r30, 0x01	; 1
+ 2c2:	eb cf       	rjmp	.-42     	; 0x29a <pdi_read+0xe>
+				break;
+			}
+			--count;
+ 2c4:	01 50       	subi	r16, 0x01	; 1
+ 2c6:	11 09       	sbc	r17, r1
+ 2c8:	21 09       	sbc	r18, r1
+ 2ca:	31 09       	sbc	r19, r1
+ 2cc:	eb cf       	rjmp	.-42     	; 0x2a4 <pdi_read+0x18>
+		}
+		/* Read fail error */
+		if (count == 0) {
+			return 0;
+ 2ce:	80 e0       	ldi	r24, 0x00	; 0
+ 2d0:	90 e0       	ldi	r25, 0x00	; 0
+ 2d2:	01 c0       	rjmp	.+2      	; 0x2d6 <pdi_read+0x4a>
+ 2d4:	cf 01       	movw	r24, r30
+		}
+	}
+
+	return bytes_read;
+}
+ 2d6:	df 91       	pop	r29
+ 2d8:	cf 91       	pop	r28
+ 2da:	1f 91       	pop	r17
+ 2dc:	0f 91       	pop	r16
+ 2de:	08 95       	ret
+
+000002e0 <pdi_get_byte>:
+ * \retval STATUS_OK read successfully.
+ * \retval ERR_TIMEOUT read fail.
+ */
+enum status_code pdi_get_byte( uint8_t *ret, uint32_t retries )
+{
+	while (retries != 0) {
+ 2e0:	41 15       	cp	r20, r1
+ 2e2:	51 05       	cpc	r21, r1
+ 2e4:	61 05       	cpc	r22, r1
+ 2e6:	71 05       	cpc	r23, r1
+ 2e8:	79 f0       	breq	.+30     	; 0x308 <__stack+0x9>
+ *
+ *  \param _usart     The USART module.
+ */
+static inline bool usart_rx_is_complete(void)
+{
+	return UCSR0A & (1 << RXC0);
+ 2ea:	20 91 c0 00 	lds	r18, 0x00C0
+		if (usart_rx_is_complete()) {
+ 2ee:	27 ff       	sbrs	r18, 7
+ 2f0:	06 c0       	rjmp	.+12     	; 0x2fe <pdi_get_byte+0x1e>
+ *
+ *  \return The received data
+ */
+static inline uint8_t usart_get(void)
+{
+	return UDR0;
+ 2f2:	20 91 c6 00 	lds	r18, 0x00C6
+			*ret = usart_get();
+ 2f6:	fc 01       	movw	r30, r24
+ 2f8:	20 83       	st	Z, r18
+			return STATUS_OK;
+ 2fa:	80 e0       	ldi	r24, 0x00	; 0
+ 2fc:	08 95       	ret
+		}
+		--retries;
+ 2fe:	41 50       	subi	r20, 0x01	; 1
+ 300:	51 09       	sbc	r21, r1
+ 302:	61 09       	sbc	r22, r1
+ 304:	71 09       	sbc	r23, r1
+ 306:	ec cf       	rjmp	.-40     	; 0x2e0 <pdi_get_byte>
+	}
+
+	return ERR_IO_ERROR;
+ 308:	8f ef       	ldi	r24, 0xFF	; 255
+}
+ 30a:	08 95       	ret
+
+0000030c <pdi_deinit>:
+ *  - 0x1        : Synchronous mode.
+ *  - 0x3        : Master SPI mode.
+ */
+static inline void usart_set_mode(USART_CMODE_t _usartmode)
+{
+	UCSR0C = (UCSR0C & (~USART_CMODE_gm)) | _usartmode;
+ 30c:	e2 ec       	ldi	r30, 0xC2	; 194
+ 30e:	f0 e0       	ldi	r31, 0x00	; 0
+ 310:	80 81       	ld	r24, Z
+ 312:	8f 73       	andi	r24, 0x3F	; 63
+ 314:	80 83       	st	Z, r24
+ *
+ *  \param _usart Pointer to the USART module.
+ */
+static inline void usart_rx_disable(void)
+{
+	UCSR0B &= ~(1 << RXEN0);
+ 316:	e1 ec       	ldi	r30, 0xC1	; 193
+ 318:	f0 e0       	ldi	r31, 0x00	; 0
+ 31a:	80 81       	ld	r24, Z
+ 31c:	8f 7e       	andi	r24, 0xEF	; 239
+ 31e:	80 83       	st	Z, r24
+ *
+ *  \param _usart Pointer to the USART module.
+ */
+static inline void usart_tx_disable(void)
+{
+	UCSR0B &= ~(1 << TXEN0);
+ 320:	80 81       	ld	r24, Z
+ 322:	87 7f       	andi	r24, 0xF7	; 247
+ 324:	80 83       	st	Z, r24
+void pdi_deinit( void )
+{
+	pdi_disable_clk();
+	pdi_disable_rx();
+	pdi_disable_tx();
+	pdi_data_tx_input();
+ 326:	82 e0       	ldi	r24, 0x02	; 2
+ 328:	8b b9       	out	0x0b, r24	; 11
+ 32a:	51 98       	cbi	0x0a, 1	; 10
+	pdi_data_tx_low();
+ 32c:	59 98       	cbi	0x0b, 1	; 11
+ 32e:	8b e2       	ldi	r24, 0x2B	; 43
+ 330:	91 e0       	ldi	r25, 0x01	; 1
+ 332:	01 97       	sbiw	r24, 0x01	; 1
+ 334:	f1 f7       	brne	.-4      	; 0x332 <pdi_deinit+0x26>
+ 336:	00 c0       	rjmp	.+0      	; 0x338 <pdi_deinit+0x2c>
+ 338:	00 00       	nop
+	_delay_us(300);
+	pdi_reset_high();
+ 33a:	5c 9a       	sbi	0x0b, 4	; 11
+ 33c:	08 95       	ret
+
+0000033e <mem_move.constprop.2>:
+ *
+ * \param from_var The address of the data source
+ * \param to_var The address of the data destination
+ * \param bytes The number of bytes to move
+ */
+static inline void mem_move(uint8_t * from_var, uint8_t * to_var, uint8_t bytes)
+ 33e:	e0 e2       	ldi	r30, 0x20	; 32
+ 340:	f2 e0       	ldi	r31, 0x02	; 2
+ 342:	6e 0f       	add	r22, r30
+{
+	do{
+		*to_var++ = *from_var++;
+ 344:	dc 01       	movw	r26, r24
+ 346:	2d 91       	ld	r18, X+
+ 348:	cd 01       	movw	r24, r26
+ 34a:	21 93       	st	Z+, r18
+		bytes--;
+	}while(bytes);
+ 34c:	6e 13       	cpse	r22, r30
+ 34e:	fa cf       	rjmp	.-12     	; 0x344 <mem_move.constprop.2+0x6>
+}
+ 350:	08 95       	ret
+
+00000352 <xnvm_write_repeat>:
+ *  \param  count the repeating number.
+ *  \retval STATUS_OK write succussfully.
+ *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ */
+static enum status_code xnvm_write_repeat(uint32_t count)
+{
+ 352:	cf 93       	push	r28
+ 354:	df 93       	push	r29
+ 356:	00 d0       	rcall	.+0      	; 0x358 <xnvm_write_repeat+0x6>
+ 358:	00 d0       	rcall	.+0      	; 0x35a <xnvm_write_repeat+0x8>
+ 35a:	cd b7       	in	r28, 0x3d	; 61
+ 35c:	de b7       	in	r29, 0x3e	; 62
+	uint8_t cmd_len;
+
+	--count;
+ 35e:	61 50       	subi	r22, 0x01	; 1
+ 360:	71 09       	sbc	r23, r1
+ 362:	81 09       	sbc	r24, r1
+ 364:	91 09       	sbc	r25, r1
+ 366:	69 83       	std	Y+1, r22	; 0x01
+ 368:	7a 83       	std	Y+2, r23	; 0x02
+ 36a:	8b 83       	std	Y+3, r24	; 0x03
+ 36c:	9c 83       	std	Y+4, r25	; 0x04
+
+	if (count < (1 << 8)) {
+ 36e:	6f 3f       	cpi	r22, 0xFF	; 255
+ 370:	71 05       	cpc	r23, r1
+ 372:	81 05       	cpc	r24, r1
+ 374:	91 05       	cpc	r25, r1
+ 376:	09 f0       	breq	.+2      	; 0x37a <xnvm_write_repeat+0x28>
+ 378:	38 f4       	brcc	.+14     	; 0x388 <xnvm_write_repeat+0x36>
+		cmd_buffer[0] = XNVM_PDI_REPEAT_INSTR | XNVM_PDI_BYTE_DATA_MASK;
+ 37a:	20 ea       	ldi	r18, 0xA0	; 160
+ 37c:	20 93 1f 02 	sts	0x021F, r18
+		cmd_buffer[1] = count;
+ 380:	60 93 20 02 	sts	0x0220, r22
+		cmd_len = 2;
+ 384:	62 e0       	ldi	r22, 0x02	; 2
+ 386:	25 c0       	rjmp	.+74     	; 0x3d2 <xnvm_write_repeat+0x80>
+	} else if (count < ((uint32_t)(1) << 16)) {
+ 388:	61 15       	cp	r22, r1
+ 38a:	71 05       	cpc	r23, r1
+ 38c:	21 e0       	ldi	r18, 0x01	; 1
+ 38e:	82 07       	cpc	r24, r18
+ 390:	91 05       	cpc	r25, r1
+ 392:	48 f4       	brcc	.+18     	; 0x3a6 <xnvm_write_repeat+0x54>
+		cmd_buffer[0] = XNVM_PDI_REPEAT_INSTR | XNVM_PDI_WORD_DATA_MASK;
+ 394:	81 ea       	ldi	r24, 0xA1	; 161
+ 396:	80 93 1f 02 	sts	0x021F, r24
+		mem_move((uint8_t*)&count, (cmd_buffer + 1), 2);
+ 39a:	62 e0       	ldi	r22, 0x02	; 2
+ 39c:	ce 01       	movw	r24, r28
+ 39e:	01 96       	adiw	r24, 0x01	; 1
+ 3a0:	ce df       	rcall	.-100    	; 0x33e <mem_move.constprop.2>
+		cmd_len = 3;
+ 3a2:	63 e0       	ldi	r22, 0x03	; 3
+ 3a4:	16 c0       	rjmp	.+44     	; 0x3d2 <xnvm_write_repeat+0x80>
+	} else if (count < ((uint32_t)(1) << 24)) {
+ 3a6:	61 15       	cp	r22, r1
+ 3a8:	71 05       	cpc	r23, r1
+ 3aa:	81 05       	cpc	r24, r1
+ 3ac:	91 40       	sbci	r25, 0x01	; 1
+ 3ae:	48 f4       	brcc	.+18     	; 0x3c2 <xnvm_write_repeat+0x70>
+		cmd_buffer[0] = XNVM_PDI_REPEAT_INSTR | XNVM_PDI_3BYTES_DATA_MASK;
+ 3b0:	82 ea       	ldi	r24, 0xA2	; 162
+ 3b2:	80 93 1f 02 	sts	0x021F, r24
+		mem_move((uint8_t*)&count, (cmd_buffer + 1), 3);
+ 3b6:	63 e0       	ldi	r22, 0x03	; 3
+ 3b8:	ce 01       	movw	r24, r28
+ 3ba:	01 96       	adiw	r24, 0x01	; 1
+ 3bc:	c0 df       	rcall	.-128    	; 0x33e <mem_move.constprop.2>
+		cmd_len = 4;
+ 3be:	64 e0       	ldi	r22, 0x04	; 4
+ 3c0:	08 c0       	rjmp	.+16     	; 0x3d2 <xnvm_write_repeat+0x80>
+	} else {
+		cmd_buffer[0] = XNVM_PDI_REPEAT_INSTR | XNVM_PDI_LONG_DATA_MASK;
+ 3c2:	83 ea       	ldi	r24, 0xA3	; 163
+ 3c4:	80 93 1f 02 	sts	0x021F, r24
+		mem_move((uint8_t*)&count, (cmd_buffer + 1), 4);
+ 3c8:	64 e0       	ldi	r22, 0x04	; 4
+ 3ca:	ce 01       	movw	r24, r28
+ 3cc:	01 96       	adiw	r24, 0x01	; 1
+ 3ce:	b7 df       	rcall	.-146    	; 0x33e <mem_move.constprop.2>
+		cmd_len = 5;
+ 3d0:	65 e0       	ldi	r22, 0x05	; 5
+	}
+
+	return pdi_write(cmd_buffer, cmd_len);
+ 3d2:	70 e0       	ldi	r23, 0x00	; 0
+ 3d4:	8f e1       	ldi	r24, 0x1F	; 31
+ 3d6:	92 e0       	ldi	r25, 0x02	; 2
+ 3d8:	1c df       	rcall	.-456    	; 0x212 <pdi_write>
+}
+ 3da:	0f 90       	pop	r0
+ 3dc:	0f 90       	pop	r0
+ 3de:	0f 90       	pop	r0
+ 3e0:	0f 90       	pop	r0
+ 3e2:	df 91       	pop	r29
+ 3e4:	cf 91       	pop	r28
+ 3e6:	08 95       	ret
+
+000003e8 <xnvm_put_dev_in_reset>:
+ * \retval ERR_IO_ERROR if the pdi write failed
+ */
+enum status_code xnvm_put_dev_in_reset (void)
+{
+	/* Reset the device */
+	cmd_buffer[0] = XNVM_PDI_STCS_INSTR | XOCD_RESET_REGISTER_ADDRESS;
+ 3e8:	81 ec       	ldi	r24, 0xC1	; 193
+ 3ea:	80 93 1f 02 	sts	0x021F, r24
+	cmd_buffer[1] = XOCD_RESET_SIGNATURE;
+ 3ee:	89 e5       	ldi	r24, 0x59	; 89
+ 3f0:	80 93 20 02 	sts	0x0220, r24
+	if(pdi_write(cmd_buffer, 2)){
+ 3f4:	62 e0       	ldi	r22, 0x02	; 2
+ 3f6:	70 e0       	ldi	r23, 0x00	; 0
+ 3f8:	8f e1       	ldi	r24, 0x1F	; 31
+ 3fa:	92 e0       	ldi	r25, 0x02	; 2
+ 3fc:	0a df       	rcall	.-492    	; 0x212 <pdi_write>
+ 3fe:	91 e0       	ldi	r25, 0x01	; 1
+ 400:	81 11       	cpse	r24, r1
+ 402:	01 c0       	rjmp	.+2      	; 0x406 <xnvm_put_dev_in_reset+0x1e>
+ 404:	90 e0       	ldi	r25, 0x00	; 0
+		return ERR_IO_ERROR;
+	}
+	return STATUS_OK;
+}
+ 406:	89 2f       	mov	r24, r25
+ 408:	81 95       	neg	r24
+ 40a:	08 95       	ret
+
+0000040c <xnvm_ioread_byte>:
+ *  \retval STATUS_OK read successfully.
+ *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ *  \retval ERR_TIMEOUT Time out.
+ */
+enum status_code xnvm_ioread_byte(uint16_t address, uint8_t *value)
+{
+ 40c:	0f 93       	push	r16
+ 40e:	1f 93       	push	r17
+ 410:	cf 93       	push	r28
+ 412:	df 93       	push	r29
+ 414:	00 d0       	rcall	.+0      	; 0x416 <xnvm_ioread_byte+0xa>
+ 416:	00 d0       	rcall	.+0      	; 0x418 <xnvm_ioread_byte+0xc>
+ 418:	cd b7       	in	r28, 0x3d	; 61
+ 41a:	de b7       	in	r29, 0x3e	; 62
+ 41c:	ac 01       	movw	r20, r24
+ 41e:	8b 01       	movw	r16, r22
+	enum status_code ret = STATUS_OK;
+	uint32_t register_address;
+
+	cmd_buffer[0] = XNVM_PDI_LDS_INSTR | XNVM_PDI_LONG_ADDRESS_MASK |
+ 420:	8c e0       	ldi	r24, 0x0C	; 12
+ 422:	80 93 1f 02 	sts	0x021F, r24
+			XNVM_PDI_BYTE_DATA_MASK;
+
+	register_address = XNVM_DATA_BASE + address;
+ 426:	60 e0       	ldi	r22, 0x00	; 0
+ 428:	70 e0       	ldi	r23, 0x00	; 0
+ 42a:	73 95       	inc	r23
+ 42c:	49 83       	std	Y+1, r20	; 0x01
+ 42e:	5a 83       	std	Y+2, r21	; 0x02
+ 430:	6b 83       	std	Y+3, r22	; 0x03
+ 432:	7c 83       	std	Y+4, r23	; 0x04
+
+	mem_move((uint8_t*)&register_address, (cmd_buffer + 1), 4);
+ 434:	64 e0       	ldi	r22, 0x04	; 4
+ 436:	ce 01       	movw	r24, r28
+ 438:	01 96       	adiw	r24, 0x01	; 1
+ 43a:	81 df       	rcall	.-254    	; 0x33e <mem_move.constprop.2>
+
+	ret = pdi_write(cmd_buffer, 5);
+ 43c:	65 e0       	ldi	r22, 0x05	; 5
+ 43e:	70 e0       	ldi	r23, 0x00	; 0
+ 440:	8f e1       	ldi	r24, 0x1F	; 31
+ 442:	92 e0       	ldi	r25, 0x02	; 2
+ 444:	e6 de       	rcall	.-564    	; 0x212 <pdi_write>
+	ret = pdi_get_byte(value, WAIT_RETRIES_NUM);
+ 446:	48 ee       	ldi	r20, 0xE8	; 232
+ 448:	53 e0       	ldi	r21, 0x03	; 3
+ 44a:	60 e0       	ldi	r22, 0x00	; 0
+ 44c:	70 e0       	ldi	r23, 0x00	; 0
+ 44e:	c8 01       	movw	r24, r16
+ 450:	47 df       	rcall	.-370    	; 0x2e0 <pdi_get_byte>
+
+	return ret;
+}
+ 452:	0f 90       	pop	r0
+ 454:	0f 90       	pop	r0
+ 456:	0f 90       	pop	r0
+ 458:	0f 90       	pop	r0
+ 45a:	df 91       	pop	r29
+ 45c:	cf 91       	pop	r28
+ 45e:	1f 91       	pop	r17
+ 460:	0f 91       	pop	r16
+ 462:	08 95       	ret
+
+00000464 <xnvm_iowrite_byte>:
+ *  \retval STATUS_OK write successfully.
+ *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ *  \retval ERR_TIMEOUT Time out.
+ */
+enum status_code xnvm_iowrite_byte(uint16_t address, uint8_t value)
+{
+ 464:	1f 93       	push	r17
+ 466:	cf 93       	push	r28
+ 468:	df 93       	push	r29
+ 46a:	00 d0       	rcall	.+0      	; 0x46c <xnvm_iowrite_byte+0x8>
+ 46c:	00 d0       	rcall	.+0      	; 0x46e <xnvm_iowrite_byte+0xa>
+ 46e:	cd b7       	in	r28, 0x3d	; 61
+ 470:	de b7       	in	r29, 0x3e	; 62
+ 472:	16 2f       	mov	r17, r22
+
+	uint32_t register_address = XNVM_DATA_BASE + address;
+ 474:	a0 e0       	ldi	r26, 0x00	; 0
+ 476:	b0 e0       	ldi	r27, 0x00	; 0
+ 478:	b3 95       	inc	r27
+ 47a:	89 83       	std	Y+1, r24	; 0x01
+ 47c:	9a 83       	std	Y+2, r25	; 0x02
+ 47e:	ab 83       	std	Y+3, r26	; 0x03
+ 480:	bc 83       	std	Y+4, r27	; 0x04
+
+	cmd_buffer[0] = XNVM_PDI_STS_INSTR | XNVM_PDI_LONG_ADDRESS_MASK |
+ 482:	8c e4       	ldi	r24, 0x4C	; 76
+ 484:	80 93 1f 02 	sts	0x021F, r24
+			XNVM_PDI_BYTE_DATA_MASK;
+
+	mem_move((uint8_t*)&register_address, (cmd_buffer + 1), 4);
+ 488:	64 e0       	ldi	r22, 0x04	; 4
+ 48a:	ce 01       	movw	r24, r28
+ 48c:	01 96       	adiw	r24, 0x01	; 1
+ 48e:	57 df       	rcall	.-338    	; 0x33e <mem_move.constprop.2>
+	cmd_buffer[5] = value;
+ 490:	10 93 24 02 	sts	0x0224, r17
+
+	return (pdi_write(cmd_buffer, 6));
+ 494:	66 e0       	ldi	r22, 0x06	; 6
+ 496:	70 e0       	ldi	r23, 0x00	; 0
+ 498:	8f e1       	ldi	r24, 0x1F	; 31
+ 49a:	92 e0       	ldi	r25, 0x02	; 2
+ 49c:	ba de       	rcall	.-652    	; 0x212 <pdi_write>
+}
+ 49e:	0f 90       	pop	r0
+ 4a0:	0f 90       	pop	r0
+ 4a2:	0f 90       	pop	r0
+ 4a4:	0f 90       	pop	r0
+ 4a6:	df 91       	pop	r29
+ 4a8:	cf 91       	pop	r28
+ 4aa:	1f 91       	pop	r17
+ 4ac:	08 95       	ret
+
+000004ae <xnvm_ctrl_cmd_write>:
+static enum status_code xnvm_ctrl_write_reg(uint16_t reg, uint8_t value)
+{
+	uint16_t address;
+
+	address = XNVM_CONTROLLER_BASE + reg;
+	return xnvm_iowrite_byte(address, value);
+ 4ae:	68 2f       	mov	r22, r24
+ 4b0:	8a ec       	ldi	r24, 0xCA	; 202
+ 4b2:	91 e0       	ldi	r25, 0x01	; 1
+ 4b4:	d7 cf       	rjmp	.-82     	; 0x464 <xnvm_iowrite_byte>
+
+000004b6 <xnvm_chip_erase>:
+ *
+ *  \retval STATUS_OK erase chip succussfully.
+ *  \retval ERR_TIMEOUT Time out.
+ */
+enum status_code xnvm_chip_erase(void)
+{
+ 4b6:	ef 92       	push	r14
+ 4b8:	ff 92       	push	r15
+ 4ba:	0f 93       	push	r16
+ 4bc:	1f 93       	push	r17
+ 4be:	cf 93       	push	r28
+ 4c0:	df 93       	push	r29
+ 4c2:	1f 92       	push	r1
+ 4c4:	cd b7       	in	r28, 0x3d	; 61
+ 4c6:	de b7       	in	r29, 0x3e	; 62
+	/* Write the chip erase command to the NVM command reg */
+	xnvm_ctrl_cmd_write(XNVM_CMD_CHIP_ERASE);
+ 4c8:	80 e4       	ldi	r24, 0x40	; 64
+ 4ca:	f1 df       	rcall	.-30     	; 0x4ae <xnvm_ctrl_cmd_write>
+static enum status_code xnvm_ctrl_write_reg(uint16_t reg, uint8_t value)
+{
+	uint16_t address;
+
+	address = XNVM_CONTROLLER_BASE + reg;
+	return xnvm_iowrite_byte(address, value);
+ 4cc:	61 e0       	ldi	r22, 0x01	; 1
+ 4ce:	8b ec       	ldi	r24, 0xCB	; 203
+ 4d0:	91 e0       	ldi	r25, 0x01	; 1
+ 4d2:	c8 df       	rcall	.-112    	; 0x464 <xnvm_iowrite_byte>
+ 4d4:	00 e0       	ldi	r16, 0x00	; 0
+ 4d6:	10 e0       	ldi	r17, 0x00	; 0
+ */
+static enum status_code xnvm_read_pdi_status(uint8_t *status)
+{
+	enum status_code ret = STATUS_OK;
+
+	cmd_buffer[0] = XNVM_PDI_LDCS_INSTR;
+ 4d8:	90 e8       	ldi	r25, 0x80	; 128
+ 4da:	e9 2e       	mov	r14, r25
+ 4dc:	e0 92 1f 02 	sts	0x021F, r14
+	cmd_buffer[1] = 0x00;
+ 4e0:	10 92 20 02 	sts	0x0220, r1
+	if (STATUS_OK != pdi_write(cmd_buffer, 2)) {
+ 4e4:	62 e0       	ldi	r22, 0x02	; 2
+ 4e6:	70 e0       	ldi	r23, 0x00	; 0
+ 4e8:	8f e1       	ldi	r24, 0x1F	; 31
+ 4ea:	92 e0       	ldi	r25, 0x02	; 2
+ 4ec:	92 de       	rcall	.-732    	; 0x212 <pdi_write>
+ 4ee:	81 11       	cpse	r24, r1
+ 4f0:	02 c0       	rjmp	.+4      	; 0x4f6 <xnvm_chip_erase+0x40>
+ *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ *  \retval ERR_TIMEOUT Time out.
+ */
+static enum status_code xnvm_read_pdi_status(uint8_t *status)
+{
+	enum status_code ret = STATUS_OK;
+ 4f2:	f1 2c       	mov	r15, r1
+ 4f4:	02 c0       	rjmp	.+4      	; 0x4fa <xnvm_chip_erase+0x44>
+
+	cmd_buffer[0] = XNVM_PDI_LDCS_INSTR;
+	cmd_buffer[1] = 0x00;
+	if (STATUS_OK != pdi_write(cmd_buffer, 2)) {
+			ret = ERR_BAD_DATA;
+ 4f6:	8c ef       	ldi	r24, 0xFC	; 252
+ 4f8:	f8 2e       	mov	r15, r24
+	}
+	if (pdi_get_byte(status, WAIT_RETRIES_NUM) != STATUS_OK) {
+ 4fa:	48 ee       	ldi	r20, 0xE8	; 232
+ 4fc:	53 e0       	ldi	r21, 0x03	; 3
+ 4fe:	60 e0       	ldi	r22, 0x00	; 0
+ 500:	70 e0       	ldi	r23, 0x00	; 0
+ 502:	ce 01       	movw	r24, r28
+ 504:	01 96       	adiw	r24, 0x01	; 1
+ 506:	ec de       	rcall	.-552    	; 0x2e0 <pdi_get_byte>
+ 508:	81 11       	cpse	r24, r1
+ 50a:	0d c0       	rjmp	.+26     	; 0x526 <xnvm_chip_erase+0x70>
+static enum status_code xnvm_wait_for_nvmen(uint32_t retries)
+{
+	uint8_t pdi_status;
+
+	while (retries != 0) {
+		if (xnvm_read_pdi_status(&pdi_status) != STATUS_OK) {
+ 50c:	f1 10       	cpse	r15, r1
+ 50e:	0b c0       	rjmp	.+22     	; 0x526 <xnvm_chip_erase+0x70>
+				return ERR_BAD_DATA;
+		}
+		if ((pdi_status & XNVM_NVMEN) != 0) {
+ 510:	99 81       	ldd	r25, Y+1	; 0x01
+ 512:	91 fd       	sbrc	r25, 1
+ 514:	09 c0       	rjmp	.+18     	; 0x528 <xnvm_chip_erase+0x72>
+ 516:	0f 5f       	subi	r16, 0xFF	; 255
+ 518:	1f 4f       	sbci	r17, 0xFF	; 255
+ */
+static enum status_code xnvm_wait_for_nvmen(uint32_t retries)
+{
+	uint8_t pdi_status;
+
+	while (retries != 0) {
+ 51a:	08 3e       	cpi	r16, 0xE8	; 232
+ 51c:	83 e0       	ldi	r24, 0x03	; 3
+ 51e:	18 07       	cpc	r17, r24
+ 520:	e9 f6       	brne	.-70     	; 0x4dc <xnvm_chip_erase+0x26>
+		if ((pdi_status & XNVM_NVMEN) != 0) {
+				return STATUS_OK;
+		}
+		--retries;
+	}
+	return ERR_TIMEOUT;
+ 522:	8d ef       	ldi	r24, 0xFD	; 253
+ 524:	01 c0       	rjmp	.+2      	; 0x528 <xnvm_chip_erase+0x72>
+{
+	uint8_t pdi_status;
+
+	while (retries != 0) {
+		if (xnvm_read_pdi_status(&pdi_status) != STATUS_OK) {
+				return ERR_BAD_DATA;
+ 526:	8c ef       	ldi	r24, 0xFC	; 252
+	/* Write the chip erase command to the NVM command reg */
+	xnvm_ctrl_cmd_write(XNVM_CMD_CHIP_ERASE);
+	/* Write the CMDEX to execute command */
+	xnvm_ctrl_cmdex_write();
+	return xnvm_wait_for_nvmen(WAIT_RETRIES_NUM);
+}
+ 528:	0f 90       	pop	r0
+ 52a:	df 91       	pop	r29
+ 52c:	cf 91       	pop	r28
+ 52e:	1f 91       	pop	r17
+ 530:	0f 91       	pop	r16
+ 532:	ff 90       	pop	r15
+ 534:	ef 90       	pop	r14
+ 536:	08 95       	ret
+
+00000538 <xnvm_st_star_ptr_postinc>:
+ *  \retval STATUS_OK write succussfully.
+ *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ */
+enum status_code xnvm_st_star_ptr_postinc(uint8_t value)
+{
+	cmd_buffer[0] = XNVM_PDI_ST_INSTR | XNVM_PDI_LD_PTR_STAR_INC_MASK |
+ 538:	94 e6       	ldi	r25, 0x64	; 100
+ 53a:	90 93 1f 02 	sts	0x021F, r25
+			XNVM_PDI_BYTE_DATA_MASK;
+	cmd_buffer[1] = value;
+ 53e:	80 93 20 02 	sts	0x0220, r24
+
+	return pdi_write(cmd_buffer, 2);
+ 542:	62 e0       	ldi	r22, 0x02	; 2
+ 544:	70 e0       	ldi	r23, 0x00	; 0
+ 546:	8f e1       	ldi	r24, 0x1F	; 31
+ 548:	92 e0       	ldi	r25, 0x02	; 2
+ 54a:	63 ce       	rjmp	.-826    	; 0x212 <pdi_write>
+
+0000054c <xnvm_load_buffer>:
+	xnvm_ctrl_cmdex_write();
+	return xnvm_wait_for_nvmen(WAIT_RETRIES_NUM);
+}
+
+enum status_code xnvm_load_buffer(volatile uint8_t *buf, uint16_t len)
+{
+ 54c:	0f 93       	push	r16
+ 54e:	1f 93       	push	r17
+ 550:	cf 93       	push	r28
+ 552:	df 93       	push	r29
+ 554:	8c 01       	movw	r16, r24
+ 556:	eb 01       	movw	r28, r22
+	if (len > 1) {
+ 558:	62 30       	cpi	r22, 0x02	; 2
+ 55a:	71 05       	cpc	r23, r1
+ 55c:	90 f0       	brcs	.+36     	; 0x582 <xnvm_load_buffer+0x36>
+			xnvm_write_repeat(len);
+ 55e:	80 e0       	ldi	r24, 0x00	; 0
+ 560:	90 e0       	ldi	r25, 0x00	; 0
+ 562:	f7 de       	rcall	.-530    	; 0x352 <xnvm_write_repeat>
+	} else {
+			return xnvm_st_star_ptr_postinc(*buf);
+	}
+
+	cmd_buffer[0] = XNVM_PDI_ST_INSTR | XNVM_PDI_LD_PTR_STAR_INC_MASK |
+ 564:	84 e6       	ldi	r24, 0x64	; 100
+ 566:	80 93 1f 02 	sts	0x021F, r24
+			XNVM_PDI_BYTE_DATA_MASK;
+	pdi_write(cmd_buffer, 1);
+ 56a:	61 e0       	ldi	r22, 0x01	; 1
+ 56c:	70 e0       	ldi	r23, 0x00	; 0
+ 56e:	8f e1       	ldi	r24, 0x1F	; 31
+ 570:	92 e0       	ldi	r25, 0x02	; 2
+ 572:	4f de       	rcall	.-866    	; 0x212 <pdi_write>
+
+	return pdi_write(buf, len);
+ 574:	be 01       	movw	r22, r28
+ 576:	c8 01       	movw	r24, r16
+}
+ 578:	df 91       	pop	r29
+ 57a:	cf 91       	pop	r28
+ 57c:	1f 91       	pop	r17
+ 57e:	0f 91       	pop	r16
+
+	cmd_buffer[0] = XNVM_PDI_ST_INSTR | XNVM_PDI_LD_PTR_STAR_INC_MASK |
+			XNVM_PDI_BYTE_DATA_MASK;
+	pdi_write(cmd_buffer, 1);
+
+	return pdi_write(buf, len);
+ 580:	48 ce       	rjmp	.-880    	; 0x212 <pdi_write>
+enum status_code xnvm_load_buffer(volatile uint8_t *buf, uint16_t len)
+{
+	if (len > 1) {
+			xnvm_write_repeat(len);
+	} else {
+			return xnvm_st_star_ptr_postinc(*buf);
+ 582:	fc 01       	movw	r30, r24
+ 584:	80 81       	ld	r24, Z
+	cmd_buffer[0] = XNVM_PDI_ST_INSTR | XNVM_PDI_LD_PTR_STAR_INC_MASK |
+			XNVM_PDI_BYTE_DATA_MASK;
+	pdi_write(cmd_buffer, 1);
+
+	return pdi_write(buf, len);
+}
+ 586:	df 91       	pop	r29
+ 588:	cf 91       	pop	r28
+ 58a:	1f 91       	pop	r17
+ 58c:	0f 91       	pop	r16
+enum status_code xnvm_load_buffer(volatile uint8_t *buf, uint16_t len)
+{
+	if (len > 1) {
+			xnvm_write_repeat(len);
+	} else {
+			return xnvm_st_star_ptr_postinc(*buf);
+ 58e:	d4 cf       	rjmp	.-88     	; 0x538 <xnvm_st_star_ptr_postinc>
+
+00000590 <xnvm_st_ptr>:
+ *  \param  address the address which should be written into the ptr.
+ *  \retval STATUS_OK write successfully.
+ *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ */
+enum status_code xnvm_st_ptr(uint32_t address)
+{
+ 590:	cf 93       	push	r28
+ 592:	df 93       	push	r29
+ 594:	00 d0       	rcall	.+0      	; 0x596 <xnvm_st_ptr+0x6>
+ 596:	00 d0       	rcall	.+0      	; 0x598 <xnvm_st_ptr+0x8>
+ 598:	cd b7       	in	r28, 0x3d	; 61
+ 59a:	de b7       	in	r29, 0x3e	; 62
+ 59c:	69 83       	std	Y+1, r22	; 0x01
+ 59e:	7a 83       	std	Y+2, r23	; 0x02
+ 5a0:	8b 83       	std	Y+3, r24	; 0x03
+ 5a2:	9c 83       	std	Y+4, r25	; 0x04
+	cmd_buffer[0] = XNVM_PDI_ST_INSTR | XNVM_PDI_LD_PTR_ADDRESS_MASK |
+ 5a4:	8b e6       	ldi	r24, 0x6B	; 107
+ 5a6:	80 93 1f 02 	sts	0x021F, r24
+			XNVM_PDI_LONG_DATA_MASK;
+
+	mem_move((uint8_t*)&address, (cmd_buffer + 1), 4);
+ 5aa:	64 e0       	ldi	r22, 0x04	; 4
+ 5ac:	ce 01       	movw	r24, r28
+ 5ae:	01 96       	adiw	r24, 0x01	; 1
+ 5b0:	c6 de       	rcall	.-628    	; 0x33e <mem_move.constprop.2>
+
+	return pdi_write(cmd_buffer, 5);
+ 5b2:	65 e0       	ldi	r22, 0x05	; 5
+ 5b4:	70 e0       	ldi	r23, 0x00	; 0
+ 5b6:	8f e1       	ldi	r24, 0x1F	; 31
+ 5b8:	92 e0       	ldi	r25, 0x02	; 2
+ 5ba:	2b de       	rcall	.-938    	; 0x212 <pdi_write>
+}
+ 5bc:	0f 90       	pop	r0
+ 5be:	0f 90       	pop	r0
+ 5c0:	0f 90       	pop	r0
+ 5c2:	0f 90       	pop	r0
+ 5c4:	df 91       	pop	r29
+ 5c6:	cf 91       	pop	r28
+ 5c8:	08 95       	ret
+
+000005ca <xnvm_read_memory>:
+ *  \param  length the data length.
+ *  \retval non-zero the read byte length.
+ *  \retval zero read fail.
+ */
+uint16_t xnvm_read_memory(uint32_t address, uint8_t *data, uint16_t length)
+{
+ 5ca:	cf 92       	push	r12
+ 5cc:	df 92       	push	r13
+ 5ce:	ef 92       	push	r14
+ 5d0:	ff 92       	push	r15
+ 5d2:	0f 93       	push	r16
+ 5d4:	1f 93       	push	r17
+ 5d6:	cf 93       	push	r28
+ 5d8:	df 93       	push	r29
+ 5da:	6b 01       	movw	r12, r22
+ 5dc:	7c 01       	movw	r14, r24
+ 5de:	8a 01       	movw	r16, r20
+ 5e0:	e9 01       	movw	r28, r18
+	xnvm_ctrl_cmd_write(XNVM_CMD_READ_NVM_PDI);
+ 5e2:	83 e4       	ldi	r24, 0x43	; 67
+ 5e4:	64 df       	rcall	.-312    	; 0x4ae <xnvm_ctrl_cmd_write>
+	xnvm_st_ptr(address);
+ 5e6:	c7 01       	movw	r24, r14
+ 5e8:	b6 01       	movw	r22, r12
+ 5ea:	d2 df       	rcall	.-92     	; 0x590 <xnvm_st_ptr>
+
+	if (length > 1) {
+ 5ec:	c2 30       	cpi	r28, 0x02	; 2
+ 5ee:	d1 05       	cpc	r29, r1
+ 5f0:	20 f0       	brcs	.+8      	; 0x5fa <xnvm_read_memory+0x30>
+			xnvm_write_repeat(length);
+ 5f2:	be 01       	movw	r22, r28
+ 5f4:	80 e0       	ldi	r24, 0x00	; 0
+ 5f6:	90 e0       	ldi	r25, 0x00	; 0
+ 5f8:	ac de       	rcall	.-680    	; 0x352 <xnvm_write_repeat>
+	}
+
+	cmd_buffer[0] = XNVM_PDI_LD_INSTR | XNVM_PDI_LD_PTR_STAR_INC_MASK |
+ 5fa:	84 e2       	ldi	r24, 0x24	; 36
+ 5fc:	80 93 1f 02 	sts	0x021F, r24
+			XNVM_PDI_BYTE_DATA_MASK;
+	pdi_write(cmd_buffer, 1);
+ 600:	61 e0       	ldi	r22, 0x01	; 1
+ 602:	70 e0       	ldi	r23, 0x00	; 0
+ 604:	8f e1       	ldi	r24, 0x1F	; 31
+ 606:	92 e0       	ldi	r25, 0x02	; 2
+ 608:	04 de       	rcall	.-1016   	; 0x212 <pdi_write>
+
+	return pdi_read(data, length, WAIT_RETRIES_NUM);
+ 60a:	28 ee       	ldi	r18, 0xE8	; 232
+ 60c:	33 e0       	ldi	r19, 0x03	; 3
+ 60e:	40 e0       	ldi	r20, 0x00	; 0
+ 610:	50 e0       	ldi	r21, 0x00	; 0
+ 612:	be 01       	movw	r22, r28
+ 614:	c8 01       	movw	r24, r16
+}
+ 616:	df 91       	pop	r29
+ 618:	cf 91       	pop	r28
+ 61a:	1f 91       	pop	r17
+ 61c:	0f 91       	pop	r16
+ 61e:	ff 90       	pop	r15
+ 620:	ef 90       	pop	r14
+ 622:	df 90       	pop	r13
+ 624:	cf 90       	pop	r12
+
+	cmd_buffer[0] = XNVM_PDI_LD_INSTR | XNVM_PDI_LD_PTR_STAR_INC_MASK |
+			XNVM_PDI_BYTE_DATA_MASK;
+	pdi_write(cmd_buffer, 1);
+
+	return pdi_read(data, length, WAIT_RETRIES_NUM);
+ 626:	32 ce       	rjmp	.-924    	; 0x28c <pdi_read>
+
+00000628 <xnvm_ctrl_wait_nvmbusy>:
+ *  \param  retries the retry count.
+ *  \retval STATUS_OK BUSY bit was set.
+ *  \retval ERR_TIMEOUT Time out.
+ */
+enum status_code xnvm_ctrl_wait_nvmbusy(uint32_t retries)
+{
+ 628:	cf 92       	push	r12
+ 62a:	df 92       	push	r13
+ 62c:	ef 92       	push	r14
+ 62e:	ff 92       	push	r15
+ 630:	cf 93       	push	r28
+ 632:	df 93       	push	r29
+ 634:	1f 92       	push	r1
+ 636:	cd b7       	in	r28, 0x3d	; 61
+ 638:	de b7       	in	r29, 0x3e	; 62
+ 63a:	6b 01       	movw	r12, r22
+ 63c:	7c 01       	movw	r14, r24
+	uint8_t status;
+
+	while (retries != 0) {
+ 63e:	c1 14       	cp	r12, r1
+ 640:	d1 04       	cpc	r13, r1
+ 642:	e1 04       	cpc	r14, r1
+ 644:	f1 04       	cpc	r15, r1
+ 646:	79 f0       	breq	.+30     	; 0x666 <xnvm_ctrl_wait_nvmbusy+0x3e>
+static enum status_code xnvm_ctrl_read_reg(uint16_t reg, uint8_t *value)
+{
+	uint16_t address;
+
+	address = XNVM_CONTROLLER_BASE + reg;
+	return xnvm_ioread_byte(address, value);
+ 648:	be 01       	movw	r22, r28
+ 64a:	6f 5f       	subi	r22, 0xFF	; 255
+ 64c:	7f 4f       	sbci	r23, 0xFF	; 255
+ 64e:	8f ec       	ldi	r24, 0xCF	; 207
+ 650:	91 e0       	ldi	r25, 0x01	; 1
+ 652:	dc de       	rcall	.-584    	; 0x40c <xnvm_ioread_byte>
+
+	while (retries != 0) {
+			xnvm_ctrl_read_status(&status);
+
+			/* Check if the NVMBUSY bit is clear in the NVM_STATUS register. */
+			if ((status & XNVM_NVM_BUSY) == 0) {
+ 654:	89 81       	ldd	r24, Y+1	; 0x01
+ 656:	87 ff       	sbrs	r24, 7
+ 658:	08 c0       	rjmp	.+16     	; 0x66a <xnvm_ctrl_wait_nvmbusy+0x42>
+					return STATUS_OK;
+			}
+			--retries;
+ 65a:	81 e0       	ldi	r24, 0x01	; 1
+ 65c:	c8 1a       	sub	r12, r24
+ 65e:	d1 08       	sbc	r13, r1
+ 660:	e1 08       	sbc	r14, r1
+ 662:	f1 08       	sbc	r15, r1
+ 664:	ec cf       	rjmp	.-40     	; 0x63e <xnvm_ctrl_wait_nvmbusy+0x16>
+	}
+	return ERR_TIMEOUT;
+ 666:	8d ef       	ldi	r24, 0xFD	; 253
+ 668:	01 c0       	rjmp	.+2      	; 0x66c <xnvm_ctrl_wait_nvmbusy+0x44>
+	while (retries != 0) {
+			xnvm_ctrl_read_status(&status);
+
+			/* Check if the NVMBUSY bit is clear in the NVM_STATUS register. */
+			if ((status & XNVM_NVM_BUSY) == 0) {
+					return STATUS_OK;
+ 66a:	80 e0       	ldi	r24, 0x00	; 0
+			}
+			--retries;
+	}
+	return ERR_TIMEOUT;
+}
+ 66c:	0f 90       	pop	r0
+ 66e:	df 91       	pop	r29
+ 670:	cf 91       	pop	r28
+ 672:	ff 90       	pop	r15
+ 674:	ef 90       	pop	r14
+ 676:	df 90       	pop	r13
+ 678:	cf 90       	pop	r12
+ 67a:	08 95       	ret
+
+0000067c <xnvm_init>:
+ * \retval STATUS_OK init ok
+ * \retval ERR_TIMEOUT the init timed out
+ */
+enum status_code xnvm_init (uint8_t div)
+{
+	if(initialized == 0){
+ 67c:	90 91 1e 02 	lds	r25, 0x021E
+ 680:	91 11       	cpse	r25, r1
+ 682:	2c c0       	rjmp	.+88     	; 0x6dc <xnvm_init+0x60>
+
+		pdi_init(div);
+ 684:	73 dd       	rcall	.-1306   	; 0x16c <pdi_init>
+
+		/* Put the device in reset mode */
+		xnvm_put_dev_in_reset();
+ 686:	b0 de       	rcall	.-672    	; 0x3e8 <xnvm_put_dev_in_reset>
+
+		/* Create the key command */
+		cmd_buffer[0] = XNVM_PDI_KEY_INSTR;
+ 688:	80 ee       	ldi	r24, 0xE0	; 224
+ 68a:	80 93 1f 02 	sts	0x021F, r24
+		cmd_buffer[1] = NVM_KEY_BYTE0;
+ 68e:	8f ef       	ldi	r24, 0xFF	; 255
+ 690:	80 93 20 02 	sts	0x0220, r24
+		cmd_buffer[2] = NVM_KEY_BYTE1;
+ 694:	88 e8       	ldi	r24, 0x88	; 136
+ 696:	80 93 21 02 	sts	0x0221, r24
+		cmd_buffer[3] = NVM_KEY_BYTE2;
+ 69a:	88 ed       	ldi	r24, 0xD8	; 216
+ 69c:	80 93 22 02 	sts	0x0222, r24
+		cmd_buffer[4] = NVM_KEY_BYTE3;
+ 6a0:	8d ec       	ldi	r24, 0xCD	; 205
+ 6a2:	80 93 23 02 	sts	0x0223, r24
+		cmd_buffer[5] = NVM_KEY_BYTE4;
+ 6a6:	85 e4       	ldi	r24, 0x45	; 69
+ 6a8:	80 93 24 02 	sts	0x0224, r24
+		cmd_buffer[6] = NVM_KEY_BYTE5;
+ 6ac:	8b ea       	ldi	r24, 0xAB	; 171
+ 6ae:	80 93 25 02 	sts	0x0225, r24
+		cmd_buffer[7] = NVM_KEY_BYTE6;
+ 6b2:	89 e8       	ldi	r24, 0x89	; 137
+ 6b4:	80 93 26 02 	sts	0x0226, r24
+		cmd_buffer[8] = NVM_KEY_BYTE7;
+ 6b8:	82 e1       	ldi	r24, 0x12	; 18
+ 6ba:	80 93 27 02 	sts	0x0227, r24
+
+		pdi_write(cmd_buffer, 9);
+ 6be:	69 e0       	ldi	r22, 0x09	; 9
+ 6c0:	70 e0       	ldi	r23, 0x00	; 0
+ 6c2:	8f e1       	ldi	r24, 0x1F	; 31
+ 6c4:	92 e0       	ldi	r25, 0x02	; 2
+ 6c6:	a5 dd       	rcall	.-1206   	; 0x212 <pdi_write>
+
+		retval = xnvm_ctrl_wait_nvmbusy(WAIT_RETRIES_NUM);
+ 6c8:	68 ee       	ldi	r22, 0xE8	; 232
+ 6ca:	73 e0       	ldi	r23, 0x03	; 3
+ 6cc:	80 e0       	ldi	r24, 0x00	; 0
+ 6ce:	90 e0       	ldi	r25, 0x00	; 0
+ 6d0:	ab df       	rcall	.-170    	; 0x628 <xnvm_ctrl_wait_nvmbusy>
+ 6d2:	80 93 33 02 	sts	0x0233, r24
+
+		initialized = 1;
+ 6d6:	81 e0       	ldi	r24, 0x01	; 1
+ 6d8:	80 93 1e 02 	sts	0x021E, r24
+	}
+
+	return retval;
+}
+ 6dc:	80 91 33 02 	lds	r24, 0x0233
+ 6e0:	08 95       	ret
+
+000006e2 <xnvm_erase_buffer>:
+
+	return pdi_write(buf, len);
+}
+
+enum status_code xnvm_erase_buffer(int eeprom, uint32_t retries)
+{
+ 6e2:	cf 92       	push	r12
+ 6e4:	df 92       	push	r13
+ 6e6:	ef 92       	push	r14
+ 6e8:	ff 92       	push	r15
+ 6ea:	cf 93       	push	r28
+ 6ec:	df 93       	push	r29
+ 6ee:	ec 01       	movw	r28, r24
+ 6f0:	6a 01       	movw	r12, r20
+ 6f2:	7b 01       	movw	r14, r22
+	enum status_code ret = xnvm_st_ptr(0);
+ 6f4:	60 e0       	ldi	r22, 0x00	; 0
+ 6f6:	70 e0       	ldi	r23, 0x00	; 0
+ 6f8:	cb 01       	movw	r24, r22
+ 6fa:	4a df       	rcall	.-364    	; 0x590 <xnvm_st_ptr>
+	if(ret != STATUS_OK)
+ 6fc:	81 11       	cpse	r24, r1
+ 6fe:	17 c0       	rjmp	.+46     	; 0x72e <xnvm_erase_buffer+0x4c>
+		return ret;
+	ret = xnvm_ctrl_cmd_write(eeprom ? XNVM_CMD_ERASE_EEPROM_PAGE_BUFFER : XNVM_CMD_ERASE_FLASH_PAGE_BUFFER);
+ 700:	cd 2b       	or	r28, r29
+ 702:	11 f0       	breq	.+4      	; 0x708 <xnvm_erase_buffer+0x26>
+ 704:	86 e3       	ldi	r24, 0x36	; 54
+ 706:	01 c0       	rjmp	.+2      	; 0x70a <xnvm_erase_buffer+0x28>
+ 708:	86 e2       	ldi	r24, 0x26	; 38
+ 70a:	d1 de       	rcall	.-606    	; 0x4ae <xnvm_ctrl_cmd_write>
+	if(ret != STATUS_OK)
+ 70c:	81 11       	cpse	r24, r1
+ 70e:	0f c0       	rjmp	.+30     	; 0x72e <xnvm_erase_buffer+0x4c>
+static enum status_code xnvm_ctrl_write_reg(uint16_t reg, uint8_t value)
+{
+	uint16_t address;
+
+	address = XNVM_CONTROLLER_BASE + reg;
+	return xnvm_iowrite_byte(address, value);
+ 710:	61 e0       	ldi	r22, 0x01	; 1
+ 712:	8b ec       	ldi	r24, 0xCB	; 203
+ 714:	91 e0       	ldi	r25, 0x01	; 1
+ 716:	a6 de       	rcall	.-692    	; 0x464 <xnvm_iowrite_byte>
+		return ret;
+	ret = xnvm_ctrl_cmd_write(eeprom ? XNVM_CMD_ERASE_EEPROM_PAGE_BUFFER : XNVM_CMD_ERASE_FLASH_PAGE_BUFFER);
+	if(ret != STATUS_OK)
+		return ret;
+	ret = xnvm_ctrl_cmdex_write();
+	if(ret != STATUS_OK)
+ 718:	81 11       	cpse	r24, r1
+ 71a:	09 c0       	rjmp	.+18     	; 0x72e <xnvm_erase_buffer+0x4c>
+		return ret;
+
+	return xnvm_ctrl_wait_nvmbusy(retries);
+ 71c:	c7 01       	movw	r24, r14
+ 71e:	b6 01       	movw	r22, r12
+}
+ 720:	df 91       	pop	r29
+ 722:	cf 91       	pop	r28
+ 724:	ff 90       	pop	r15
+ 726:	ef 90       	pop	r14
+ 728:	df 90       	pop	r13
+ 72a:	cf 90       	pop	r12
+		return ret;
+	ret = xnvm_ctrl_cmdex_write();
+	if(ret != STATUS_OK)
+		return ret;
+
+	return xnvm_ctrl_wait_nvmbusy(retries);
+ 72c:	7d cf       	rjmp	.-262    	; 0x628 <xnvm_ctrl_wait_nvmbusy>
+}
+ 72e:	df 91       	pop	r29
+ 730:	cf 91       	pop	r28
+ 732:	ff 90       	pop	r15
+ 734:	ef 90       	pop	r14
+ 736:	df 90       	pop	r13
+ 738:	cf 90       	pop	r12
+ 73a:	08 95       	ret
+
+0000073c <xnvm_erase_user_sign>:
+ *  \retval STATUS_OK erase succussfully.
+ *  \retval ERR_TIMEOUT time out.
+ */
+enum status_code xnvm_erase_user_sign(void)
+{
+	enum status_code ret = xnvm_ctrl_cmd_write(XNVM_CMD_ERASE_USER_SIGN);
+ 73c:	88 e1       	ldi	r24, 0x18	; 24
+ 73e:	b7 de       	rcall	.-658    	; 0x4ae <xnvm_ctrl_cmd_write>
+	if(ret != STATUS_OK)
+ 740:	81 11       	cpse	r24, r1
+ 742:	10 c0       	rjmp	.+32     	; 0x764 <xnvm_erase_user_sign+0x28>
+		return ret;
+
+	/* Dummy write for starting the erase command */
+	ret = xnvm_st_ptr(XNVM_SIGNATURE_BASE);
+ 744:	60 e0       	ldi	r22, 0x00	; 0
+ 746:	74 e0       	ldi	r23, 0x04	; 4
+ 748:	8e e8       	ldi	r24, 0x8E	; 142
+ 74a:	90 e0       	ldi	r25, 0x00	; 0
+ 74c:	21 df       	rcall	.-446    	; 0x590 <xnvm_st_ptr>
+	if(ret != STATUS_OK)
+ 74e:	81 11       	cpse	r24, r1
+ 750:	09 c0       	rjmp	.+18     	; 0x764 <xnvm_erase_user_sign+0x28>
+		return ret;
+	
+	ret = xnvm_st_star_ptr_postinc(DUMMY_BYTE);
+ 752:	85 e5       	ldi	r24, 0x55	; 85
+ 754:	f1 de       	rcall	.-542    	; 0x538 <xnvm_st_star_ptr_postinc>
+	if(ret != STATUS_OK)
+ 756:	81 11       	cpse	r24, r1
+ 758:	05 c0       	rjmp	.+10     	; 0x764 <xnvm_erase_user_sign+0x28>
+		return ret;
+
+	return xnvm_ctrl_wait_nvmbusy(WAIT_RETRIES_NUM);
+ 75a:	68 ee       	ldi	r22, 0xE8	; 232
+ 75c:	73 e0       	ldi	r23, 0x03	; 3
+ 75e:	80 e0       	ldi	r24, 0x00	; 0
+ 760:	90 e0       	ldi	r25, 0x00	; 0
+ 762:	62 cf       	rjmp	.-316    	; 0x628 <xnvm_ctrl_wait_nvmbusy>
+}
+ 764:	08 95       	ret
+
+00000766 <xnvm_erase_program_user_sign>:
+ *  \retval STATUS_OK program succussfully.
+ *  \retval ERR_TIMEOUT time out.
+ */
+enum status_code xnvm_erase_program_user_sign(void)
+{
+	enum status_code ret = xnvm_erase_user_sign();
+ 766:	ea df       	rcall	.-44     	; 0x73c <xnvm_erase_user_sign>
+	if(ret != STATUS_OK)
+ 768:	81 11       	cpse	r24, r1
+ 76a:	14 c0       	rjmp	.+40     	; 0x794 <xnvm_erase_program_user_sign+0x2e>
+		return ret;
+	
+	ret = xnvm_ctrl_cmd_write(XNVM_CMD_WRITE_USER_SIGN);
+ 76c:	8a e1       	ldi	r24, 0x1A	; 26
+ 76e:	9f de       	rcall	.-706    	; 0x4ae <xnvm_ctrl_cmd_write>
+	if(ret != STATUS_OK)
+ 770:	81 11       	cpse	r24, r1
+ 772:	10 c0       	rjmp	.+32     	; 0x794 <xnvm_erase_program_user_sign+0x2e>
+		return ret;
+		
+	/* Dummy write for starting the write command. */
+	ret = xnvm_st_ptr(XNVM_SIGNATURE_BASE);
+ 774:	60 e0       	ldi	r22, 0x00	; 0
+ 776:	74 e0       	ldi	r23, 0x04	; 4
+ 778:	8e e8       	ldi	r24, 0x8E	; 142
+ 77a:	90 e0       	ldi	r25, 0x00	; 0
+ 77c:	09 df       	rcall	.-494    	; 0x590 <xnvm_st_ptr>
+	if(ret != STATUS_OK)
+ 77e:	81 11       	cpse	r24, r1
+ 780:	09 c0       	rjmp	.+18     	; 0x794 <xnvm_erase_program_user_sign+0x2e>
+		return ret;
+		
+	ret = xnvm_st_star_ptr_postinc(DUMMY_BYTE);
+ 782:	85 e5       	ldi	r24, 0x55	; 85
+ 784:	d9 de       	rcall	.-590    	; 0x538 <xnvm_st_star_ptr_postinc>
+	if(ret != STATUS_OK)
+ 786:	81 11       	cpse	r24, r1
+ 788:	05 c0       	rjmp	.+10     	; 0x794 <xnvm_erase_program_user_sign+0x2e>
+		return ret;
+
+	return xnvm_ctrl_wait_nvmbusy(WAIT_RETRIES_NUM);
+ 78a:	68 ee       	ldi	r22, 0xE8	; 232
+ 78c:	73 e0       	ldi	r23, 0x03	; 3
+ 78e:	80 e0       	ldi	r24, 0x00	; 0
+ 790:	90 e0       	ldi	r25, 0x00	; 0
+ 792:	4a cf       	rjmp	.-364    	; 0x628 <xnvm_ctrl_wait_nvmbusy>
+}
+ 794:	08 95       	ret
+
+00000796 <xnvm_write_fuse_bit>:
+ *  \param  retries the time out delay number.
+ *  \retval STATUS_OK write succussfully.
+ *  \retval ERR_TIMEOUT time out.
+ */
+enum status_code xnvm_write_fuse_bit(uint32_t address, uint8_t value, uint32_t retries)
+{
+ 796:	cf 92       	push	r12
+ 798:	df 92       	push	r13
+ 79a:	ef 92       	push	r14
+ 79c:	ff 92       	push	r15
+ 79e:	0f 93       	push	r16
+ 7a0:	1f 93       	push	r17
+ 7a2:	cf 93       	push	r28
+ 7a4:	df 93       	push	r29
+ 7a6:	00 d0       	rcall	.+0      	; 0x7a8 <xnvm_write_fuse_bit+0x12>
+ 7a8:	00 d0       	rcall	.+0      	; 0x7aa <xnvm_write_fuse_bit+0x14>
+ 7aa:	1f 92       	push	r1
+ 7ac:	cd b7       	in	r28, 0x3d	; 61
+ 7ae:	de b7       	in	r29, 0x3e	; 62
+ 7b0:	69 83       	std	Y+1, r22	; 0x01
+ 7b2:	7a 83       	std	Y+2, r23	; 0x02
+ 7b4:	8b 83       	std	Y+3, r24	; 0x03
+ 7b6:	9c 83       	std	Y+4, r25	; 0x04
+ 7b8:	68 01       	movw	r12, r16
+ 7ba:	79 01       	movw	r14, r18
+
+	xnvm_ctrl_cmd_write(XNVM_CMD_WRITE_FUSE);
+ 7bc:	8c e4       	ldi	r24, 0x4C	; 76
+ 7be:	4d 83       	std	Y+5, r20	; 0x05
+ 7c0:	76 de       	rcall	.-788    	; 0x4ae <xnvm_ctrl_cmd_write>
+
+	cmd_buffer[0] = XNVM_PDI_STS_INSTR | XNVM_PDI_LONG_ADDRESS_MASK |
+ 7c2:	8c e4       	ldi	r24, 0x4C	; 76
+ 7c4:	80 93 1f 02 	sts	0x021F, r24
+			XNVM_PDI_BYTE_DATA_MASK;
+
+	mem_move((uint8_t*)&address, (cmd_buffer + 1), 4);
+ 7c8:	64 e0       	ldi	r22, 0x04	; 4
+ 7ca:	ce 01       	movw	r24, r28
+ 7cc:	01 96       	adiw	r24, 0x01	; 1
+ 7ce:	b7 dd       	rcall	.-1170   	; 0x33e <mem_move.constprop.2>
+	cmd_buffer[5] = value;
+ 7d0:	4d 81       	ldd	r20, Y+5	; 0x05
+ 7d2:	40 93 24 02 	sts	0x0224, r20
+
+	pdi_write(cmd_buffer, 6);
+ 7d6:	66 e0       	ldi	r22, 0x06	; 6
+ 7d8:	70 e0       	ldi	r23, 0x00	; 0
+ 7da:	8f e1       	ldi	r24, 0x1F	; 31
+ 7dc:	92 e0       	ldi	r25, 0x02	; 2
+ 7de:	19 dd       	rcall	.-1486   	; 0x212 <pdi_write>
+
+	return xnvm_ctrl_wait_nvmbusy(retries);
+ 7e0:	c7 01       	movw	r24, r14
+ 7e2:	b6 01       	movw	r22, r12
+ 7e4:	21 df       	rcall	.-446    	; 0x628 <xnvm_ctrl_wait_nvmbusy>
+}
+ 7e6:	0f 90       	pop	r0
+ 7e8:	0f 90       	pop	r0
+ 7ea:	0f 90       	pop	r0
+ 7ec:	0f 90       	pop	r0
+ 7ee:	0f 90       	pop	r0
+ 7f0:	df 91       	pop	r29
+ 7f2:	cf 91       	pop	r28
+ 7f4:	1f 91       	pop	r17
+ 7f6:	0f 91       	pop	r16
+ 7f8:	ff 90       	pop	r15
+ 7fa:	ef 90       	pop	r14
+ 7fc:	df 90       	pop	r13
+ 7fe:	cf 90       	pop	r12
+ 800:	08 95       	ret
+
+00000802 <xnvm_deinit>:
+ *
+ * \retval always STATUS_OK;
+ */
+enum status_code xnvm_deinit(void)
+{
+	pdi_deinit();
+ 802:	84 dd       	rcall	.-1272   	; 0x30c <pdi_deinit>
+	initialized = 0;
+ 804:	10 92 1e 02 	sts	0x021E, r1
+	return STATUS_OK;
+}
+ 808:	80 e0       	ldi	r24, 0x00	; 0
+ 80a:	08 95       	ret
+
+0000080c <main>:
+ * timeouts for all commands 
+ * set baudrate
+ * spi checksum
+ * */
+
+int main(void) {
+ 80c:	cf 93       	push	r28
+ 80e:	df 93       	push	r29
+ 810:	1f 92       	push	r1
+ 812:	cd b7       	in	r28, 0x3d	; 61
+ 814:	de b7       	in	r29, 0x3e	; 62
+from 1 to 129. Thus, one does not need to use \c clock_div_t type as argument.
+*/
+void clock_prescale_set(clock_div_t __x)
+{
+    uint8_t __tmp = _BV(CLKPCE);
+    __asm__ __volatile__ (
+ 816:	91 e0       	ldi	r25, 0x01	; 1
+ 818:	80 e8       	ldi	r24, 0x80	; 128
+ 81a:	0f b6       	in	r0, 0x3f	; 63
+ 81c:	f8 94       	cli
+ 81e:	80 93 61 00 	sts	0x0061, r24
+ 822:	90 93 61 00 	sts	0x0061, r25
+ 826:	0f be       	out	0x3f, r0	; 63
+	
+	/* use 8MHz/2 = 4MHz clock (max. freq. for 1.8V operation) */
+	clock_prescale_set(clock_div_2);
+	
+	/* Set MISO output, all others input */
+	DDRB = (1<<PB4);
+ 828:	80 e1       	ldi	r24, 0x10	; 16
+ 82a:	84 b9       	out	0x04, r24	; 4
+	
+	DDRB |= (1<<PB1); // ready/busy
+ 82c:	21 9a       	sbi	0x04, 1	; 4
+	PORTB &= ~(1<<PB1);
+ 82e:	29 98       	cbi	0x05, 1	; 5
+	
+	DDRB |= (1<<PB0); // LEDs
+ 830:	20 9a       	sbi	0x04, 0	; 4
+	DDRD |= (1<<PD7);
+ 832:	57 9a       	sbi	0x0a, 7	; 10
+	
+	
+	PORTB&=~(1<<PB0);
+ 834:	28 98       	cbi	0x05, 0	; 5
+	PORTD&=~(1<<PD7);
+ 836:	5f 98       	cbi	0x0b, 7	; 11
+	
+	/* Enable SPI */
+	SPCR = (1<<SPE) | (1<<SPIE);
+ 838:	80 ec       	ldi	r24, 0xC0	; 192
+ 83a:	8c bd       	out	0x2c, r24	; 44
+	
+	/* falling INT0 for CS */
+	EICRA = (1<<ISC01);
+ 83c:	82 e0       	ldi	r24, 0x02	; 2
+ 83e:	80 93 69 00 	sts	0x0069, r24
+	
+	EIMSK = (1<<INT0);
+ 842:	81 e0       	ldi	r24, 0x01	; 1
+ 844:	8d bb       	out	0x1d, r24	; 29
+	
+	sei();
+ 846:	78 94       	sei
+			break;
+		case CMD_INIT:
+			ret = xnvm_init(addr&0xff);
+			if(ret == STATUS_OK) {
+				PORTB|=(1<<PB0);
+				pdi_connected = 1;
+ 848:	bb 24       	eor	r11, r11
+ 84a:	b3 94       	inc	r11
+	
+	switch(cmd&CMD_MASK) {
+		case CMD_NOP:
+			break;
+		case CMD_ID:
+			spibuf[7]=ID_MAGIC1;
+ 84c:	52 ec       	ldi	r21, 0xC2	; 194
+ 84e:	a5 2e       	mov	r10, r21
+			spibuf[8]=ID_MAGIC2;
+ 850:	68 ed       	ldi	r22, 0xD8	; 216
+ 852:	96 2e       	mov	r9, r22
+	sei();
+		
+	while(1)
+	{
+
+		status |= STATUS_READY;
+ 854:	80 91 10 01 	lds	r24, 0x0110
+ 858:	80 68       	ori	r24, 0x80	; 128
+ 85a:	80 93 10 01 	sts	0x0110, r24
+		PORTB |= (1<<PB1); // ready signal
+ 85e:	29 9a       	sbi	0x05, 1	; 5
+		PORTD &= ~(1<<PD7); // busy LED
+ 860:	5f 98       	cbi	0x0b, 7	; 11
+		
+		while(!rx_complete) {
+ 862:	80 91 0f 01 	lds	r24, 0x010F
+ 866:	88 23       	and	r24, r24
+ 868:	e1 f3       	breq	.-8      	; 0x862 <main+0x56>
+			// TODO: sleep
+		}
+		
+		rx_complete=0;
+ 86a:	10 92 0f 01 	sts	0x010F, r1
+		if(spibuf[0] & CMD_NEW) {
+ 86e:	80 91 11 01 	lds	r24, 0x0111
+ 872:	87 ff       	sbrs	r24, 7
+ 874:	ef cf       	rjmp	.-34     	; 0x854 <main+0x48>
+			if(checksum(spibuf,8))
+ 876:	68 e0       	ldi	r22, 0x08	; 8
+ 878:	70 e0       	ldi	r23, 0x00	; 0
+ 87a:	81 e1       	ldi	r24, 0x11	; 17
+ 87c:	91 e0       	ldi	r25, 0x01	; 1
+ 87e:	08 dc       	rcall	.-2032   	; 0x90 <checksum>
+ 880:	88 23       	and	r24, r24
+ 882:	21 f0       	breq	.+8      	; 0x88c <main+0x80>
+				status = STATUS_ERROR | 4;
+ 884:	84 e4       	ldi	r24, 0x44	; 68
+ 886:	80 93 10 01 	sts	0x0110, r24
+ 88a:	e7 c0       	rjmp	.+462    	; 0xa5a <main+0x24e>
+	}
+	return ret;
+}
+
+static uint8_t process_cmd(void) {
+	uint32_t addr = spibuf[1]|((uint32_t)spibuf[2]<<8)|(((uint32_t)spibuf[3])<<16)|(((uint32_t)spibuf[4])<<24);
+ 88c:	20 91 12 01 	lds	r18, 0x0112
+ 890:	30 91 13 01 	lds	r19, 0x0113
+ 894:	c0 90 14 01 	lds	r12, 0x0114
+ 898:	80 91 15 01 	lds	r24, 0x0115
+	uint16_t len = spibuf[5]|(((uint16_t)spibuf[6])<<8);
+ 89c:	40 91 16 01 	lds	r20, 0x0116
+ 8a0:	90 91 17 01 	lds	r25, 0x0117
+ 8a4:	64 2e       	mov	r6, r20
+ 8a6:	71 2c       	mov	r7, r1
+ 8a8:	79 2a       	or	r7, r25
+	uint8_t cmd = spibuf[0];
+ 8aa:	90 91 11 01 	lds	r25, 0x0111
+	enum status_code ret = STATUS_OK;
+	
+	if(len > 256)
+ 8ae:	41 e0       	ldi	r20, 0x01	; 1
+ 8b0:	64 16       	cp	r6, r20
+ 8b2:	74 06       	cpc	r7, r20
+ 8b4:	08 f0       	brcs	.+2      	; 0x8b8 <main+0xac>
+ 8b6:	ce c0       	rjmp	.+412    	; 0xa54 <main+0x248>
+	}
+	return ret;
+}
+
+static uint8_t process_cmd(void) {
+	uint32_t addr = spibuf[1]|((uint32_t)spibuf[2]<<8)|(((uint32_t)spibuf[3])<<16)|(((uint32_t)spibuf[4])<<24);
+ 8b8:	d1 2c       	mov	r13, r1
+ 8ba:	e1 2c       	mov	r14, r1
+ 8bc:	f1 2c       	mov	r15, r1
+ 8be:	76 01       	movw	r14, r12
+ 8c0:	dd 24       	eor	r13, r13
+ 8c2:	cc 24       	eor	r12, r12
+ 8c4:	d3 2a       	or	r13, r19
+ 8c6:	c2 2a       	or	r12, r18
+ 8c8:	f8 2a       	or	r15, r24
+	enum status_code ret = STATUS_OK;
+	
+	if(len > 256)
+		return STATUS_ERROR | 8;
+	
+	if(cmd & CMD_BUFFER) {
+ 8ca:	95 ff       	sbrs	r25, 5
+ 8cc:	53 c0       	rjmp	.+166    	; 0x974 <main+0x168>
+		if(len) {
+ 8ce:	61 14       	cp	r6, r1
+ 8d0:	71 04       	cpc	r7, r1
+ 8d2:	29 f4       	brne	.+10     	; 0x8de <main+0xd2>
+		val ^= *d;
+	return val;
+}
+
+static uint8_t cmd_buffer(uint32_t addr, volatile uint8_t *d, uint16_t len) {
+	uint8_t cmd = spibuf[0];
+ 8d4:	10 91 11 01 	lds	r17, 0x0111
+	uint8_t wr_cmd = cmd&0xf;
+	uint8_t dst_eeprom = ((cmd&DST_MASK)==DST_EEPROM);
+	enum status_code ret = STATUS_OK;
+	
+	/* buffer erase flag */
+	if(cmd & BUFFER_ERASE) {
+ 8d8:	14 ff       	sbrs	r17, 4
+ 8da:	27 c0       	rjmp	.+78     	; 0x92a <main+0x11e>
+ 8dc:	0a c0       	rjmp	.+20     	; 0x8f2 <main+0xe6>
+		return STATUS_ERROR | 8;
+	
+	if(cmd & CMD_BUFFER) {
+		if(len) {
+			/* verify checksum */
+			if(checksum(spibuf+8,len+1))
+ 8de:	b3 01       	movw	r22, r6
+ 8e0:	6f 5f       	subi	r22, 0xFF	; 255
+ 8e2:	7f 4f       	sbci	r23, 0xFF	; 255
+ 8e4:	89 e1       	ldi	r24, 0x19	; 25
+ 8e6:	91 e0       	ldi	r25, 0x01	; 1
+ 8e8:	d3 db       	rcall	.-2138   	; 0x90 <checksum>
+ 8ea:	88 23       	and	r24, r24
+ 8ec:	99 f3       	breq	.-26     	; 0x8d4 <main+0xc8>
+				return STATUS_ERROR | 4;
+ 8ee:	24 e4       	ldi	r18, 0x44	; 68
+ 8f0:	b2 c0       	rjmp	.+356    	; 0xa56 <main+0x24a>
+}
+
+static uint8_t cmd_buffer(uint32_t addr, volatile uint8_t *d, uint16_t len) {
+	uint8_t cmd = spibuf[0];
+	uint8_t wr_cmd = cmd&0xf;
+	uint8_t dst_eeprom = ((cmd&DST_MASK)==DST_EEPROM);
+ 8f2:	01 e0       	ldi	r16, 0x01	; 1
+ 8f4:	81 2f       	mov	r24, r17
+ 8f6:	83 70       	andi	r24, 0x03	; 3
+ 8f8:	83 30       	cpi	r24, 0x03	; 3
+ 8fa:	09 f0       	breq	.+2      	; 0x8fe <main+0xf2>
+ 8fc:	00 e0       	ldi	r16, 0x00	; 0
+	enum status_code ret = STATUS_OK;
+	
+	/* buffer erase flag */
+	if(cmd & BUFFER_ERASE) {
+		/* erase buffer */
+		ret = xnvm_erase_buffer(dst_eeprom, WAIT_RETRIES_NUM);
+ 8fe:	48 ee       	ldi	r20, 0xE8	; 232
+ 900:	53 e0       	ldi	r21, 0x03	; 3
+ 902:	60 e0       	ldi	r22, 0x00	; 0
+ 904:	70 e0       	ldi	r23, 0x00	; 0
+ 906:	80 2f       	mov	r24, r16
+ 908:	90 e0       	ldi	r25, 0x00	; 0
+ 90a:	eb de       	rcall	.-554    	; 0x6e2 <xnvm_erase_buffer>
+		if(ret != STATUS_OK)
+ 90c:	81 11       	cpse	r24, r1
+ 90e:	98 c0       	rjmp	.+304    	; 0xa40 <main+0x234>
+			return ret;
+		/* start load buffer */
+		ret = xnvm_ctrl_cmd_write(dst_eeprom ? XNVM_CMD_LOAD_EEPROM_PAGE_BUFFER : XNVM_CMD_LOAD_FLASH_PAGE_BUFFER);
+ 910:	00 23       	and	r16, r16
+ 912:	11 f0       	breq	.+4      	; 0x918 <main+0x10c>
+ 914:	83 e3       	ldi	r24, 0x33	; 51
+ 916:	01 c0       	rjmp	.+2      	; 0x91a <main+0x10e>
+ 918:	83 e2       	ldi	r24, 0x23	; 35
+ 91a:	c9 dd       	rcall	.-1134   	; 0x4ae <xnvm_ctrl_cmd_write>
+		if(ret != STATUS_OK)
+ 91c:	81 11       	cpse	r24, r1
+ 91e:	90 c0       	rjmp	.+288    	; 0xa40 <main+0x234>
+			return ret;
+		ret = xnvm_st_ptr(addr);
+ 920:	c7 01       	movw	r24, r14
+ 922:	b6 01       	movw	r22, r12
+ 924:	35 de       	rcall	.-918    	; 0x590 <xnvm_st_ptr>
+		if(ret != STATUS_OK)
+ 926:	81 11       	cpse	r24, r1
+ 928:	8b c0       	rjmp	.+278    	; 0xa40 <main+0x234>
+			return ret;
+	}
+	
+	/* load buffer */
+	if(len) {
+ 92a:	61 14       	cp	r6, r1
+ 92c:	71 04       	cpc	r7, r1
+ 92e:	31 f0       	breq	.+12     	; 0x93c <main+0x130>
+		ret = xnvm_load_buffer(d,len);
+ 930:	b3 01       	movw	r22, r6
+ 932:	89 e1       	ldi	r24, 0x19	; 25
+ 934:	91 e0       	ldi	r25, 0x01	; 1
+ 936:	0a de       	rcall	.-1004   	; 0x54c <xnvm_load_buffer>
+		if(ret != STATUS_OK)
+ 938:	81 11       	cpse	r24, r1
+ 93a:	82 c0       	rjmp	.+260    	; 0xa40 <main+0x234>
+	return val;
+}
+
+static uint8_t cmd_buffer(uint32_t addr, volatile uint8_t *d, uint16_t len) {
+	uint8_t cmd = spibuf[0];
+	uint8_t wr_cmd = cmd&0xf;
+ 93c:	1f 70       	andi	r17, 0x0F	; 15
+		if(ret != STATUS_OK)
+			return ret;
+	}
+	
+	/* erase/write command */
+	if(wr_cmd >= 4) {
+ 93e:	14 30       	cpi	r17, 0x04	; 4
+ 940:	b8 f0       	brcs	.+46     	; 0x970 <main+0x164>
+		ret = xnvm_ctrl_cmd_write(write_cmds[wr_cmd-4]);
+ 942:	e1 2f       	mov	r30, r17
+ 944:	f0 e0       	ldi	r31, 0x00	; 0
+ 946:	e2 50       	subi	r30, 0x02	; 2
+ 948:	ff 4f       	sbci	r31, 0xFF	; 255
+ 94a:	80 81       	ld	r24, Z
+ 94c:	b0 dd       	rcall	.-1184   	; 0x4ae <xnvm_ctrl_cmd_write>
+		if(ret != STATUS_OK)
+ 94e:	81 11       	cpse	r24, r1
+ 950:	77 c0       	rjmp	.+238    	; 0xa40 <main+0x234>
+			return ret;
+		
+		/* Dummy write for starting the erase and write command */
+		ret = xnvm_st_ptr(addr);
+ 952:	c7 01       	movw	r24, r14
+ 954:	b6 01       	movw	r22, r12
+ 956:	1c de       	rcall	.-968    	; 0x590 <xnvm_st_ptr>
+		if(ret != STATUS_OK)
+ 958:	81 11       	cpse	r24, r1
+ 95a:	72 c0       	rjmp	.+228    	; 0xa40 <main+0x234>
+			return ret;
+		
+		ret = xnvm_st_star_ptr_postinc(DUMMY_BYTE);
+ 95c:	85 e5       	ldi	r24, 0x55	; 85
+ 95e:	ec dd       	rcall	.-1064   	; 0x538 <xnvm_st_star_ptr_postinc>
+		if(ret != STATUS_OK)
+ 960:	81 11       	cpse	r24, r1
+ 962:	6e c0       	rjmp	.+220    	; 0xa40 <main+0x234>
+			return ret;
+		
+		ret = xnvm_ctrl_wait_nvmbusy(WAIT_RETRIES_NUM);
+ 964:	68 ee       	ldi	r22, 0xE8	; 232
+ 966:	73 e0       	ldi	r23, 0x03	; 3
+ 968:	80 e0       	ldi	r24, 0x00	; 0
+ 96a:	90 e0       	ldi	r25, 0x00	; 0
+ 96c:	5d de       	rcall	.-838    	; 0x628 <xnvm_ctrl_wait_nvmbusy>
+ 96e:	68 c0       	rjmp	.+208    	; 0xa40 <main+0x234>
+		if(ret != STATUS_OK)
+			return ret;
+	}
+	
+	/* erase/write command */
+	if(wr_cmd >= 4) {
+ 970:	80 e0       	ldi	r24, 0x00	; 0
+ 972:	66 c0       	rjmp	.+204    	; 0xa40 <main+0x234>
+		}
+		ret = cmd_buffer(addr,spibuf+8,len);
+		goto out;
+	}
+	
+	switch(cmd&CMD_MASK) {
+ 974:	89 2f       	mov	r24, r25
+ 976:	8f 73       	andi	r24, 0x3F	; 63
+ 978:	90 e0       	ldi	r25, 0x00	; 0
+ 97a:	82 31       	cpi	r24, 0x12	; 18
+ 97c:	91 05       	cpc	r25, r1
+ 97e:	08 f0       	brcs	.+2      	; 0x982 <main+0x176>
+ 980:	72 c0       	rjmp	.+228    	; 0xa66 <main+0x25a>
+ 982:	fc 01       	movw	r30, r24
+ 984:	e6 5e       	subi	r30, 0xE6	; 230
+ 986:	ff 4f       	sbci	r31, 0xFF	; 255
+ 988:	09 94       	ijmp
+		case CMD_NOP:
+			break;
+		case CMD_ID:
+			spibuf[7]=ID_MAGIC1;
+ 98a:	a0 92 18 01 	sts	0x0118, r10
+			spibuf[8]=ID_MAGIC2;
+ 98e:	90 92 19 01 	sts	0x0119, r9
+			spibuf[9]=VERSION_MSB;
+ 992:	b0 92 1a 01 	sts	0x011A, r11
+			spibuf[10]=VERSION_LSB;
+ 996:	10 92 1b 01 	sts	0x011B, r1
+			spibuf[11]=checksum(spibuf+7,4);
+ 99a:	64 e0       	ldi	r22, 0x04	; 4
+ 99c:	70 e0       	ldi	r23, 0x00	; 0
+ 99e:	88 e1       	ldi	r24, 0x18	; 24
+ 9a0:	91 e0       	ldi	r25, 0x01	; 1
+ 9a2:	76 db       	rcall	.-2324   	; 0x90 <checksum>
+ 9a4:	80 93 1c 01 	sts	0x011C, r24
+ 9a8:	4e c0       	rjmp	.+156    	; 0xa46 <main+0x23a>
+			break;
+		case CMD_INIT:
+			ret = xnvm_init(addr&0xff);
+ 9aa:	8c 2d       	mov	r24, r12
+ 9ac:	67 de       	rcall	.-818    	; 0x67c <xnvm_init>
+ 9ae:	28 2f       	mov	r18, r24
+			if(ret == STATUS_OK) {
+ 9b0:	81 11       	cpse	r24, r1
+ 9b2:	47 c0       	rjmp	.+142    	; 0xa42 <main+0x236>
+				PORTB|=(1<<PB0);
+ 9b4:	28 9a       	sbi	0x05, 0	; 5
+				pdi_connected = 1;
+ 9b6:	b0 92 0e 01 	sts	0x010E, r11
+ 9ba:	45 c0       	rjmp	.+138    	; 0xa46 <main+0x23a>
+			}
+			break;
+		case CMD_DEINIT:
+			PORTB&=~(1<<PB0);
+ 9bc:	28 98       	cbi	0x05, 0	; 5
+			pdi_connected=0;
+ 9be:	10 92 0e 01 	sts	0x010E, r1
+			ret = xnvm_deinit();
+ 9c2:	1f df       	rcall	.-450    	; 0x802 <xnvm_deinit>
+ 9c4:	3d c0       	rjmp	.+122    	; 0xa40 <main+0x234>
+			break;
+		case CMD_CHIPERASE:
+			ret = xnvm_chip_erase();
+ 9c6:	77 dd       	rcall	.-1298   	; 0x4b6 <xnvm_chip_erase>
+ 9c8:	3b c0       	rjmp	.+118    	; 0xa40 <main+0x234>
+			break;
+		case CMD_READ:
+			ret = xnvm_read_memory(addr,(uint8_t*)(spibuf+7),len);
+ 9ca:	93 01       	movw	r18, r6
+ 9cc:	48 e1       	ldi	r20, 0x18	; 24
+ 9ce:	51 e0       	ldi	r21, 0x01	; 1
+ 9d0:	c7 01       	movw	r24, r14
+ 9d2:	b6 01       	movw	r22, r12
+ 9d4:	fa dd       	rcall	.-1036   	; 0x5ca <xnvm_read_memory>
+ 9d6:	28 2f       	mov	r18, r24
+			spibuf[7+len] = checksum(spibuf+7,len);
+ 9d8:	83 01       	movw	r16, r6
+ 9da:	09 5f       	subi	r16, 0xF9	; 249
+ 9dc:	1f 4f       	sbci	r17, 0xFF	; 255
+ 9de:	b3 01       	movw	r22, r6
+ 9e0:	88 e1       	ldi	r24, 0x18	; 24
+ 9e2:	91 e0       	ldi	r25, 0x01	; 1
+ 9e4:	29 83       	std	Y+1, r18	; 0x01
+ 9e6:	54 db       	rcall	.-2392   	; 0x90 <checksum>
+ 9e8:	f8 01       	movw	r30, r16
+ 9ea:	ef 5e       	subi	r30, 0xEF	; 239
+ 9ec:	fe 4f       	sbci	r31, 0xFE	; 254
+ 9ee:	80 83       	st	Z, r24
+ 9f0:	29 81       	ldd	r18, Y+1	; 0x01
+ 9f2:	27 c0       	rjmp	.+78     	; 0xa42 <main+0x236>
+			//ret = (ret == len) ? 0 : ERR_IO_ERROR;
+			break;
+		case CMD_WRITEFUSE:
+			/* verify checksum */
+			if(spibuf[8] ^ spibuf[9] ^ 0x55)
+ 9f4:	90 91 19 01 	lds	r25, 0x0119
+ 9f8:	80 91 1a 01 	lds	r24, 0x011A
+ 9fc:	89 27       	eor	r24, r25
+ 9fe:	85 35       	cpi	r24, 0x55	; 85
+ a00:	09 f0       	breq	.+2      	; 0xa04 <main+0x1f8>
+ a02:	75 cf       	rjmp	.-278    	; 0x8ee <main+0xe2>
+				return STATUS_ERROR | 4;
+			ret = xnvm_write_fuse_bit(addr, spibuf[8], 1000);
+ a04:	40 91 19 01 	lds	r20, 0x0119
+ a08:	08 ee       	ldi	r16, 0xE8	; 232
+ a0a:	13 e0       	ldi	r17, 0x03	; 3
+ a0c:	20 e0       	ldi	r18, 0x00	; 0
+ a0e:	30 e0       	ldi	r19, 0x00	; 0
+ a10:	c7 01       	movw	r24, r14
+ a12:	b6 01       	movw	r22, r12
+ a14:	c0 de       	rcall	.-640    	; 0x796 <xnvm_write_fuse_bit>
+ a16:	14 c0       	rjmp	.+40     	; 0xa40 <main+0x234>
+			break;
+		case CMD_WRITEUSERSIGN:
+			/* load buffer */
+			if(len) {
+ a18:	61 14       	cp	r6, r1
+ a1a:	71 04       	cpc	r7, r1
+ a1c:	81 f0       	breq	.+32     	; 0xa3e <main+0x232>
+				/* verify checksum */
+				if(checksum(spibuf+8,len+1))
+ a1e:	b3 01       	movw	r22, r6
+ a20:	6f 5f       	subi	r22, 0xFF	; 255
+ a22:	7f 4f       	sbci	r23, 0xFF	; 255
+ a24:	89 e1       	ldi	r24, 0x19	; 25
+ a26:	91 e0       	ldi	r25, 0x01	; 1
+ a28:	33 db       	rcall	.-2458   	; 0x90 <checksum>
+ a2a:	81 11       	cpse	r24, r1
+ a2c:	60 cf       	rjmp	.-320    	; 0x8ee <main+0xe2>
+					return STATUS_ERROR | 4;
+					
+				ret = xnvm_load_buffer(spibuf+8,len);
+ a2e:	b3 01       	movw	r22, r6
+ a30:	89 e1       	ldi	r24, 0x19	; 25
+ a32:	91 e0       	ldi	r25, 0x01	; 1
+ a34:	8b dd       	rcall	.-1258   	; 0x54c <xnvm_load_buffer>
+				if(ret != STATUS_OK)
+ a36:	88 23       	and	r24, r24
+ a38:	11 f0       	breq	.+4      	; 0xa3e <main+0x232>
+					return ret;
+ a3a:	28 2f       	mov	r18, r24
+ a3c:	0c c0       	rjmp	.+24     	; 0xa56 <main+0x24a>
+			}
+			/* erase + write buffer */
+			ret = xnvm_erase_program_user_sign();
+ a3e:	93 de       	rcall	.-730    	; 0x766 <xnvm_erase_program_user_sign>
+ a40:	28 2f       	mov	r18, r24
+			break;
+		default:
+			ret = ERR_INVALID_ARG;
+	}
+out:
+	if(ret > 0) ret = 0;
+ a42:	12 16       	cp	r1, r18
+ a44:	14 f4       	brge	.+4      	; 0xa4a <main+0x23e>
+	return ret ? (((ret)&STATUS_ERRORMASK)|STATUS_ERROR) : 0;
+ a46:	20 e0       	ldi	r18, 0x00	; 0
+ a48:	06 c0       	rjmp	.+12     	; 0xa56 <main+0x24a>
+ a4a:	22 23       	and	r18, r18
+ a4c:	e1 f3       	breq	.-8      	; 0xa46 <main+0x23a>
+ a4e:	2f 73       	andi	r18, 0x3F	; 63
+ a50:	20 64       	ori	r18, 0x40	; 64
+ a52:	01 c0       	rjmp	.+2      	; 0xa56 <main+0x24a>
+	uint16_t len = spibuf[5]|(((uint16_t)spibuf[6])<<8);
+	uint8_t cmd = spibuf[0];
+	enum status_code ret = STATUS_OK;
+	
+	if(len > 256)
+		return STATUS_ERROR | 8;
+ a54:	28 e4       	ldi	r18, 0x48	; 72
+		rx_complete=0;
+		if(spibuf[0] & CMD_NEW) {
+			if(checksum(spibuf,8))
+				status = STATUS_ERROR | 4;
+			else
+				status = process_cmd();
+ a56:	20 93 10 01 	sts	0x0110, r18
+			spibuf[0] &= ~(CMD_NEW);
+ a5a:	80 91 11 01 	lds	r24, 0x0111
+ a5e:	8f 77       	andi	r24, 0x7F	; 127
+ a60:	80 93 11 01 	sts	0x0111, r24
+ a64:	f7 ce       	rjmp	.-530    	; 0x854 <main+0x48>
+			}
+			/* erase + write buffer */
+			ret = xnvm_erase_program_user_sign();
+			break;
+		default:
+			ret = ERR_INVALID_ARG;
+ a66:	28 ef       	ldi	r18, 0xF8	; 248
+ a68:	f2 cf       	rjmp	.-28     	; 0xa4e <main+0x242>
+
+00000a6a <__udivmodsi4>:
+ a6a:	a1 e2       	ldi	r26, 0x21	; 33
+ a6c:	1a 2e       	mov	r1, r26
+ a6e:	aa 1b       	sub	r26, r26
+ a70:	bb 1b       	sub	r27, r27
+ a72:	fd 01       	movw	r30, r26
+ a74:	0d c0       	rjmp	.+26     	; 0xa90 <__udivmodsi4_ep>
+
+00000a76 <__udivmodsi4_loop>:
+ a76:	aa 1f       	adc	r26, r26
+ a78:	bb 1f       	adc	r27, r27
+ a7a:	ee 1f       	adc	r30, r30
+ a7c:	ff 1f       	adc	r31, r31
+ a7e:	a2 17       	cp	r26, r18
+ a80:	b3 07       	cpc	r27, r19
+ a82:	e4 07       	cpc	r30, r20
+ a84:	f5 07       	cpc	r31, r21
+ a86:	20 f0       	brcs	.+8      	; 0xa90 <__udivmodsi4_ep>
+ a88:	a2 1b       	sub	r26, r18
+ a8a:	b3 0b       	sbc	r27, r19
+ a8c:	e4 0b       	sbc	r30, r20
+ a8e:	f5 0b       	sbc	r31, r21
+
+00000a90 <__udivmodsi4_ep>:
+ a90:	66 1f       	adc	r22, r22
+ a92:	77 1f       	adc	r23, r23
+ a94:	88 1f       	adc	r24, r24
+ a96:	99 1f       	adc	r25, r25
+ a98:	1a 94       	dec	r1
+ a9a:	69 f7       	brne	.-38     	; 0xa76 <__udivmodsi4_loop>
+ a9c:	60 95       	com	r22
+ a9e:	70 95       	com	r23
+ aa0:	80 95       	com	r24
+ aa2:	90 95       	com	r25
+ aa4:	9b 01       	movw	r18, r22
+ aa6:	ac 01       	movw	r20, r24
+ aa8:	bd 01       	movw	r22, r26
+ aaa:	cf 01       	movw	r24, r30
+ aac:	08 95       	ret
+
+00000aae <_exit>:
+ aae:	f8 94       	cli
+
+00000ab0 <__stop_program>:
+ ab0:	ff cf       	rjmp	.-2      	; 0xab0 <__stop_program>
