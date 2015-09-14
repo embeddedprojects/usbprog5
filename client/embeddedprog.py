@@ -12,6 +12,10 @@ import signal
 import threading
 
 
+Error=0
+save_log = ''
+exitcode=0
+
 class TimeExceededError(Exception):
     pass
 
@@ -23,6 +27,7 @@ def timeout():
 
 # opening and returning socket
 def connect(sa, port, code):
+    global Error
     if os.name == "posix":
         signal.signal(signal.SIGALRM, timeout)
     try:
@@ -40,6 +45,7 @@ def connect(sa, port, code):
             signal.alarm(0)
 
     except:
+        Error=103
         print "couldnt connect " + 'to %s port %s' % server_address
         return 'exit'
 
@@ -62,11 +68,7 @@ def golive(code, sock):
 
 # show the message returned from server
 def show(code, sock):
-    try:
-        print code['msg']
-    except:
-        pass
-
+    print code['msg']
     print "done"
     return " "
 
@@ -75,7 +77,6 @@ def show(code, sock):
 def showall(code, sock):
     i = 0
     print " "
-
     print "the avr processors:"
     print " "
     for s in code['avr']:
@@ -123,12 +124,9 @@ def inpt():
     parser.add_argument("--processor", help="select target processor;")
     parser.add_argument("--voltage", help="select target voltage (1 for 1V8;3 for 3V3;5 for 5V5)", type=int, default=3)
     parser.add_argument("--eeprog-ip", help="select target ip (default via usb 10.0.0.1) ;saved in eeprog.rc")
-    parser.add_argument("--eeprog-port", type=int, help="select target port (default 8888); saved in eeprog.rc ",
-                        default=8888)
-    parser.add_argument("--signature", help="not needed at the time... for signature just input processor only",
-                        action="store_true")
-    parser.add_argument("--speed", type=int, default=2,
-                        help="changes speed; 2 is default setting, 1=(B=1), 2=(B=10), 3=(b=100)")
+    parser.add_argument("--eeprog-port", type=int, help="select target port (default 8888); saved in eeprog.rc ", default=8888)
+    parser.add_argument("--signature", help="not needed at the time... for signature just input processor only", action="store_true")
+    parser.add_argument("--speed", type=int, default=2, help="changes speed; 2 is default setting, 1=(B=1), 2=(B=10), 3=(b=100)")
     parser.add_argument("--atmel-studio", help="(atmel-studio)write flash, needs complete path to file ")
     parser.add_argument("--flash-read", help="read flash, needs complete path to file ")
     parser.add_argument("--eeprom-read", help="read eeprom , needs complete path to file")
@@ -158,7 +156,7 @@ def inpt():
     parser.add_argument("--dump",
                         help="Please insert the command in following form: \n mdw [phys] addr [count] \n\n   mdw = 32-bit word\n   mdh = 16-bit halfword\n   mdb = 8-bit byte\n\nWhen the current target has an MMU which is present and active, addr is interpreted as a virtual address. Otherwise, or if the optional phys flag is specified, addr is interpreted as a physical address. If count is specified, displays that many units")
     parser.add_argument("--swd", help="write 'on' to use swd", default="no")
-
+    
     # creating dictionary with default value =none
     args = parser.parse_args()
     lis = {
@@ -340,8 +338,6 @@ def send_file(code, sock):
     if buf == 'done':
         if code['v'] >= 2:
             print "reply = done"
-        return 0
-    return -1
 
 
 # recieves a file in b64 code from server and saves it in an file
@@ -387,18 +383,18 @@ def recieve_file(code, connection):
 
 # recieve realtime output from server(openocd/avrdude output)
 def recieve_realtime(sock, code):
+    global save_log
     if code['v'] >= 1:
         print "recieve output in 'realtime'"
     out = ' '
-    failsave = ''
-    part = 'nothing'
     while '\xa4' not in out:
         sys.stdout.write(out)
         sys.stdout.flush()
+        save_log = save_log + out
         out = sock.recv(128)
 
     out, ignored, status = out.partition('\xa4')
-
+    save_log = save_log + out
     sys.stdout.write(out)
     sys.stdout.flush()
     return status
@@ -513,6 +509,8 @@ def restore_backup(code):
 
 
 def exit(code, sock):
+    global exitcode
+    exitcode=code['Error']
     return "/done"
 
 
@@ -523,6 +521,31 @@ def browser(code, sock):
         pass
     webbrowser.open('http://' + code['eeprog-ip'] + '/index.php?software=atmel', new=0, autoraise=True)
     return "/done"
+
+
+def look_for_error():
+    global save_log,exitcode
+    if exitcode != 0:
+        print "Error AVRdude/OpenOCD had exitcode "+str(exitcode)
+        return exitcode
+    if "ERROR" in save_log:
+        return 102
+    if "Error" in save_log:
+        return 102
+    if "error" in save_log:
+        return 102
+    if "AVR device not responding" in save_log:
+        return 102
+    if "initialization failed, rc=-1" in save_log:
+        return 102
+    if "Yikes!" in save_log:
+        return 102
+    if "not found" in save_log:
+        return 102
+    if "timeout" in save_log:
+        return 102
+    return 0
+
 
 
 inn = ""
@@ -557,9 +580,10 @@ try:
 
     if code['v'] >= 1:
         print "send code to server"
-    if code['v'] >= 3:
+    if code['v'] >= 2:
         print "code =="
         print code
+    if code['v'] >= 3:
         print "in json"
         print json.dumps(code)
     if inn != '/done':
@@ -594,8 +618,21 @@ try:
 except Exception as ex:
     print 'unexpected error'
     print ex
+    Error=101
 finally:
+    if Error==0:
+        Error=look_for_error()
     try:
         sock.close()
+#        print "Exitcode = " + str(Error)
+        sys.exit(Error)
     except:
-        pass
+        sys.exit(104)
+#############################################
+#Error codes:
+#	 0 = No Error Detected
+#	 101 = Error in the main Communication
+#	 102 = Error from avrdude/OpenOCD
+#	 103 = Error while opening the socket
+#	 104 = Error while closing the socket
+#############################################
