@@ -1,0 +1,3 @@
+libavrdude_a-serbb_win32.o: serbb_win32.c avrdude.h
+
+avrdude.h:

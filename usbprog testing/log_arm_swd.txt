@@ -1,7 +1,8 @@
 Status:
 
 Signature: OK
-flash-write: OK
+Error AVRdude/OpenOCD had exitcode 1
+
 dump memory: OK
 
 
@@ -65,11 +66,12 @@ xPSR: 0x01000000 pc: 0x08000044 msp: 0x20002000
 auto erase enabled
 Info : device id = 0x10016420
 Info : flash size = 128kbytes
-wrote 1024 bytes from file /tmp/main.elf in 0.345606s (2.893 KiB/s)
+wrote 1024 bytes from file /tmp/main.elf in 0.346470s (2.886 KiB/s)
 ** Programming Finished **
 ** Resetting Target **
 Warn : target not halted
 
+Error AVRdude/OpenOCD had exitcode 1
 
 
 

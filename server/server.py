@@ -13,7 +13,7 @@ import pwd, os
 
 template_json='{"load": null, "rename": null, "fuse-write-low": null, "fuse-read-high": false, "show-all": false, "dump": null, "fuse-read-extended": false, "signature": false, "fuse-write-extended": null, "flash-read": null, "raw": null, "gdb": null, "api": false, "voltage": 3, "eeprog_port": null, "lockbits-write": null, "browser": false, "lockbits-read": false, "speed": 2, "eeprog-port": 8888, "fuse-write-high": null, "web": null, "safe": null, "eeprom-write": null, "eeprom-read": null, "flash-write": null, "fuse-read-low": false, "atmel-studio": null, "eeprog_ip": null, "eeprog-ip": "10.0.0.1", "del-conf": null, "mode": null, "v": 0, "lockbits-write-erase": null, "desc": null, "processor": null, "delete": false, "swd": "no"}'
 
-
+exitcode=0
 
 
 #start socket
@@ -140,6 +140,7 @@ def send_file(code , sock):
 
 #starts subprocess and realtime()
 def go(code,connection):
+	global exitcode
 	if code['v']>=1:
 		print "go"
 	exe=str(code['execute'])
@@ -147,6 +148,8 @@ def go(code,connection):
 	if code['v']>=2:
                 print "subprocess started"
 	realtime(connection,p,code)
+	p.communicate()
+	exitcode = p.returncode
 	
 	
 
@@ -171,12 +174,15 @@ def set_file_execute(code,connection):
 
 #named set file becouse the client sets an file
 def set_file_execute_w_only(code,connection):
+    global exitcode
     if code['web']!=True:	
 	if code['v']>=1:
 		print "set_file_execute_w_only"
         recieve_file(code,connection)		
         exe=str(code['execute'])
         p = subprocess.Popen(exe,shell=True )
+	p.communicate()
+	exitcode = p.returncode	
 
 #named get file becouse the client gets an file	
 def get_file(code,connection):
@@ -216,7 +222,7 @@ def processor(code,connection):
 				lines=f.read().splitlines()
 				try:
 					if (lines[3] == '') or (lines[3] == 'None') or ('Search' in lines[3]):
-						connection.sendall("{'v':"+str(code['v'])+",'mode':'browser','msg':'to use this program an processor needs to be set','eeprog-ip':'"+code['eeprog-ip']+"'}")
+						connection.sendall("{'v':"+str(code['v'])+",'mode':'browser','msg':'to use this program an processor needs to be set'}")
 						
 						return code
 				
@@ -226,7 +232,7 @@ def processor(code,connection):
 					code['speed']=lines[2]
 					code['flash-write']=code['atmel-studio']
 				except:
-					connection.sendall("{'v':"+str(code['v'])+",'mode':'browser','msg':'to use this program an processor needs to be set','eeprog-ip':'"+code['eeprog-ip']+"'}")
+					connection.sendall("{'v':"+str(code['v'])+",'mode':'browser','msg':'to use this program an processor needs to be set'}")
 					return code
 	if code['v']>=1:
 		print "choose mode via processor"
@@ -237,19 +243,20 @@ def processor(code,connection):
 		print "render avr"
 		processoravr=f.read().splitlines()
 	if code['show-all'] or code['processor']== None:
-		if code['processor']== None:
-			if code['web']!=True:
-				connection.sendall("{'v':"+str(code['v'])+",'mode':'show','msg':'to use this program an processor needs to be set'}")
                 d = dict()
 		d['mode']='show-all'
-		d['v']=0
+		d['v']=3
                 a = ['1', '2']
                 for i in processoravr:
                         d.setdefault("avr", []).append(i)
 		for i in processoropenocd:
 			d.setdefault("ocd",[]).append(i)
-		d['mode']='show-all'	
+		d['mode']='show-all'
+		print "show all 249"	
 		connection.sendall(str(d))
+		if code['processor']== None:
+			if code['web']!=True:
+				connection.sendall("{'v':"+str(code['v'])+",'mode':'show','msg':'to use this program an processor needs to be set'}")
 
 
 
@@ -283,7 +290,7 @@ def processor(code,connection):
                 		for i in processoropenocd:
                         		d.setdefault("ocd",[]).append(i)
                 
-
+				print "show all 287"
                 		connection.sendall(str(d))
 
 
@@ -332,6 +339,7 @@ def golive(code,connection):
 
 #logic
 def logica(code,connection):
+	global exitcode
 	path=''
 	if code['mode']=='conf':
 		return 'done'
@@ -723,7 +731,7 @@ def logica(code,connection):
 			
 					subprocess.call(['killall', 'openocd'])
 					if code['web']!=True:
-						connection.sendall("{'v':"+str(code['v'])+",'mode':'exit'}")
+						connection.sendall("{'v':"+str(code['v'])+",'mode':'exit','Error':"+str(exitcode)+"}")
 					return
 			if (code['gdb']=='start'):
 				with open('/var/www/tmp/port','r') as r:
@@ -734,7 +742,7 @@ def logica(code,connection):
 				subprocess.Popen(['/root/openocd-code/src/openocd','-f',config_adrr,'-f','/root/openocd-code/tcl/'+path_ocd+'/'+code['processor']+'.cfg','-c','telnet_port '+tel+';gdb_port '+gdb])
 		
 				if code['web']!=True:
-					connection.sendall("{'v':"+str(code['v'])+",'mode':'exit'}")
+					connection.sendall("{'v':"+str(code['v'])+",'mode':'exit','Error':"+str(exitcode)+"}")
 				return
 		if code['flash-write'] != None:
 			if code['v']>=1:
@@ -803,7 +811,7 @@ def logica(code,connection):
                 go(code,connection)
 
 		if code['web']!=True:
-			connection.sendall("{'v':"+str(code['v'])+",'mode':'exit'}")	
+			connection.sendall("{'v':"+str(code['v'])+",'mode':'exit','Error':"+str(exitcode)+"}")	
 
 
 def conf (code):
@@ -1043,6 +1051,7 @@ try:
 	while inn!='kill':
 		
 		print >>sys.stderr, 'waiting for a connection'
+		exitcode=0
 		connection, client_address = sock.accept()
 		try:
 		#if 1==1:	
@@ -1061,7 +1070,7 @@ try:
 		  	logica(code,connection)	
 	
 			if code['web']!=True:
-				connection.sendall("{'v':"+str(code['v'])+",'mode':'exit'}")
+				connection.sendall("{'v':"+str(code['v'])+",'mode':'exit','Error':"+str(exitcode)+"}")
 			print "connection closed"
 			connection.close()
 
@@ -1078,11 +1087,13 @@ try:
     			exc_type, exc_obj, exc_tb = sys.exc_info()
     			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
     			print(exc_type, fname, exc_tb.tb_lineno)
+			
        		
 
 		
 		
 		finally:
+			
 			subprocess.call(["sync"])
 			connection.close()
 

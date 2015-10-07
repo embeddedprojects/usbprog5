@@ -49,7 +49,7 @@ cp -r openocd-0.9.0/tcl/interface /tmp/build/root/openocd-code/tcl/
 
 cp -r  processor/tcl /tmp/build/root/openocd-code/
 
-cp avrdude-6.1/avrdude /tmp/build/root/avrdude-6.1
+cp avrdude_mit_pdi/avrdude /tmp/build/root/avrdude-6.1
 cp processor/avrdude.conf /tmp/build/root/avrdude-6.1
 
 cp client/embeddedprog.py /tmp/build/var/www/tmp
