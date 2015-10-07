@@ -1,0 +1,1238 @@
+   1               		.file	"low_level_pdi.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               	.global	pdi_init
+  12               	pdi_init:
+  13               	.LFB30:
+  14               		.file 1 "low_level_pdi.c"
+   1:low_level_pdi.c **** /*
+   2:low_level_pdi.c ****  * modified AVR1612 appnote for PDI programming
+   3:low_level_pdi.c ****  * modifications by hunz@mailbox.org
+   4:low_level_pdi.c ****  * see license conditions for original appnote below
+   5:low_level_pdi.c ****  * modified parts may be redistributed under the
+   6:low_level_pdi.c ****  * same conditions as the original code from Atmel
+   7:low_level_pdi.c ****  */
+   8:low_level_pdi.c **** 
+   9:low_level_pdi.c **** /**
+  10:low_level_pdi.c ****  * \file
+  11:low_level_pdi.c ****  *
+  12:low_level_pdi.c ****  * \brief Low level PDI driver
+  13:low_level_pdi.c ****  *
+  14:low_level_pdi.c ****  * Copyright (C) 2009 Atmel Corporation. All rights reserved.
+  15:low_level_pdi.c ****  *
+  16:low_level_pdi.c ****  * \page License
+  17:low_level_pdi.c ****  *
+  18:low_level_pdi.c ****  * Redistribution and use in source and binary forms, with or without
+  19:low_level_pdi.c ****  * modification, are permitted provided that the following conditions are met:
+  20:low_level_pdi.c ****  *
+  21:low_level_pdi.c ****  * 1. Redistributions of source code must retain the above copyright notice,
+  22:low_level_pdi.c ****  * this list of conditions and the following disclaimer.
+  23:low_level_pdi.c ****  *
+  24:low_level_pdi.c ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  25:low_level_pdi.c ****  * this list of conditions and the following disclaimer in the documentation
+  26:low_level_pdi.c ****  * and/or other materials provided with the distribution.
+  27:low_level_pdi.c ****  *
+  28:low_level_pdi.c ****  * 3. The name of Atmel may not be used to endorse or promote products derived
+  29:low_level_pdi.c ****  * from this software without specific prior written permission.
+  30:low_level_pdi.c ****  *
+  31:low_level_pdi.c ****  * 4. This software may only be redistributed and used in connection with an
+  32:low_level_pdi.c ****  * Atmel AVR product.
+  33:low_level_pdi.c ****  *
+  34:low_level_pdi.c ****  * THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR IMPLIED
+  35:low_level_pdi.c ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  36:low_level_pdi.c ****  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+  37:low_level_pdi.c ****  * EXPRESSLY AND SPECIFICALLY DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR
+  38:low_level_pdi.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  39:low_level_pdi.c ****  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  40:low_level_pdi.c ****  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  41:low_level_pdi.c ****  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  42:low_level_pdi.c ****  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  43:low_level_pdi.c ****  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+  44:low_level_pdi.c ****  * DAMAGE.
+  45:low_level_pdi.c ****  */
+  46:low_level_pdi.c **** #include <low_level_pdi.h>
+  47:low_level_pdi.c **** 
+  48:low_level_pdi.c **** #include <util/delay.h>
+  49:low_level_pdi.c **** 
+  50:low_level_pdi.c **** /**
+  51:low_level_pdi.c ****  * \brief Initialize PDI.
+  52:low_level_pdi.c ****  *
+  53:low_level_pdi.c ****  * Initialize the peripeherals necessary to communicate with the ATxmega
+  54:low_level_pdi.c ****  *  PDI.
+  55:low_level_pdi.c ****  */
+  56:low_level_pdi.c **** void pdi_init( uint8_t div )
+  57:low_level_pdi.c **** {
+  15               		.loc 1 57 0
+  16               		.cfi_startproc
+  17               	.LVL0:
+  18 0000 CF93      		push r28
+  19               	.LCFI0:
+  20               		.cfi_def_cfa_offset 3
+  21               		.cfi_offset 28, -2
+  22               	/* prologue: function */
+  23               	/* frame size = 0 */
+  24               	/* stack size = 1 */
+  25               	.L__stack_usage = 1
+  26 0002 C82F      		mov r28,r24
+  27               	.LVL1:
+  58:low_level_pdi.c **** 	div = (div <= 4) ? div : 4;
+  28               		.loc 1 58 0
+  29 0004 8530      		cpi r24,lo8(5)
+  30 0006 00F0      		brlo .L2
+  31 0008 C4E0      		ldi r28,lo8(4)
+  32               	.L2:
+  33               	.LVL2:
+  34               	.LBB56:
+  35               	.LBB57:
+  36               	.LBB58:
+  37               		.file 2 "./usart.h"
+   1:./usart.h     **** /**
+   2:./usart.h     ****  * \file uart
+   3:./usart.h     ****  *
+   4:./usart.h     ****  * \brief AT90USB1287 UART driver
+   5:./usart.h     ****  *
+   6:./usart.h     ****  * Copyright (C) 2009 Atmel Corporation. All rights reserved.
+   7:./usart.h     ****  *
+   8:./usart.h     ****  * \page License
+   9:./usart.h     ****  *
+  10:./usart.h     ****  * Redistribution and use in source and binary forms, with or without
+  11:./usart.h     ****  * modification, are permitted provided that the following conditions are met:
+  12:./usart.h     ****  *
+  13:./usart.h     ****  * 1. Redistributions of source code must retain the above copyright notice,
+  14:./usart.h     ****  * this list of conditions and the following disclaimer.
+  15:./usart.h     ****  *
+  16:./usart.h     ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  17:./usart.h     ****  * this list of conditions and the following disclaimer in the documentation
+  18:./usart.h     ****  * and/or other materials provided with the distribution.
+  19:./usart.h     ****  *
+  20:./usart.h     ****  * 3. The name of Atmel may not be used to endorse or promote products derived
+  21:./usart.h     ****  * from this software without specific prior written permission.
+  22:./usart.h     ****  *
+  23:./usart.h     ****  * 4. This software may only be redistributed and used in connection with an
+  24:./usart.h     ****  * Atmel AVR product.
+  25:./usart.h     ****  *
+  26:./usart.h     ****  * THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR IMPLIED
+  27:./usart.h     ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  28:./usart.h     ****  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+  29:./usart.h     ****  * EXPRESSLY AND SPECIFICALLY DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR
+  30:./usart.h     ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  31:./usart.h     ****  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  32:./usart.h     ****  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  33:./usart.h     ****  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  34:./usart.h     ****  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  35:./usart.h     ****  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+  36:./usart.h     ****  * DAMAGE.
+  37:./usart.h     ****  */
+  38:./usart.h     **** 
+  39:./usart.h     **** #ifndef UART_H_
+  40:./usart.h     **** #define UART_H_
+  41:./usart.h     **** 
+  42:./usart.h     **** #include "config.h"
+  43:./usart.h     **** 
+  44:./usart.h     **** #define USART_CMODE_gm 0xC0
+  45:./usart.h     **** 
+  46:./usart.h     **** typedef enum USART_CHSIZE_enum
+  47:./usart.h     **** {
+  48:./usart.h     ****     USART_CHSIZE_5BIT_gc = (0x00<<1),  /* Character size: 5 bit */
+  49:./usart.h     ****     USART_CHSIZE_6BIT_gc = (0x01<<1),  /* Character size: 6 bit */
+  50:./usart.h     ****     USART_CHSIZE_7BIT_gc = (0x02<<1),  /* Character size: 7 bit */
+  51:./usart.h     ****     USART_CHSIZE_8BIT_gc = (0x03<<1),  /* Character size: 8 bit */
+  52:./usart.h     **** } USART_CHSIZE_t;
+  53:./usart.h     **** 
+  54:./usart.h     **** /* Parity Mode */
+  55:./usart.h     **** typedef enum USART_PMODE_enum
+  56:./usart.h     **** {
+  57:./usart.h     ****     USART_PMODE_DISABLED_gc = (0x00<<4),  /* No Parity */
+  58:./usart.h     ****     USART_PMODE_EVEN_gc 	= (0x02<<4),  /* Even Parity */
+  59:./usart.h     ****     USART_PMODE_ODD_gc 		= (0x03<<4),  /* Odd Parity */
+  60:./usart.h     **** } USART_PMODE_t;
+  61:./usart.h     **** 
+  62:./usart.h     **** /* Communication Mode */
+  63:./usart.h     **** typedef enum USART_CMODE_enum
+  64:./usart.h     **** {
+  65:./usart.h     ****     USART_CMODE_ASYNCHRONOUS_gc = (0x00<<6),  /* Asynchronous Mode */
+  66:./usart.h     ****     USART_CMODE_SYNCHRONOUS_gc = (0x01<<6),  /* Synchronous Mode */
+  67:./usart.h     ****     USART_CMODE_MSPI_gc = (0x03<<6),  /* Master SPI Mode */
+  68:./usart.h     **** } USART_CMODE_t;
+  69:./usart.h     **** 
+  70:./usart.h     **** /**
+  71:./usart.h     ****  *  \brief Enable USART transmitter.
+  72:./usart.h     ****  *
+  73:./usart.h     ****  *  \param _usart Pointer to the USART module.
+  74:./usart.h     ****  */
+  75:./usart.h     **** static inline void usart_tx_enable(void)
+  76:./usart.h     **** {
+  77:./usart.h     **** 	UCSR0B |= (1 << TXEN0);
+  78:./usart.h     **** }
+  79:./usart.h     **** 
+  80:./usart.h     **** /** \brief Disable USART transmitter.
+  81:./usart.h     ****  *
+  82:./usart.h     ****  *  \param _usart Pointer to the USART module.
+  83:./usart.h     ****  */
+  84:./usart.h     **** static inline void usart_tx_disable(void)
+  85:./usart.h     **** {
+  86:./usart.h     **** 	UCSR0B &= ~(1 << TXEN0);
+  87:./usart.h     **** }
+  88:./usart.h     **** 
+  89:./usart.h     **** /**
+  90:./usart.h     ****  *  \brief Enable USART receiver.
+  91:./usart.h     ****  *
+  92:./usart.h     ****  *  \param _usart    Pointer to the USART module
+  93:./usart.h     ****  */
+  94:./usart.h     **** static inline void usart_rx_enable(void)
+  95:./usart.h     **** {
+  96:./usart.h     **** 	UCSR0B |= (1 << RXEN0);
+  97:./usart.h     **** }
+  98:./usart.h     **** 
+  99:./usart.h     **** 
+ 100:./usart.h     **** /**
+ 101:./usart.h     ****  *  \brief Disable USART receiver.
+ 102:./usart.h     ****  *
+ 103:./usart.h     ****  *  \param _usart Pointer to the USART module.
+ 104:./usart.h     ****  */
+ 105:./usart.h     **** static inline void usart_rx_disable(void)
+ 106:./usart.h     **** {
+ 107:./usart.h     **** 	UCSR0B &= ~(1 << RXEN0);
+ 108:./usart.h     **** }
+ 109:./usart.h     **** 
+ 110:./usart.h     **** /**
+ 111:./usart.h     ****  *  \brief Checks if the RX complete interrupt flag is set.
+ 112:./usart.h     ****  *
+ 113:./usart.h     ****  *   Checks if the RX complete interrupt flag is set.
+ 114:./usart.h     ****  *
+ 115:./usart.h     ****  *  \param _usart     The USART module.
+ 116:./usart.h     ****  */
+ 117:./usart.h     **** static inline bool usart_rx_is_complete(void)
+ 118:./usart.h     **** {
+ 119:./usart.h     **** 	return UCSR0A & (1 << RXC0);
+ 120:./usart.h     **** }
+ 121:./usart.h     **** 
+ 122:./usart.h     **** /**
+ 123:./usart.h     ****  *  \brief Check if data register empty flag is set.
+ 124:./usart.h     ****  *
+ 125:./usart.h     ****  *  \param _usart      The USART module.
+ 126:./usart.h     ****  */
+ 127:./usart.h     **** static inline bool usart_data_register_is_empty(void)
+ 128:./usart.h     **** {
+ 129:./usart.h     **** 	return UCSR0A & (1 << UDRE0);
+ 130:./usart.h     **** }
+ 131:./usart.h     **** 
+ 132:./usart.h     **** /**
+ 133:./usart.h     ****  *  \brief  Configure the USART frame format.
+ 134:./usart.h     ****  *
+ 135:./usart.h     ****  *  Sets the frame format, Frame Size, parity mode and number of stop bits.
+ 136:./usart.h     ****  *
+ 137:./usart.h     ****  *  \param _usart        Pointer to the USART module
+ 138:./usart.h     ****  *  \param _charSize     The character size. Use USART_CHSIZE_t type.
+ 139:./usart.h     ****  *  \param _parityMode   The parity Mode. Use USART_PMODE_t type.
+ 140:./usart.h     ****  *  \param _twoStopBits  Enable two stop bit mode. Use bool type.
+ 141:./usart.h     ****  */
+ 142:./usart.h     **** static inline void usart_format_set(USART_CHSIZE_t _charSize, USART_PMODE_t _parityMode, bool _twoS
+ 143:./usart.h     **** {
+ 144:./usart.h     **** 	UCSR0C = (uint8_t) _charSize | _parityMode |                      \
+ 145:./usart.h     **** 			(_twoStopBits ? (1 << USBS0) : 0);
+ 146:./usart.h     **** }
+ 147:./usart.h     **** 
+ 148:./usart.h     **** /**
+ 149:./usart.h     ****  *  \brief Set the mode the USART run in.
+ 150:./usart.h     ****  *
+ 151:./usart.h     ****  * Set the mode the USART run in. The default mode is asynchronous mode.
+ 152:./usart.h     ****  *
+ 153:./usart.h     ****  *  \param  _usart       Pointer to the USART module register section.
+ 154:./usart.h     ****  *  \param  _usartmode   Selects the USART mode. Use  USART_CMODE_t type.
+ 155:./usart.h     ****  *
+ 156:./usart.h     ****  *  USART modes:
+ 157:./usart.h     ****  *  - 0x0        : Asynchronous mode.
+ 158:./usart.h     ****  *  - 0x1        : Synchronous mode.
+ 159:./usart.h     ****  *  - 0x3        : Master SPI mode.
+ 160:./usart.h     ****  */
+ 161:./usart.h     **** static inline void usart_set_mode(USART_CMODE_t _usartmode)
+ 162:./usart.h     **** {
+ 163:./usart.h     **** 	UCSR0C = (UCSR0C & (~USART_CMODE_gm)) | _usartmode;
+ 164:./usart.h     **** }
+ 165:./usart.h     **** 
+ 166:./usart.h     **** /**
+ 167:./usart.h     ****  * \brief Set the baud rate when using synchronous mode
+ 168:./usart.h     ****  *
+ 169:./usart.h     ****  * \retval true always assume that it went ok
+ 170:./usart.h     ****  */
+ 171:./usart.h     **** static inline bool usart_synchronous_set_baudrate(uint32_t baud, uint32_t cpu_hz)
+ 172:./usart.h     **** {
+ 173:./usart.h     **** 	uint16_t brreg = (cpu_hz / baud / 2) - 1;
+ 174:./usart.h     **** 	UBRR0H = (brreg >> 8) & 0xFF;
+  38               		.loc 2 174 0
+  39 000a 1092 C500 		sts 197,__zero_reg__
+  40               	.LBE58:
+  41               	.LBE57:
+  42               	.LBE56:
+  59:low_level_pdi.c **** 	/* Enable USRT. */
+  60:low_level_pdi.c **** 	pdi_set_baud_rate(PDI_BAUD_RATE>>div);
+  43               		.loc 1 60 0
+  44 000e 20E4      		ldi r18,lo8(64)
+  45 0010 32E4      		ldi r19,lo8(66)
+  46 0012 4FE0      		ldi r20,lo8(15)
+  47 0014 50E0      		ldi r21,0
+  48 0016 0C2E      		mov r0,r28
+  49 0018 00C0      		rjmp 2f
+  50               		1:
+  51 001a 5695      		lsr r21
+  52 001c 4795      		ror r20
+  53 001e 3795      		ror r19
+  54 0020 2795      		ror r18
+  55               		2:
+  56 0022 0A94      		dec r0
+  57 0024 02F4      		brpl 1b
+  58               	.LBB61:
+  59               	.LBB60:
+  60               	.LBB59:
+ 173:./usart.h     **** 	UBRR0H = (brreg >> 8) & 0xFF;
+  61               		.loc 2 173 0
+  62 0026 60E0      		ldi r22,0
+  63 0028 79E0      		ldi r23,lo8(9)
+  64 002a 8DE3      		ldi r24,lo8(61)
+  65 002c 90E0      		ldi r25,0
+  66 002e 00D0      		rcall __udivmodsi4
+  67 0030 5695      		lsr r21
+  68 0032 4795      		ror r20
+  69 0034 3795      		ror r19
+  70 0036 2795      		ror r18
+  71 0038 2150      		subi r18,1
+  72 003a 3109      		sbc r19,__zero_reg__
+ 175:./usart.h     **** 	UBRR0L = brreg & 0xFF;
+  73               		.loc 2 175 0
+  74 003c 2093 C400 		sts 196,r18
+  75               	.LVL3:
+  76               	.LBE59:
+  77               	.LBE60:
+  78               	.LBE61:
+  79               	.LBB62:
+  80               	.LBB63:
+  81               	.LBB64:
+ 144:./usart.h     **** 			(_twoStopBits ? (1 << USBS0) : 0);
+  82               		.loc 2 144 0
+  83 0040 8EE2      		ldi r24,lo8(46)
+  84 0042 8093 C200 		sts 194,r24
+  85               	.LVL4:
+  86               	.LBE64:
+  87               	.LBE63:
+  88               	.LBB65:
+  89               	.LBB66:
+ 176:./usart.h     **** 	return true;
+ 177:./usart.h     **** }
+ 178:./usart.h     **** 
+ 179:./usart.h     **** /**
+ 180:./usart.h     ****  * \brief Function for setting the polarity of the clock signal
+ 181:./usart.h     ****  *
+ 182:./usart.h     ****  * This function is missing in the ASF 2.0 driver.
+ 183:./usart.h     ****  */
+ 184:./usart.h     **** static inline void usart_set_polarity_bit(bool set)
+ 185:./usart.h     **** {
+ 186:./usart.h     **** 	if(set)
+ 187:./usart.h     **** 	{
+ 188:./usart.h     **** 		UCSR0C |= (1 << UCPOL0);
+  90               		.loc 2 188 0
+  91 0046 8091 C200 		lds r24,194
+  92 004a 8160      		ori r24,lo8(1)
+  93 004c 8093 C200 		sts 194,r24
+  94               	.LBE66:
+  95               	.LBE65:
+  96               	.LBE62:
+  61:low_level_pdi.c **** 	pdi_configure();
+  62:low_level_pdi.c **** 
+  63:low_level_pdi.c **** 	/* Enter PDI mode. */
+  64:low_level_pdi.c **** 	pdi_pin_init();
+  97               		.loc 1 64 0
+  98 0050 519A      		sbi 0xa,1
+  99 0052 5998      		cbi 0xb,1
+ 100 0054 549A      		sbi 0xa,4
+ 101 0056 5C9A      		sbi 0xb,4
+ 102               	.LVL5:
+ 103               	.LBB67:
+ 104               	.LBB68:
+ 105               		.file 3 "/usr/lib/avr/include/util/delay.h"
+   1:/usr/lib/avr/include/util/delay.h **** /* Copyright (c) 2002, Marek Michalkiewicz
+   2:/usr/lib/avr/include/util/delay.h ****    Copyright (c) 2004,2005,2007 Joerg Wunsch
+   3:/usr/lib/avr/include/util/delay.h ****    Copyright (c) 2007  Florin-Viorel Petrov
+   4:/usr/lib/avr/include/util/delay.h ****    All rights reserved.
+   5:/usr/lib/avr/include/util/delay.h **** 
+   6:/usr/lib/avr/include/util/delay.h ****    Redistribution and use in source and binary forms, with or without
+   7:/usr/lib/avr/include/util/delay.h ****    modification, are permitted provided that the following conditions are met:
+   8:/usr/lib/avr/include/util/delay.h **** 
+   9:/usr/lib/avr/include/util/delay.h ****    * Redistributions of source code must retain the above copyright
+  10:/usr/lib/avr/include/util/delay.h ****      notice, this list of conditions and the following disclaimer.
+  11:/usr/lib/avr/include/util/delay.h **** 
+  12:/usr/lib/avr/include/util/delay.h ****    * Redistributions in binary form must reproduce the above copyright
+  13:/usr/lib/avr/include/util/delay.h ****      notice, this list of conditions and the following disclaimer in
+  14:/usr/lib/avr/include/util/delay.h ****      the documentation and/or other materials provided with the
+  15:/usr/lib/avr/include/util/delay.h ****      distribution.
+  16:/usr/lib/avr/include/util/delay.h **** 
+  17:/usr/lib/avr/include/util/delay.h ****    * Neither the name of the copyright holders nor the names of
+  18:/usr/lib/avr/include/util/delay.h ****      contributors may be used to endorse or promote products derived
+  19:/usr/lib/avr/include/util/delay.h ****      from this software without specific prior written permission.
+  20:/usr/lib/avr/include/util/delay.h **** 
+  21:/usr/lib/avr/include/util/delay.h ****   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  22:/usr/lib/avr/include/util/delay.h ****   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  23:/usr/lib/avr/include/util/delay.h ****   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  24:/usr/lib/avr/include/util/delay.h ****   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  25:/usr/lib/avr/include/util/delay.h ****   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  26:/usr/lib/avr/include/util/delay.h ****   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  27:/usr/lib/avr/include/util/delay.h ****   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  28:/usr/lib/avr/include/util/delay.h ****   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  29:/usr/lib/avr/include/util/delay.h ****   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  30:/usr/lib/avr/include/util/delay.h ****   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  31:/usr/lib/avr/include/util/delay.h ****   POSSIBILITY OF SUCH DAMAGE. */
+  32:/usr/lib/avr/include/util/delay.h **** 
+  33:/usr/lib/avr/include/util/delay.h **** /* $Id$ */
+  34:/usr/lib/avr/include/util/delay.h **** 
+  35:/usr/lib/avr/include/util/delay.h **** #ifndef _UTIL_DELAY_H_
+  36:/usr/lib/avr/include/util/delay.h **** #define _UTIL_DELAY_H_ 1
+  37:/usr/lib/avr/include/util/delay.h **** 
+  38:/usr/lib/avr/include/util/delay.h **** #ifndef __HAS_DELAY_CYCLES
+  39:/usr/lib/avr/include/util/delay.h **** #define __HAS_DELAY_CYCLES 1
+  40:/usr/lib/avr/include/util/delay.h **** #endif
+  41:/usr/lib/avr/include/util/delay.h **** 
+  42:/usr/lib/avr/include/util/delay.h **** #include <inttypes.h>
+  43:/usr/lib/avr/include/util/delay.h **** #include <util/delay_basic.h>
+  44:/usr/lib/avr/include/util/delay.h **** #include <math.h>
+  45:/usr/lib/avr/include/util/delay.h **** 
+  46:/usr/lib/avr/include/util/delay.h **** /** \file */
+  47:/usr/lib/avr/include/util/delay.h **** /** \defgroup util_delay <util/delay.h>: Convenience functions for busy-wait delay loops
+  48:/usr/lib/avr/include/util/delay.h ****     \code
+  49:/usr/lib/avr/include/util/delay.h ****     #define F_CPU 1000000UL  // 1 MHz
+  50:/usr/lib/avr/include/util/delay.h ****     //#define F_CPU 14.7456E6
+  51:/usr/lib/avr/include/util/delay.h ****     #include <util/delay.h>
+  52:/usr/lib/avr/include/util/delay.h ****     \endcode
+  53:/usr/lib/avr/include/util/delay.h **** 
+  54:/usr/lib/avr/include/util/delay.h ****     \note As an alternative method, it is possible to pass the
+  55:/usr/lib/avr/include/util/delay.h ****     F_CPU macro down to the compiler from the Makefile.
+  56:/usr/lib/avr/include/util/delay.h ****     Obviously, in that case, no \c \#define statement should be
+  57:/usr/lib/avr/include/util/delay.h ****     used.
+  58:/usr/lib/avr/include/util/delay.h **** 
+  59:/usr/lib/avr/include/util/delay.h ****     The functions in this header file are wrappers around the basic
+  60:/usr/lib/avr/include/util/delay.h ****     busy-wait functions from <util/delay_basic.h>.  They are meant as
+  61:/usr/lib/avr/include/util/delay.h ****     convenience functions where actual time values can be specified
+  62:/usr/lib/avr/include/util/delay.h ****     rather than a number of cycles to wait for.  The idea behind is
+  63:/usr/lib/avr/include/util/delay.h ****     that compile-time constant expressions will be eliminated by
+  64:/usr/lib/avr/include/util/delay.h ****     compiler optimization so floating-point expressions can be used
+  65:/usr/lib/avr/include/util/delay.h ****     to calculate the number of delay cycles needed based on the CPU
+  66:/usr/lib/avr/include/util/delay.h ****     frequency passed by the macro F_CPU.
+  67:/usr/lib/avr/include/util/delay.h **** 
+  68:/usr/lib/avr/include/util/delay.h ****     \note In order for these functions to work as intended, compiler
+  69:/usr/lib/avr/include/util/delay.h ****     optimizations <em>must</em> be enabled, and the delay time
+  70:/usr/lib/avr/include/util/delay.h ****     <em>must</em> be an expression that is a known constant at
+  71:/usr/lib/avr/include/util/delay.h ****     compile-time.  If these requirements are not met, the resulting
+  72:/usr/lib/avr/include/util/delay.h ****     delay will be much longer (and basically unpredictable), and
+  73:/usr/lib/avr/include/util/delay.h ****     applications that otherwise do not use floating-point calculations
+  74:/usr/lib/avr/include/util/delay.h ****     will experience severe code bloat by the floating-point library
+  75:/usr/lib/avr/include/util/delay.h ****     routines linked into the application.
+  76:/usr/lib/avr/include/util/delay.h **** 
+  77:/usr/lib/avr/include/util/delay.h ****     The functions available allow the specification of microsecond, and
+  78:/usr/lib/avr/include/util/delay.h ****     millisecond delays directly, using the application-supplied macro
+  79:/usr/lib/avr/include/util/delay.h ****     F_CPU as the CPU clock frequency (in Hertz).
+  80:/usr/lib/avr/include/util/delay.h **** 
+  81:/usr/lib/avr/include/util/delay.h **** */
+  82:/usr/lib/avr/include/util/delay.h **** 
+  83:/usr/lib/avr/include/util/delay.h **** #if !defined(__DOXYGEN__)
+  84:/usr/lib/avr/include/util/delay.h **** static inline void _delay_us(double __us) __attribute__((always_inline));
+  85:/usr/lib/avr/include/util/delay.h **** static inline void _delay_ms(double __ms) __attribute__((always_inline));
+  86:/usr/lib/avr/include/util/delay.h **** #endif
+  87:/usr/lib/avr/include/util/delay.h **** 
+  88:/usr/lib/avr/include/util/delay.h **** #ifndef F_CPU
+  89:/usr/lib/avr/include/util/delay.h **** /* prevent compiler error by supplying a default */
+  90:/usr/lib/avr/include/util/delay.h **** # warning "F_CPU not defined for <util/delay.h>"
+  91:/usr/lib/avr/include/util/delay.h **** # define F_CPU 1000000UL
+  92:/usr/lib/avr/include/util/delay.h **** #endif
+  93:/usr/lib/avr/include/util/delay.h **** 
+  94:/usr/lib/avr/include/util/delay.h **** #ifndef __OPTIMIZE__
+  95:/usr/lib/avr/include/util/delay.h **** # warning "Compiler optimizations disabled; functions from <util/delay.h> won't work as designed"
+  96:/usr/lib/avr/include/util/delay.h **** #endif
+  97:/usr/lib/avr/include/util/delay.h **** 
+  98:/usr/lib/avr/include/util/delay.h **** #if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__) && \
+  99:/usr/lib/avr/include/util/delay.h ****   !defined(__DELAY_BACKWARD_COMPATIBLE__) &&	   \
+ 100:/usr/lib/avr/include/util/delay.h ****   __STDC_HOSTED__
+ 101:/usr/lib/avr/include/util/delay.h **** #  include <math.h>
+ 102:/usr/lib/avr/include/util/delay.h **** #endif
+ 103:/usr/lib/avr/include/util/delay.h **** 
+ 104:/usr/lib/avr/include/util/delay.h **** /**
+ 105:/usr/lib/avr/include/util/delay.h ****    \ingroup util_delay
+ 106:/usr/lib/avr/include/util/delay.h **** 
+ 107:/usr/lib/avr/include/util/delay.h ****    Perform a delay of \c __ms milliseconds, using _delay_loop_2().
+ 108:/usr/lib/avr/include/util/delay.h **** 
+ 109:/usr/lib/avr/include/util/delay.h ****    The macro F_CPU is supposed to be defined to a
+ 110:/usr/lib/avr/include/util/delay.h ****    constant defining the CPU clock frequency (in Hertz).
+ 111:/usr/lib/avr/include/util/delay.h **** 
+ 112:/usr/lib/avr/include/util/delay.h ****    The maximal possible delay is 262.14 ms / F_CPU in MHz.
+ 113:/usr/lib/avr/include/util/delay.h **** 
+ 114:/usr/lib/avr/include/util/delay.h ****    When the user request delay which exceed the maximum possible one,
+ 115:/usr/lib/avr/include/util/delay.h ****    _delay_ms() provides a decreased resolution functionality. In this
+ 116:/usr/lib/avr/include/util/delay.h ****    mode _delay_ms() will work with a resolution of 1/10 ms, providing
+ 117:/usr/lib/avr/include/util/delay.h ****    delays up to 6.5535 seconds (independent from CPU frequency).  The
+ 118:/usr/lib/avr/include/util/delay.h ****    user will not be informed about decreased resolution.
+ 119:/usr/lib/avr/include/util/delay.h **** 
+ 120:/usr/lib/avr/include/util/delay.h ****    If the avr-gcc toolchain has __builtin_avr_delay_cycles(unsigned long)
+ 121:/usr/lib/avr/include/util/delay.h ****    support, maximal possible delay is 4294967.295 ms/ F_CPU in MHz. For
+ 122:/usr/lib/avr/include/util/delay.h ****    values greater than the maximal possible delay, overflows results in
+ 123:/usr/lib/avr/include/util/delay.h ****    no delay i.e., 0ms.
+ 124:/usr/lib/avr/include/util/delay.h **** 
+ 125:/usr/lib/avr/include/util/delay.h ****    Conversion of __us into clock cycles may not always result in integer.
+ 126:/usr/lib/avr/include/util/delay.h ****    By default, the clock cycles rounded up to next integer. This ensures that
+ 127:/usr/lib/avr/include/util/delay.h ****    the user gets atleast __us microseconds of delay.
+ 128:/usr/lib/avr/include/util/delay.h **** 
+ 129:/usr/lib/avr/include/util/delay.h ****    Alternatively, user can define __DELAY_ROUND_DOWN__ and __DELAY_ROUND_CLOSEST__
+ 130:/usr/lib/avr/include/util/delay.h ****    to round down and round to closest integer.
+ 131:/usr/lib/avr/include/util/delay.h **** 
+ 132:/usr/lib/avr/include/util/delay.h ****    Note: The new implementation of _delay_ms(double __ms) with 
+ 133:/usr/lib/avr/include/util/delay.h ****     __builtin_avr_delay_cycles(unsigned long) support is not backward compatible. 
+ 134:/usr/lib/avr/include/util/delay.h ****    User can define __DELAY_BACKWARD_COMPATIBLE__ to get a backward compatible delay.
+ 135:/usr/lib/avr/include/util/delay.h ****    Also, the backward compatible
+ 136:/usr/lib/avr/include/util/delay.h ****    algorithm will be chosen if the code is compiled in a <em>freestanding
+ 137:/usr/lib/avr/include/util/delay.h ****    environment</em> (GCC option \c -ffreestanding), as the math functions
+ 138:/usr/lib/avr/include/util/delay.h ****    required for rounding are not available to the compiler then.
+ 139:/usr/lib/avr/include/util/delay.h **** 
+ 140:/usr/lib/avr/include/util/delay.h ****  */
+ 141:/usr/lib/avr/include/util/delay.h **** void
+ 142:/usr/lib/avr/include/util/delay.h **** _delay_ms(double __ms)
+ 143:/usr/lib/avr/include/util/delay.h **** {
+ 144:/usr/lib/avr/include/util/delay.h **** 	double __tmp ; 
+ 145:/usr/lib/avr/include/util/delay.h **** #if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__) && \
+ 146:/usr/lib/avr/include/util/delay.h ****   !defined(__DELAY_BACKWARD_COMPATIBLE__) &&	   \
+ 147:/usr/lib/avr/include/util/delay.h ****   __STDC_HOSTED__
+ 148:/usr/lib/avr/include/util/delay.h **** 	uint32_t __ticks_dc;
+ 149:/usr/lib/avr/include/util/delay.h **** 	extern void __builtin_avr_delay_cycles(unsigned long);
+ 150:/usr/lib/avr/include/util/delay.h **** 	__tmp = ((F_CPU) / 1e3) * __ms;
+ 151:/usr/lib/avr/include/util/delay.h **** 
+ 152:/usr/lib/avr/include/util/delay.h **** 	#if defined(__DELAY_ROUND_DOWN__)
+ 153:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)fabs(__tmp);
+ 154:/usr/lib/avr/include/util/delay.h **** 
+ 155:/usr/lib/avr/include/util/delay.h **** 	#elif defined(__DELAY_ROUND_CLOSEST__)
+ 156:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)(fabs(__tmp)+0.5);
+ 157:/usr/lib/avr/include/util/delay.h **** 
+ 158:/usr/lib/avr/include/util/delay.h **** 	#else
+ 159:/usr/lib/avr/include/util/delay.h **** 		//round up by default
+ 160:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+ 161:/usr/lib/avr/include/util/delay.h **** 	#endif
+ 162:/usr/lib/avr/include/util/delay.h **** 
+ 163:/usr/lib/avr/include/util/delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 164:/usr/lib/avr/include/util/delay.h **** 
+ 165:/usr/lib/avr/include/util/delay.h **** #else
+ 166:/usr/lib/avr/include/util/delay.h **** 	uint16_t __ticks;
+ 167:/usr/lib/avr/include/util/delay.h **** 	__tmp = ((F_CPU) / 4e3) * __ms;
+ 168:/usr/lib/avr/include/util/delay.h **** 	if (__tmp < 1.0)
+ 169:/usr/lib/avr/include/util/delay.h **** 		__ticks = 1;
+ 170:/usr/lib/avr/include/util/delay.h **** 	else if (__tmp > 65535)
+ 171:/usr/lib/avr/include/util/delay.h **** 	{
+ 172:/usr/lib/avr/include/util/delay.h **** 		//	__ticks = requested delay in 1/10 ms
+ 173:/usr/lib/avr/include/util/delay.h **** 		__ticks = (uint16_t) (__ms * 10.0);
+ 174:/usr/lib/avr/include/util/delay.h **** 		while(__ticks)
+ 175:/usr/lib/avr/include/util/delay.h **** 		{
+ 176:/usr/lib/avr/include/util/delay.h **** 			// wait 1/10 ms
+ 177:/usr/lib/avr/include/util/delay.h **** 			_delay_loop_2(((F_CPU) / 4e3) / 10);
+ 178:/usr/lib/avr/include/util/delay.h **** 			__ticks --;
+ 179:/usr/lib/avr/include/util/delay.h **** 		}
+ 180:/usr/lib/avr/include/util/delay.h **** 		return;
+ 181:/usr/lib/avr/include/util/delay.h **** 	}
+ 182:/usr/lib/avr/include/util/delay.h **** 	else
+ 183:/usr/lib/avr/include/util/delay.h **** 		__ticks = (uint16_t)__tmp;
+ 184:/usr/lib/avr/include/util/delay.h **** 	_delay_loop_2(__ticks);
+ 185:/usr/lib/avr/include/util/delay.h **** #endif
+ 186:/usr/lib/avr/include/util/delay.h **** }
+ 187:/usr/lib/avr/include/util/delay.h **** 
+ 188:/usr/lib/avr/include/util/delay.h **** /**
+ 189:/usr/lib/avr/include/util/delay.h ****    \ingroup util_delay
+ 190:/usr/lib/avr/include/util/delay.h **** 
+ 191:/usr/lib/avr/include/util/delay.h ****    Perform a delay of \c __us microseconds, using _delay_loop_1().
+ 192:/usr/lib/avr/include/util/delay.h **** 
+ 193:/usr/lib/avr/include/util/delay.h ****    The macro F_CPU is supposed to be defined to a
+ 194:/usr/lib/avr/include/util/delay.h ****    constant defining the CPU clock frequency (in Hertz).
+ 195:/usr/lib/avr/include/util/delay.h **** 
+ 196:/usr/lib/avr/include/util/delay.h ****    The maximal possible delay is 768 us / F_CPU in MHz.
+ 197:/usr/lib/avr/include/util/delay.h **** 
+ 198:/usr/lib/avr/include/util/delay.h ****    If the user requests a delay greater than the maximal possible one,
+ 199:/usr/lib/avr/include/util/delay.h ****    _delay_us() will automatically call _delay_ms() instead.  The user
+ 200:/usr/lib/avr/include/util/delay.h ****    will not be informed about this case.
+ 201:/usr/lib/avr/include/util/delay.h **** 
+ 202:/usr/lib/avr/include/util/delay.h ****    If the avr-gcc toolchain has __builtin_avr_delay_cycles(unsigned long)
+ 203:/usr/lib/avr/include/util/delay.h ****    support, maximal possible delay is 4294967.295 us/ F_CPU in MHz. For
+ 204:/usr/lib/avr/include/util/delay.h ****    values greater than the maximal possible delay, overflow results in
+ 205:/usr/lib/avr/include/util/delay.h ****    no delay i.e., 0us.
+ 206:/usr/lib/avr/include/util/delay.h ****   
+ 207:/usr/lib/avr/include/util/delay.h ****    Conversion of __us into clock cycles may not always result in integer.
+ 208:/usr/lib/avr/include/util/delay.h ****    By default, the clock cycles rounded up to next integer. This ensures that
+ 209:/usr/lib/avr/include/util/delay.h ****    the user gets atleast __us microseconds of delay.
+ 210:/usr/lib/avr/include/util/delay.h **** 
+ 211:/usr/lib/avr/include/util/delay.h ****    Alternatively, user can define __DELAY_ROUND_DOWN__ and __DELAY_ROUND_CLOSEST__
+ 212:/usr/lib/avr/include/util/delay.h ****    to round down and round to closest integer.
+ 213:/usr/lib/avr/include/util/delay.h ****  
+ 214:/usr/lib/avr/include/util/delay.h ****    Note: The new implementation of _delay_us(double __us) with 
+ 215:/usr/lib/avr/include/util/delay.h ****     __builtin_avr_delay_cycles(unsigned long) support is not backward compatible.
+ 216:/usr/lib/avr/include/util/delay.h ****    User can define __DELAY_BACKWARD_COMPATIBLE__ to get a backward compatible delay.
+ 217:/usr/lib/avr/include/util/delay.h ****    Also, the backward compatible
+ 218:/usr/lib/avr/include/util/delay.h ****    algorithm will be chosen if the code is compiled in a <em>freestanding
+ 219:/usr/lib/avr/include/util/delay.h ****    environment</em> (GCC option \c -ffreestanding), as the math functions
+ 220:/usr/lib/avr/include/util/delay.h ****    required for rounding are not available to the compiler then.
+ 221:/usr/lib/avr/include/util/delay.h **** 
+ 222:/usr/lib/avr/include/util/delay.h ****  */
+ 223:/usr/lib/avr/include/util/delay.h **** void
+ 224:/usr/lib/avr/include/util/delay.h **** _delay_us(double __us)
+ 225:/usr/lib/avr/include/util/delay.h **** {
+ 226:/usr/lib/avr/include/util/delay.h **** 	double __tmp ; 
+ 227:/usr/lib/avr/include/util/delay.h **** #if __HAS_DELAY_CYCLES && defined(__OPTIMIZE__) && \
+ 228:/usr/lib/avr/include/util/delay.h ****   !defined(__DELAY_BACKWARD_COMPATIBLE__) &&	   \
+ 229:/usr/lib/avr/include/util/delay.h ****   __STDC_HOSTED__
+ 230:/usr/lib/avr/include/util/delay.h **** 	uint32_t __ticks_dc;
+ 231:/usr/lib/avr/include/util/delay.h **** 	extern void __builtin_avr_delay_cycles(unsigned long);
+ 232:/usr/lib/avr/include/util/delay.h **** 	__tmp = ((F_CPU) / 1e6) * __us;
+ 233:/usr/lib/avr/include/util/delay.h **** 
+ 234:/usr/lib/avr/include/util/delay.h **** 	#if defined(__DELAY_ROUND_DOWN__)
+ 235:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)fabs(__tmp);
+ 236:/usr/lib/avr/include/util/delay.h **** 
+ 237:/usr/lib/avr/include/util/delay.h **** 	#elif defined(__DELAY_ROUND_CLOSEST__)
+ 238:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)(fabs(__tmp)+0.5);
+ 239:/usr/lib/avr/include/util/delay.h **** 
+ 240:/usr/lib/avr/include/util/delay.h **** 	#else
+ 241:/usr/lib/avr/include/util/delay.h **** 		//round up by default
+ 242:/usr/lib/avr/include/util/delay.h **** 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+ 243:/usr/lib/avr/include/util/delay.h **** 	#endif
+ 244:/usr/lib/avr/include/util/delay.h **** 
+ 245:/usr/lib/avr/include/util/delay.h **** 	__builtin_avr_delay_cycles(__ticks_dc);
+ 106               		.loc 3 245 0
+ 107 0058 45E8      		ldi r20,lo8(-123)
+ 108 005a 4A95      		1: dec r20
+ 109 005c 01F4      		brne 1b
+ 110 005e 0000      		nop
+ 111               	.LBE68:
+ 112               	.LBE67:
+  65:low_level_pdi.c **** 	_delay_us(100);
+  66:low_level_pdi.c **** 
+  67:low_level_pdi.c **** 	pdi_data_tx_high();
+ 113               		.loc 1 67 0
+ 114 0060 599A      		sbi 0xb,1
+ 115               	.LVL6:
+ 116               	.LBB69:
+ 117               	.LBB70:
+ 118               		.loc 3 245 0
+ 119 0062 00C0      		rjmp .
+ 120 0064 00C0      		rjmp .
+ 121               	.LBE70:
+ 122               	.LBE69:
+ 123               	.LBB71:
+ 124               	.LBB72:
+ 125               	.LBB73:
+  96:./usart.h     **** }
+ 126               		.loc 2 96 0
+ 127 0066 8091 C100 		lds r24,193
+ 128 006a 8061      		ori r24,lo8(16)
+ 129 006c 8093 C100 		sts 193,r24
+ 130               	.LVL7:
+ 131               	.LBE73:
+ 132               	.LBE72:
+ 133               	.LBE71:
+ 134               	.LBB74:
+ 135               	.LBB75:
+ 136               	.LBB76:
+ 163:./usart.h     **** }
+ 137               		.loc 2 163 0
+ 138 0070 9091 C200 		lds r25,194
+ 139 0074 9F73      		andi r25,lo8(63)
+ 140 0076 9064      		ori r25,lo8(64)
+ 141 0078 9093 C200 		sts 194,r25
+ 142               	.LBE76:
+ 143               	.LBE75:
+ 144               	.LBE74:
+  68:low_level_pdi.c **** 	_delay_us(1);
+  69:low_level_pdi.c **** 
+  70:low_level_pdi.c **** 	/* Enable the PDI_CLK and let it run for at leat 16 cycles. */
+  71:low_level_pdi.c **** 	pdi_enable_rx();
+  72:low_level_pdi.c **** 	pdi_enable_clk();
+  73:low_level_pdi.c **** 	div = (1<<div)+1;
+ 145               		.loc 1 73 0
+ 146 007c 21E0      		ldi r18,lo8(1)
+ 147 007e 30E0      		ldi r19,0
+ 148 0080 0C2E      		mov r0,r28
+ 149 0082 00C0      		rjmp 2f
+ 150               		1:
+ 151 0084 220F      		lsl r18
+ 152               		2:
+ 153 0086 0A94      		dec r0
+ 154 0088 02F4      		brpl 1b
+ 155               	.LVL8:
+ 156 008a 80E0      		ldi r24,0
+ 157 008c 90E0      		ldi r25,0
+ 158 008e 51E0      		ldi r21,lo8(1)
+ 159               	.LVL9:
+ 160               	.L4:
+ 161               	.LBB77:
+ 162               	.LBB78:
+ 163               		.loc 3 245 0
+ 164 0090 45E1      		ldi r20,lo8(21)
+ 165 0092 4A95      		1: dec r20
+ 166 0094 01F4      		brne 1b
+ 167 0096 0000      		nop
+ 168               	.LVL10:
+ 169 0098 0196      		adiw r24,1
+ 170               	.LVL11:
+ 171 009a 452F      		mov r20,r21
+ 172 009c 481B      		sub r20,r24
+ 173 009e 420F      		add r20,r18
+ 174               	.LBE78:
+ 175               	.LBE77:
+  74:low_level_pdi.c **** 	for(;div;div--)
+ 176               		.loc 1 74 0
+ 177 00a0 01F4      		brne .L4
+ 178               	/* epilogue start */
+  75:low_level_pdi.c **** 		_delay_us(16);
+  76:low_level_pdi.c **** }
+ 179               		.loc 1 76 0
+ 180 00a2 CF91      		pop r28
+ 181               	.LVL12:
+ 182 00a4 0895      		ret
+ 183               		.cfi_endproc
+ 184               	.LFE30:
+ 186               	.global	pdi_write
+ 188               	pdi_write:
+ 189               	.LFB31:
+  77:low_level_pdi.c **** 
+  78:low_level_pdi.c **** /**
+  79:low_level_pdi.c ****  * \brief Write bulk bytes with PDI.
+  80:low_level_pdi.c ****  *
+  81:low_level_pdi.c ****  *  Send bytes over the PDI channel.
+  82:low_level_pdi.c ****  *
+  83:low_level_pdi.c ****  * \param data Pointer to memory where data to be sent is stored.
+  84:low_level_pdi.c ****  * \param length Number of bytes to be sent.
+  85:low_level_pdi.c ****  *
+  86:low_level_pdi.c ****  * \retval STATUS_OK The transmission was successful.
+  87:low_level_pdi.c ****  * \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+  88:low_level_pdi.c ****  */
+  89:low_level_pdi.c **** enum status_code pdi_write( const volatile uint8_t *data, uint16_t length )
+  90:low_level_pdi.c **** {
+ 190               		.loc 1 90 0
+ 191               		.cfi_startproc
+ 192               	.LVL13:
+ 193               	/* prologue: function */
+ 194               	/* frame size = 0 */
+ 195               	/* stack size = 0 */
+ 196               	.L__stack_usage = 0
+ 197               	.L7:
+ 198               	.LBB103:
+ 199               	.LBB104:
+ 119:./usart.h     **** }
+ 200               		.loc 2 119 0 discriminator 1
+ 201 00a6 2091 C000 		lds r18,192
+ 202               	.LBE104:
+ 203               	.LBE103:
+  91:low_level_pdi.c **** 	uint16_t i;
+  92:low_level_pdi.c **** 	uint8_t dummy_read = 0;
+  93:low_level_pdi.c **** 
+  94:low_level_pdi.c **** 	/* Empty any old data in the RX register. */
+  95:low_level_pdi.c **** 	while (usart_rx_is_complete()) {
+ 204               		.loc 1 95 0 discriminator 1
+ 205 00aa 27FF      		sbrs r18,7
+ 206 00ac 00C0      		rjmp .L17
+ 207               	.LBB105:
+ 208               	.LBB106:
+ 189:./usart.h     **** 	}else{
+ 190:./usart.h     **** 		UCSR0C &= ~(1 << UCPOL0);
+ 191:./usart.h     **** 	}
+ 192:./usart.h     **** }
+ 193:./usart.h     **** 
+ 194:./usart.h     **** /**
+ 195:./usart.h     ****  *  \brief  Read a data to the USART data register.
+ 196:./usart.h     ****  *
+ 197:./usart.h     ****  *  \param usart     The USART module.
+ 198:./usart.h     ****  *
+ 199:./usart.h     ****  *  \return The received data
+ 200:./usart.h     ****  */
+ 201:./usart.h     **** static inline uint8_t usart_get(void)
+ 202:./usart.h     **** {
+ 203:./usart.h     **** 	return UDR0;
+ 209               		.loc 2 203 0
+ 210 00ae 2091 C600 		lds r18,198
+ 211 00b2 00C0      		rjmp .L7
+ 212               	.L17:
+ 213               	.LBE106:
+ 214               	.LBE105:
+ 215               	.LBB107:
+ 216               	.LBB108:
+ 217               	.LBB109:
+  77:./usart.h     **** }
+ 218               		.loc 2 77 0
+ 219 00b4 2091 C100 		lds r18,193
+ 220 00b8 2860      		ori r18,lo8(8)
+ 221 00ba 2093 C100 		sts 193,r18
+ 222               	.LBE109:
+ 223               	.LBE108:
+ 224               	.LBE107:
+  96:low_level_pdi.c **** 		dummy_read = usart_get();
+  97:low_level_pdi.c **** 	}
+  98:low_level_pdi.c **** 
+  99:low_level_pdi.c **** 	pdi_enable_tx();
+ 100:low_level_pdi.c **** 
+ 101:low_level_pdi.c **** 	for (i = 0; i < length; i++) {
+ 225               		.loc 1 101 0
+ 226 00be 20E0      		ldi r18,0
+ 227 00c0 30E0      		ldi r19,0
+ 228               	.L9:
+ 229               	.LVL14:
+ 230               		.loc 1 101 0 is_stmt 0 discriminator 1
+ 231 00c2 2617      		cp r18,r22
+ 232 00c4 3707      		cpc r19,r23
+ 233 00c6 01F0      		breq .L18
+ 234               	.L11:
+ 235               	.LBB110:
+ 236               	.LBB111:
+ 129:./usart.h     **** }
+ 237               		.loc 2 129 0 is_stmt 1
+ 238 00c8 4091 C000 		lds r20,192
+ 239               	.LBE111:
+ 240               	.LBE110:
+ 102:low_level_pdi.c **** 		while (!usart_data_register_is_empty());
+ 241               		.loc 1 102 0
+ 242 00cc 45FF      		sbrs r20,5
+ 243 00ce 00C0      		rjmp .L11
+ 244 00d0 FC01      		movw r30,r24
+ 245 00d2 E20F      		add r30,r18
+ 246 00d4 F31F      		adc r31,r19
+ 103:low_level_pdi.c **** 		usart_put(data[i]);
+ 247               		.loc 1 103 0
+ 248 00d6 4081      		ld r20,Z
+ 249               	.LVL15:
+ 250               	.LBB112:
+ 251               	.LBB113:
+ 204:./usart.h     **** }
+ 205:./usart.h     **** 
+ 206:./usart.h     **** /**
+ 207:./usart.h     ****  *  \brief Write a data to the USART data register.
+ 208:./usart.h     ****  *
+ 209:./usart.h     ****  *  \param usart     The USART module.
+ 210:./usart.h     ****  *  \param txdata    The data to be transmited.
+ 211:./usart.h     ****  */
+ 212:./usart.h     **** static inline void usart_put(uint8_t txdata)
+ 213:./usart.h     **** {
+ 214:./usart.h     **** 	UDR0 = txdata;
+ 252               		.loc 2 214 0
+ 253 00d8 4093 C600 		sts 198,r20
+ 254               	.LVL16:
+ 255               	.L13:
+ 256               	.LBE113:
+ 257               	.LBE112:
+ 258               	.LBB114:
+ 259               	.LBB115:
+ 119:./usart.h     **** }
+ 260               		.loc 2 119 0 discriminator 1
+ 261 00dc 4091 C000 		lds r20,192
+ 262               	.LBE115:
+ 263               	.LBE114:
+ 104:low_level_pdi.c **** 
+ 105:low_level_pdi.c **** 		while (!usart_rx_is_complete());
+ 264               		.loc 1 105 0 discriminator 1
+ 265 00e0 47FF      		sbrs r20,7
+ 266 00e2 00C0      		rjmp .L13
+ 267               	.LBB116:
+ 268               	.LBB117:
+ 203:./usart.h     **** }
+ 269               		.loc 2 203 0
+ 270 00e4 5091 C600 		lds r21,198
+ 271               	.LBE117:
+ 272               	.LBE116:
+ 106:low_level_pdi.c **** 		dummy_read = usart_get();
+ 107:low_level_pdi.c **** 
+ 108:low_level_pdi.c **** 		/* Check that the transmission was successful. */
+ 109:low_level_pdi.c **** 		if (dummy_read != data[i]) {
+ 273               		.loc 1 109 0
+ 274 00e8 4081      		ld r20,Z
+ 275 00ea 5417      		cp r21,r20
+ 276 00ec 01F0      		breq .L14
+ 277               	.LBB118:
+ 278               	.LBB119:
+ 279               	.LBB120:
+  86:./usart.h     **** }
+ 280               		.loc 2 86 0
+ 281 00ee 8091 C100 		lds r24,193
+ 282               	.LVL17:
+ 283 00f2 877F      		andi r24,lo8(-9)
+ 284 00f4 8093 C100 		sts 193,r24
+ 285               	.LVL18:
+ 286               	.LBE120:
+ 287               	.LBE119:
+ 288               	.LBE118:
+ 110:low_level_pdi.c **** 			// Set TX to tri-state
+ 111:low_level_pdi.c **** 			pdi_disable_tx();
+ 112:low_level_pdi.c **** 			pdi_data_tx_input();
+ 289               		.loc 1 112 0
+ 290 00f8 82E0      		ldi r24,lo8(2)
+ 291 00fa 8BB9      		out 0xb,r24
+ 292 00fc 5198      		cbi 0xa,1
+ 113:low_level_pdi.c **** 			pdi_data_tx_low();
+ 293               		.loc 1 113 0
+ 294 00fe 5998      		cbi 0xb,1
+ 114:low_level_pdi.c **** 
+ 115:low_level_pdi.c **** 			return ERR_IO_ERROR;
+ 295               		.loc 1 115 0
+ 296 0100 8FEF      		ldi r24,lo8(-1)
+ 297 0102 0895      		ret
+ 298               	.LVL19:
+ 299               	.L14:
+ 101:low_level_pdi.c **** 		while (!usart_data_register_is_empty());
+ 300               		.loc 1 101 0
+ 301 0104 2F5F      		subi r18,-1
+ 302 0106 3F4F      		sbci r19,-1
+ 303               	.LVL20:
+ 304 0108 00C0      		rjmp .L9
+ 305               	.LVL21:
+ 306               	.L18:
+ 307               	.LBB121:
+ 308               	.LBB122:
+ 309               	.LBB123:
+  86:./usart.h     **** }
+ 310               		.loc 2 86 0
+ 311 010a 8091 C100 		lds r24,193
+ 312               	.LVL22:
+ 313 010e 877F      		andi r24,lo8(-9)
+ 314 0110 8093 C100 		sts 193,r24
+ 315               	.LBE123:
+ 316               	.LBE122:
+ 317               	.LBE121:
+ 116:low_level_pdi.c **** 		}
+ 117:low_level_pdi.c **** 	}
+ 118:low_level_pdi.c **** 
+ 119:low_level_pdi.c **** 	/* Set TX to tri-state */
+ 120:low_level_pdi.c **** 	pdi_disable_tx();
+ 121:low_level_pdi.c **** 	pdi_data_tx_input();
+ 318               		.loc 1 121 0
+ 319 0114 82E0      		ldi r24,lo8(2)
+ 320 0116 8BB9      		out 0xb,r24
+ 321 0118 5198      		cbi 0xa,1
+ 122:low_level_pdi.c **** 	pdi_data_tx_low();
+ 322               		.loc 1 122 0
+ 323 011a 5998      		cbi 0xb,1
+ 123:low_level_pdi.c **** 
+ 124:low_level_pdi.c **** 	return STATUS_OK;
+ 324               		.loc 1 124 0
+ 325 011c 80E0      		ldi r24,0
+ 125:low_level_pdi.c **** }
+ 326               		.loc 1 125 0
+ 327 011e 0895      		ret
+ 328               		.cfi_endproc
+ 329               	.LFE31:
+ 331               	.global	pdi_read
+ 333               	pdi_read:
+ 334               	.LFB32:
+ 126:low_level_pdi.c **** 
+ 127:low_level_pdi.c **** /**
+ 128:low_level_pdi.c ****  * \brief Read bulk bytes from PDI.
+ 129:low_level_pdi.c ****  *
+ 130:low_level_pdi.c ****  * \param data Pointer to memory where data to be stored.
+ 131:low_level_pdi.c ****  * \param length Number of bytes to be read.
+ 132:low_level_pdi.c ****  * \param retries the retry count.
+ 133:low_level_pdi.c ****  *
+ 134:low_level_pdi.c ****  * \retval non-zero the length of data.
+ 135:low_level_pdi.c ****  * \retval zero read fail.
+ 136:low_level_pdi.c ****  */
+ 137:low_level_pdi.c **** uint16_t pdi_read( uint8_t *data, uint16_t length, uint32_t retries )
+ 138:low_level_pdi.c **** {
+ 335               		.loc 1 138 0
+ 336               		.cfi_startproc
+ 337               	.LVL23:
+ 338 0120 0F93      		push r16
+ 339               	.LCFI1:
+ 340               		.cfi_def_cfa_offset 3
+ 341               		.cfi_offset 16, -2
+ 342 0122 1F93      		push r17
+ 343               	.LCFI2:
+ 344               		.cfi_def_cfa_offset 4
+ 345               		.cfi_offset 17, -3
+ 346 0124 CF93      		push r28
+ 347               	.LCFI3:
+ 348               		.cfi_def_cfa_offset 5
+ 349               		.cfi_offset 28, -4
+ 350 0126 DF93      		push r29
+ 351               	.LCFI4:
+ 352               		.cfi_def_cfa_offset 6
+ 353               		.cfi_offset 29, -5
+ 354               	/* prologue: function */
+ 355               	/* frame size = 0 */
+ 356               	/* stack size = 4 */
+ 357               	.L__stack_usage = 4
+ 358 0128 D901      		movw r26,r18
+ 359               	.LVL24:
+ 139:low_level_pdi.c **** 	uint32_t count;
+ 140:low_level_pdi.c **** 	uint16_t bytes_read = 0;
+ 360               		.loc 1 140 0
+ 361 012a E0E0      		ldi r30,0
+ 362 012c F0E0      		ldi r31,0
+ 363               	.LVL25:
+ 364               	.L20:
+ 141:low_level_pdi.c **** 	uint16_t i;
+ 142:low_level_pdi.c **** 
+ 143:low_level_pdi.c **** 	for (i = 0; i < length; i++) {
+ 365               		.loc 1 143 0 discriminator 1
+ 366 012e E617      		cp r30,r22
+ 367 0130 F707      		cpc r31,r23
+ 368 0132 01F0      		breq .L25
+ 369               		.loc 1 143 0 is_stmt 0
+ 370 0134 8D01      		movw r16,r26
+ 371 0136 9A01      		movw r18,r20
+ 372               	.L24:
+ 373               	.LVL26:
+ 144:low_level_pdi.c **** 		count = retries;
+ 145:low_level_pdi.c **** 		while (count != 0) {
+ 374               		.loc 1 145 0 is_stmt 1 discriminator 1
+ 375 0138 0115      		cp r16,__zero_reg__
+ 376 013a 1105      		cpc r17,__zero_reg__
+ 377 013c 2105      		cpc r18,__zero_reg__
+ 378 013e 3105      		cpc r19,__zero_reg__
+ 379 0140 01F0      		breq .L26
+ 380               	.LBB128:
+ 381               	.LBB129:
+ 119:./usart.h     **** }
+ 382               		.loc 2 119 0
+ 383 0142 C091 C000 		lds r28,192
+ 384               	.LBE129:
+ 385               	.LBE128:
+ 146:low_level_pdi.c **** 			if (usart_rx_is_complete()) {
+ 386               		.loc 1 146 0
+ 387 0146 C7FF      		sbrs r28,7
+ 388 0148 00C0      		rjmp .L21
+ 389               	.LBB130:
+ 390               	.LBB131:
+ 203:./usart.h     **** }
+ 391               		.loc 2 203 0
+ 392 014a 2091 C600 		lds r18,198
+ 393               	.LBE131:
+ 394               	.LBE130:
+ 147:low_level_pdi.c **** 				*(data + i) = usart_get();
+ 395               		.loc 1 147 0
+ 396 014e EC01      		movw r28,r24
+ 397 0150 2993      		st Y+,r18
+ 398 0152 CE01      		movw r24,r28
+ 148:low_level_pdi.c **** 				bytes_read++;
+ 399               		.loc 1 148 0
+ 400 0154 3196      		adiw r30,1
+ 401               	.LVL27:
+ 402 0156 00C0      		rjmp .L20
+ 403               	.L21:
+ 149:low_level_pdi.c **** 				break;
+ 150:low_level_pdi.c **** 			}
+ 151:low_level_pdi.c **** 			--count;
+ 404               		.loc 1 151 0
+ 405 0158 0150      		subi r16,1
+ 406 015a 1109      		sbc r17,__zero_reg__
+ 407 015c 2109      		sbc r18,__zero_reg__
+ 408 015e 3109      		sbc r19,__zero_reg__
+ 409               	.LVL28:
+ 410 0160 00C0      		rjmp .L24
+ 411               	.L26:
+ 152:low_level_pdi.c **** 		}
+ 153:low_level_pdi.c **** 		/* Read fail error */
+ 154:low_level_pdi.c **** 		if (count == 0) {
+ 155:low_level_pdi.c **** 			return 0;
+ 412               		.loc 1 155 0
+ 413 0162 80E0      		ldi r24,0
+ 414 0164 90E0      		ldi r25,0
+ 415 0166 00C0      		rjmp .L23
+ 416               	.LVL29:
+ 417               	.L25:
+ 418 0168 CF01      		movw r24,r30
+ 419               	.L23:
+ 420               	/* epilogue start */
+ 156:low_level_pdi.c **** 		}
+ 157:low_level_pdi.c **** 	}
+ 158:low_level_pdi.c **** 
+ 159:low_level_pdi.c **** 	return bytes_read;
+ 160:low_level_pdi.c **** }
+ 421               		.loc 1 160 0
+ 422 016a DF91      		pop r29
+ 423 016c CF91      		pop r28
+ 424 016e 1F91      		pop r17
+ 425 0170 0F91      		pop r16
+ 426 0172 0895      		ret
+ 427               		.cfi_endproc
+ 428               	.LFE32:
+ 430               	.global	pdi_get_byte
+ 432               	pdi_get_byte:
+ 433               	.LFB33:
+ 161:low_level_pdi.c **** 
+ 162:low_level_pdi.c **** /**
+ 163:low_level_pdi.c ****  * \brief Read a byte from PDI.
+ 164:low_level_pdi.c ****  *
+ 165:low_level_pdi.c ****  * \param ret Pointer to buffer memory where data to be stored.
+ 166:low_level_pdi.c ****  * \param retries the retry count.
+ 167:low_level_pdi.c ****  *
+ 168:low_level_pdi.c ****  * \retval STATUS_OK read successfully.
+ 169:low_level_pdi.c ****  * \retval ERR_TIMEOUT read fail.
+ 170:low_level_pdi.c ****  */
+ 171:low_level_pdi.c **** enum status_code pdi_get_byte( uint8_t *ret, uint32_t retries )
+ 172:low_level_pdi.c **** {
+ 434               		.loc 1 172 0
+ 435               		.cfi_startproc
+ 436               	.LVL30:
+ 437               	/* prologue: function */
+ 438               	/* frame size = 0 */
+ 439               	/* stack size = 0 */
+ 440               	.L__stack_usage = 0
+ 441               	.L28:
+ 173:low_level_pdi.c **** 	while (retries != 0) {
+ 442               		.loc 1 173 0 discriminator 1
+ 443 0174 4115      		cp r20,__zero_reg__
+ 444 0176 5105      		cpc r21,__zero_reg__
+ 445 0178 6105      		cpc r22,__zero_reg__
+ 446 017a 7105      		cpc r23,__zero_reg__
+ 447 017c 01F0      		breq .L32
+ 448               	.LBB136:
+ 449               	.LBB137:
+ 119:./usart.h     **** }
+ 450               		.loc 2 119 0
+ 451 017e 2091 C000 		lds r18,192
+ 452               	.LBE137:
+ 453               	.LBE136:
+ 174:low_level_pdi.c **** 		if (usart_rx_is_complete()) {
+ 454               		.loc 1 174 0
+ 455 0182 27FF      		sbrs r18,7
+ 456 0184 00C0      		rjmp .L29
+ 457               	.LBB138:
+ 458               	.LBB139:
+ 203:./usart.h     **** }
+ 459               		.loc 2 203 0
+ 460 0186 2091 C600 		lds r18,198
+ 461               	.LBE139:
+ 462               	.LBE138:
+ 175:low_level_pdi.c **** 			*ret = usart_get();
+ 463               		.loc 1 175 0
+ 464 018a FC01      		movw r30,r24
+ 465 018c 2083      		st Z,r18
+ 176:low_level_pdi.c **** 			return STATUS_OK;
+ 466               		.loc 1 176 0
+ 467 018e 80E0      		ldi r24,0
+ 468               	.LVL31:
+ 469 0190 0895      		ret
+ 470               	.LVL32:
+ 471               	.L29:
+ 177:low_level_pdi.c **** 		}
+ 178:low_level_pdi.c **** 		--retries;
+ 472               		.loc 1 178 0
+ 473 0192 4150      		subi r20,1
+ 474 0194 5109      		sbc r21,__zero_reg__
+ 475 0196 6109      		sbc r22,__zero_reg__
+ 476 0198 7109      		sbc r23,__zero_reg__
+ 477               	.LVL33:
+ 478 019a 00C0      		rjmp .L28
+ 479               	.L32:
+ 179:low_level_pdi.c **** 	}
+ 180:low_level_pdi.c **** 
+ 181:low_level_pdi.c **** 	return ERR_IO_ERROR;
+ 480               		.loc 1 181 0
+ 481 019c 8FEF      		ldi r24,lo8(-1)
+ 482               	.LVL34:
+ 182:low_level_pdi.c **** }
+ 483               		.loc 1 182 0
+ 484 019e 0895      		ret
+ 485               		.cfi_endproc
+ 486               	.LFE33:
+ 488               	.global	pdi_deinit
+ 490               	pdi_deinit:
+ 491               	.LFB34:
+ 183:low_level_pdi.c **** 
+ 184:low_level_pdi.c **** /**
+ 185:low_level_pdi.c ****  * \brief This function disables the PDI port.
+ 186:low_level_pdi.c ****  */
+ 187:low_level_pdi.c **** void pdi_deinit( void )
+ 188:low_level_pdi.c **** {
+ 492               		.loc 1 188 0
+ 493               		.cfi_startproc
+ 494               	/* prologue: function */
+ 495               	/* frame size = 0 */
+ 496               	/* stack size = 0 */
+ 497               	.L__stack_usage = 0
+ 498               	.LVL35:
+ 499               	.LBB154:
+ 500               	.LBB155:
+ 501               	.LBB156:
+ 163:./usart.h     **** }
+ 502               		.loc 2 163 0
+ 503 01a0 E2EC      		ldi r30,lo8(-62)
+ 504 01a2 F0E0      		ldi r31,0
+ 505 01a4 8081      		ld r24,Z
+ 506 01a6 8F73      		andi r24,lo8(63)
+ 507 01a8 8083      		st Z,r24
+ 508               	.LBE156:
+ 509               	.LBE155:
+ 510               	.LBE154:
+ 511               	.LBB157:
+ 512               	.LBB158:
+ 513               	.LBB159:
+ 107:./usart.h     **** }
+ 514               		.loc 2 107 0
+ 515 01aa E1EC      		ldi r30,lo8(-63)
+ 516 01ac F0E0      		ldi r31,0
+ 517 01ae 8081      		ld r24,Z
+ 518 01b0 8F7E      		andi r24,lo8(-17)
+ 519 01b2 8083      		st Z,r24
+ 520               	.LBE159:
+ 521               	.LBE158:
+ 522               	.LBE157:
+ 523               	.LBB160:
+ 524               	.LBB161:
+ 525               	.LBB162:
+  86:./usart.h     **** }
+ 526               		.loc 2 86 0
+ 527 01b4 8081      		ld r24,Z
+ 528 01b6 877F      		andi r24,lo8(-9)
+ 529 01b8 8083      		st Z,r24
+ 530               	.LBE162:
+ 531               	.LBE161:
+ 532               	.LBE160:
+ 189:low_level_pdi.c **** 	pdi_disable_clk();
+ 190:low_level_pdi.c **** 	pdi_disable_rx();
+ 191:low_level_pdi.c **** 	pdi_disable_tx();
+ 192:low_level_pdi.c **** 	pdi_data_tx_input();
+ 533               		.loc 1 192 0
+ 534 01ba 82E0      		ldi r24,lo8(2)
+ 535 01bc 8BB9      		out 0xb,r24
+ 536 01be 5198      		cbi 0xa,1
+ 193:low_level_pdi.c **** 	pdi_data_tx_low();
+ 537               		.loc 1 193 0
+ 538 01c0 5998      		cbi 0xb,1
+ 539               	.LVL36:
+ 540               	.LBB163:
+ 541               	.LBB164:
+ 542               		.loc 3 245 0
+ 543 01c2 8BE2      		ldi r24,lo8(299)
+ 544 01c4 91E0      		ldi r25,hi8(299)
+ 545 01c6 0197      		1: sbiw r24,1
+ 546 01c8 01F4      		brne 1b
+ 547 01ca 00C0      		rjmp .
+ 548 01cc 0000      		nop
+ 549               	.LBE164:
+ 550               	.LBE163:
+ 194:low_level_pdi.c **** 	_delay_us(300);
+ 195:low_level_pdi.c **** 	pdi_reset_high();
+ 551               		.loc 1 195 0
+ 552 01ce 5C9A      		sbi 0xb,4
+ 553 01d0 0895      		ret
+ 554               		.cfi_endproc
+ 555               	.LFE34:
+ 557               	.Letext0:
+ 558               		.file 4 "/usr/lib/avr/include/stdint.h"
+ 559               		.file 5 "./status_codes.h"
+ 560               		.file 6 "./low_level_pdi.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 low_level_pdi.c
+     /tmp/ccYJXSqL.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccYJXSqL.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccYJXSqL.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccYJXSqL.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccYJXSqL.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccYJXSqL.s:12     .text:0000000000000000 pdi_init
+     /tmp/ccYJXSqL.s:188    .text:00000000000000a6 pdi_write
+     /tmp/ccYJXSqL.s:333    .text:0000000000000120 pdi_read
+     /tmp/ccYJXSqL.s:432    .text:0000000000000174 pdi_get_byte
+     /tmp/ccYJXSqL.s:490    .text:00000000000001a0 pdi_deinit
+
+UNDEFINED SYMBOLS
+__udivmodsi4

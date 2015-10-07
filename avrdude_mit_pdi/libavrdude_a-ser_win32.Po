@@ -1,0 +1,3 @@
+libavrdude_a-ser_win32.o: ser_win32.c ac_cfg.h
+
+ac_cfg.h:

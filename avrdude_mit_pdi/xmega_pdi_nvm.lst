@@ -1,0 +1,2160 @@
+   1               		.file	"xmega_pdi_nvm.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  11               	mem_move.constprop.2:
+  12               	.LFB48:
+  13               		.file 1 "./xmega_pdi_nvm.h"
+   1:./xmega_pdi_nvm.h **** /*
+   2:./xmega_pdi_nvm.h ****  * modified AVR1612 appnote for PDI programming
+   3:./xmega_pdi_nvm.h ****  * modifications by hunz@mailbox.org
+   4:./xmega_pdi_nvm.h ****  * see license conditions for original appnote below
+   5:./xmega_pdi_nvm.h ****  * modified parts may be redistributed under the
+   6:./xmega_pdi_nvm.h ****  * same conditions as the original code from Atmel
+   7:./xmega_pdi_nvm.h ****  */
+   8:./xmega_pdi_nvm.h **** 
+   9:./xmega_pdi_nvm.h **** /**
+  10:./xmega_pdi_nvm.h ****  * \file
+  11:./xmega_pdi_nvm.h ****  *
+  12:./xmega_pdi_nvm.h ****  * \brief XMEGA PDI NVM command driver
+  13:./xmega_pdi_nvm.h ****  *
+  14:./xmega_pdi_nvm.h ****  * Copyright (C) 2009 Atmel Corporation. All rights reserved.
+  15:./xmega_pdi_nvm.h ****  *
+  16:./xmega_pdi_nvm.h ****  * \page License
+  17:./xmega_pdi_nvm.h ****  *
+  18:./xmega_pdi_nvm.h ****  * Redistribution and use in source and binary forms, with or without
+  19:./xmega_pdi_nvm.h ****  * modification, are permitted provided that the following conditions are met:
+  20:./xmega_pdi_nvm.h ****  *
+  21:./xmega_pdi_nvm.h ****  * 1. Redistributions of source code must retain the above copyright notice,
+  22:./xmega_pdi_nvm.h ****  * this list of conditions and the following disclaimer.
+  23:./xmega_pdi_nvm.h ****  *
+  24:./xmega_pdi_nvm.h ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  25:./xmega_pdi_nvm.h ****  * this list of conditions and the following disclaimer in the documentation
+  26:./xmega_pdi_nvm.h ****  * and/or other materials provided with the distribution.
+  27:./xmega_pdi_nvm.h ****  *
+  28:./xmega_pdi_nvm.h ****  * 3. The name of Atmel may not be used to endorse or promote products derived
+  29:./xmega_pdi_nvm.h ****  * from this software without specific prior written permission.
+  30:./xmega_pdi_nvm.h ****  *
+  31:./xmega_pdi_nvm.h ****  * 4. This software may only be redistributed and used in connection with an
+  32:./xmega_pdi_nvm.h ****  * Atmel AVR product.
+  33:./xmega_pdi_nvm.h ****  *
+  34:./xmega_pdi_nvm.h ****  * THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR IMPLIED
+  35:./xmega_pdi_nvm.h ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  36:./xmega_pdi_nvm.h ****  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+  37:./xmega_pdi_nvm.h ****  * EXPRESSLY AND SPECIFICALLY DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR
+  38:./xmega_pdi_nvm.h ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  39:./xmega_pdi_nvm.h ****  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  40:./xmega_pdi_nvm.h ****  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  41:./xmega_pdi_nvm.h ****  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  42:./xmega_pdi_nvm.h ****  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  43:./xmega_pdi_nvm.h ****  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+  44:./xmega_pdi_nvm.h ****  * DAMAGE.
+  45:./xmega_pdi_nvm.h ****  */
+  46:./xmega_pdi_nvm.h **** #ifndef XMEGA_PDI_NVM_H_
+  47:./xmega_pdi_nvm.h **** #define XMEGA_PDI_NVM_H_
+  48:./xmega_pdi_nvm.h **** 
+  49:./xmega_pdi_nvm.h **** #include "config.h"
+  50:./xmega_pdi_nvm.h **** #include <status_codes.h>
+  51:./xmega_pdi_nvm.h **** #include <low_level_pdi.h>
+  52:./xmega_pdi_nvm.h **** #include <atxmega128a1_nvm_regs.h>
+  53:./xmega_pdi_nvm.h **** 
+  54:./xmega_pdi_nvm.h **** 
+  55:./xmega_pdi_nvm.h **** #define XNVM_PDI_LDS_INSTR    0x00 //!< LDS instruction.
+  56:./xmega_pdi_nvm.h **** #define XNVM_PDI_STS_INSTR    0x40 //!< STS instruction.
+  57:./xmega_pdi_nvm.h **** #define XNVM_PDI_LD_INSTR     0x20 //!< LD instruction.
+  58:./xmega_pdi_nvm.h **** #define XNVM_PDI_ST_INSTR     0x60 //!< ST instruction.
+  59:./xmega_pdi_nvm.h **** #define XNVM_PDI_LDCS_INSTR   0x80 //!< LDCS instruction.
+  60:./xmega_pdi_nvm.h **** #define XNVM_PDI_STCS_INSTR   0xC0 //!< STCS instruction.
+  61:./xmega_pdi_nvm.h **** #define XNVM_PDI_REPEAT_INSTR 0xA0 //!< REPEAT instruction.
+  62:./xmega_pdi_nvm.h **** #define XNVM_PDI_KEY_INSTR    0xE0 //!< KEY instruction.
+  63:./xmega_pdi_nvm.h **** 
+  64:./xmega_pdi_nvm.h **** /** Byte size address mask for LDS and STS instruction */
+  65:./xmega_pdi_nvm.h **** #define XNVM_PDI_BYTE_ADDRESS_MASK 0x00
+  66:./xmega_pdi_nvm.h **** /** Word size address mask for LDS and STS instruction */
+  67:./xmega_pdi_nvm.h **** #define XNVM_PDI_WORD_ADDRESS_MASK 0x04
+  68:./xmega_pdi_nvm.h **** /** 3 bytes size address mask for LDS and STS instruction */
+  69:./xmega_pdi_nvm.h **** #define XNVM_PDI_3BYTES_ADDRESS_MASK 0x08
+  70:./xmega_pdi_nvm.h **** /** Long size address mask for LDS and STS instruction */
+  71:./xmega_pdi_nvm.h **** #define XNVM_PDI_LONG_ADDRESS_MASK 0x0C
+  72:./xmega_pdi_nvm.h **** /** Byte size data mask for LDS and STS instruction */
+  73:./xmega_pdi_nvm.h **** #define XNVM_PDI_BYTE_DATA_MASK 0x00
+  74:./xmega_pdi_nvm.h **** /** Word size data mask for LDS and STS instruction */
+  75:./xmega_pdi_nvm.h **** #define XNVM_PDI_WORD_DATA_MASK 0x01
+  76:./xmega_pdi_nvm.h **** /** 3 bytes size data mask for LDS and STS instruction */
+  77:./xmega_pdi_nvm.h **** #define XNVM_PDI_3BYTES_DATA_MASK 0x02
+  78:./xmega_pdi_nvm.h **** /** Long size data mask for LDS and STS instruction */
+  79:./xmega_pdi_nvm.h **** #define XNVM_PDI_LONG_DATA_MASK 0x03
+  80:./xmega_pdi_nvm.h **** /** Byte size address mask for LDS and STS instruction */
+  81:./xmega_pdi_nvm.h **** #define XNVM_PDI_LD_PTR_STAR_MASK 0x00
+  82:./xmega_pdi_nvm.h **** /** Word size address mask for LDS and STS instruction */
+  83:./xmega_pdi_nvm.h **** #define XNVM_PDI_LD_PTR_STAR_INC_MASK 0x04
+  84:./xmega_pdi_nvm.h **** /** 3 bytes size address mask for LDS and STS instruction */
+  85:./xmega_pdi_nvm.h **** #define XNVM_PDI_LD_PTR_ADDRESS_MASK 0x08
+  86:./xmega_pdi_nvm.h **** 
+  87:./xmega_pdi_nvm.h **** #define XNVM_CMD_NOP                         0x00 //!< No Operation.
+  88:./xmega_pdi_nvm.h **** #define XNVM_CMD_CHIP_ERASE                  0x40 //!< +Chip Erase.
+  89:./xmega_pdi_nvm.h **** #define XNVM_CMD_READ_NVM_PDI                0x43 //!< +Read NVM PDI.
+  90:./xmega_pdi_nvm.h **** #define XNVM_CMD_LOAD_FLASH_PAGE_BUFFER      0x23 //!< +Load Flash Page Buffer.
+  91:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_FLASH_PAGE_BUFFER     0x26 //!< +Erase Flash Page Buffer.
+  92:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_FLASH_PAGE            0x2B //!< Erase Flash Page.
+  93:./xmega_pdi_nvm.h **** #define XNVM_CMD_WRITE_FLASH_PAGE            0x2E //!< Flash Page Write.
+  94:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_AND_WRITE_FLASH_PAGE  0x2F //!< Erase & Write Flash Page.
+  95:./xmega_pdi_nvm.h **** #define XNVM_CMD_CALC_CRC_ON_FLASH           0x78 //!< Flash CRC.
+  96:./xmega_pdi_nvm.h **** 
+  97:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_APP_SECTION           0x20 //!< Erase Application Section.
+  98:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_APP_PAGE              0x22 //!< Erase Application Section.
+  99:./xmega_pdi_nvm.h **** #define XNVM_CMD_WRITE_APP_SECTION           0x24 //!< Write Application Section.
+ 100:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_AND_WRITE_APP_SECTION 0x25 //!< +Erase & Write Application Section Page.
+ 101:./xmega_pdi_nvm.h **** #define XNVM_CMD_CALC_CRC_APP_SECTION        0x38 //!< Application Section CRC.
+ 102:./xmega_pdi_nvm.h **** 
+ 103:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_BOOT_SECTION          0x68 //!< Erase Boot Section.
+ 104:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_BOOT_PAGE             0x2A //!< Erase Boot Loader Section Page.
+ 105:./xmega_pdi_nvm.h **** #define XNVM_CMD_WRITE_BOOT_PAGE             0x2C //!< Write Boot Loader Section Page.
+ 106:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_AND_WRITE_BOOT_PAGE   0x2D //!< Erase & Write Boot Loader Section Page.
+ 107:./xmega_pdi_nvm.h **** #define XNVM_CMD_CALC_CRC_BOOT_SECTION       0x39 //!< Boot Loader Section CRC.
+ 108:./xmega_pdi_nvm.h **** 
+ 109:./xmega_pdi_nvm.h **** #define XNVM_CMD_READ_USER_SIGN              0x03 //!< Read User Signature Row.
+ 110:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_USER_SIGN             0x18 //!< +Erase User Signature Row.
+ 111:./xmega_pdi_nvm.h **** #define XNVM_CMD_WRITE_USER_SIGN             0x1A //!< +Write User Signature Row.
+ 112:./xmega_pdi_nvm.h **** #define XNVM_CMD_READ_CALIB_ROW              0x02 //!< Read Calibration Row.
+ 113:./xmega_pdi_nvm.h **** 
+ 114:./xmega_pdi_nvm.h **** #define XNVM_CMD_READ_FUSE                   0x07 //!< Read Fuse.
+ 115:./xmega_pdi_nvm.h **** #define XNVM_CMD_WRITE_FUSE                  0x4C //!< +Write Fuse.
+ 116:./xmega_pdi_nvm.h **** #define XNVM_CMD_WRITE_LOCK_BITS             0x08 //!< Write Lock Bits.
+ 117:./xmega_pdi_nvm.h **** 
+ 118:./xmega_pdi_nvm.h **** #define XNVM_CMD_LOAD_EEPROM_PAGE_BUFFER     0x33 //!< +Load EEPROM Page Buffer.
+ 119:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_EEPROM_PAGE_BUFFER    0x36 //!< +Erase EEPROM Page Buffer.
+ 120:./xmega_pdi_nvm.h **** 
+ 121:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_EEPROM                0x30 //!< Erase EEPROM.
+ 122:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_EEPROM_PAGE           0x32 //!< Erase EEPROM Page.
+ 123:./xmega_pdi_nvm.h **** #define XNVM_CMD_WRITE_EEPROM_PAGE           0x34 //!< Write EEPROM Page.
+ 124:./xmega_pdi_nvm.h **** #define XNVM_CMD_ERASE_AND_WRITE_EEPROM      0x35 //!< +Erase & Write EEPROM Page.
+ 125:./xmega_pdi_nvm.h **** #define XNVM_CMD_READ_EEPROM                 0x06 //!< Read EEPROM.
+ 126:./xmega_pdi_nvm.h **** 
+ 127:./xmega_pdi_nvm.h **** /**
+ 128:./xmega_pdi_nvm.h ****  * \brief Key used to enable the NVM interface.
+ 129:./xmega_pdi_nvm.h ****  */
+ 130:./xmega_pdi_nvm.h **** #define NVM_KEY_BYTE0 0xFF
+ 131:./xmega_pdi_nvm.h **** #define NVM_KEY_BYTE1 0x88
+ 132:./xmega_pdi_nvm.h **** #define NVM_KEY_BYTE2 0xD8
+ 133:./xmega_pdi_nvm.h **** #define NVM_KEY_BYTE3 0xCD
+ 134:./xmega_pdi_nvm.h **** #define NVM_KEY_BYTE4 0x45
+ 135:./xmega_pdi_nvm.h **** #define NVM_KEY_BYTE5 0xAB
+ 136:./xmega_pdi_nvm.h **** #define NVM_KEY_BYTE6 0x89
+ 137:./xmega_pdi_nvm.h **** #define NVM_KEY_BYTE7 0x12
+ 138:./xmega_pdi_nvm.h **** 
+ 139:./xmega_pdi_nvm.h **** 
+ 140:./xmega_pdi_nvm.h **** /**
+ 141:./xmega_pdi_nvm.h ****  * \brief Move bytes in memory from one location to another
+ 142:./xmega_pdi_nvm.h ****  *
+ 143:./xmega_pdi_nvm.h ****  * \param from_var The address of the data source
+ 144:./xmega_pdi_nvm.h ****  * \param to_var The address of the data destination
+ 145:./xmega_pdi_nvm.h ****  * \param bytes The number of bytes to move
+ 146:./xmega_pdi_nvm.h ****  */
+ 147:./xmega_pdi_nvm.h **** static inline void mem_move(uint8_t * from_var, uint8_t * to_var, uint8_t bytes)
+  14               		.loc 1 147 0
+  15               		.cfi_startproc
+  16               	.LVL0:
+  17               	/* prologue: function */
+  18               	/* frame size = 0 */
+  19               	/* stack size = 0 */
+  20               	.L__stack_usage = 0
+  21               		.loc 1 147 0
+  22 0000 E0E0      		ldi r30,lo8(cmd_buffer+1)
+  23 0002 F0E0      		ldi r31,hi8(cmd_buffer+1)
+  24               	.LVL1:
+  25 0004 6E0F      		add r22,r30
+  26               	.LVL2:
+  27               	.L3:
+ 148:./xmega_pdi_nvm.h **** {
+ 149:./xmega_pdi_nvm.h **** 	do{
+ 150:./xmega_pdi_nvm.h **** 		*to_var++ = *from_var++;
+  28               		.loc 1 150 0
+  29 0006 DC01      		movw r26,r24
+  30 0008 2D91      		ld r18,X+
+  31               	.LVL3:
+  32 000a CD01      		movw r24,r26
+  33               	.LVL4:
+  34 000c 2193      		st Z+,r18
+  35               	.LVL5:
+ 151:./xmega_pdi_nvm.h **** 		bytes--;
+ 152:./xmega_pdi_nvm.h **** 	}while(bytes);
+  36               		.loc 1 152 0
+  37 000e 6E13      		cpse r22,r30
+  38 0010 00C0      		rjmp .L3
+  39               	/* epilogue start */
+ 153:./xmega_pdi_nvm.h **** }
+  40               		.loc 1 153 0
+  41 0012 0895      		ret
+  42               		.cfi_endproc
+  43               	.LFE48:
+  46               	xnvm_write_repeat:
+  47               	.LFB39:
+  48               		.file 2 "xmega_pdi_nvm.c"
+   1:xmega_pdi_nvm.c **** /*
+   2:xmega_pdi_nvm.c ****  * modified AVR1612 appnote for PDI programming
+   3:xmega_pdi_nvm.c ****  * modifications by hunz@mailbox.org
+   4:xmega_pdi_nvm.c ****  * see license conditions for original appnote below
+   5:xmega_pdi_nvm.c ****  * modified parts may be redistributed under the
+   6:xmega_pdi_nvm.c ****  * same conditions as the original code from Atmel
+   7:xmega_pdi_nvm.c ****  */
+   8:xmega_pdi_nvm.c **** 
+   9:xmega_pdi_nvm.c **** /**
+  10:xmega_pdi_nvm.c ****  * \file
+  11:xmega_pdi_nvm.c ****  *
+  12:xmega_pdi_nvm.c ****  * \brief XMEGA PDI NVM command driver
+  13:xmega_pdi_nvm.c ****  *
+  14:xmega_pdi_nvm.c ****  * Copyright (C) 2009 Atmel Corporation. All rights reserved.
+  15:xmega_pdi_nvm.c ****  *
+  16:xmega_pdi_nvm.c ****  * \page License
+  17:xmega_pdi_nvm.c ****  *
+  18:xmega_pdi_nvm.c ****  * Redistribution and use in source and binary forms, with or without
+  19:xmega_pdi_nvm.c ****  * modification, are permitted provided that the following conditions are met:
+  20:xmega_pdi_nvm.c ****  *
+  21:xmega_pdi_nvm.c ****  * 1. Redistributions of source code must retain the above copyright notice,
+  22:xmega_pdi_nvm.c ****  * this list of conditions and the following disclaimer.
+  23:xmega_pdi_nvm.c ****  *
+  24:xmega_pdi_nvm.c ****  * 2. Redistributions in binary form must reproduce the above copyright notice,
+  25:xmega_pdi_nvm.c ****  * this list of conditions and the following disclaimer in the documentation
+  26:xmega_pdi_nvm.c ****  * and/or other materials provided with the distribution.
+  27:xmega_pdi_nvm.c ****  *
+  28:xmega_pdi_nvm.c ****  * 3. The name of Atmel may not be used to endorse or promote products derived
+  29:xmega_pdi_nvm.c ****  * from this software without specific prior written permission.
+  30:xmega_pdi_nvm.c ****  *
+  31:xmega_pdi_nvm.c ****  * 4. This software may only be redistributed and used in connection with an
+  32:xmega_pdi_nvm.c ****  * Atmel AVR product.
+  33:xmega_pdi_nvm.c ****  *
+  34:xmega_pdi_nvm.c ****  * THIS SOFTWARE IS PROVIDED BY ATMEL "AS IS" AND ANY EXPRESS OR IMPLIED
+  35:xmega_pdi_nvm.c ****  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+  36:xmega_pdi_nvm.c ****  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT ARE
+  37:xmega_pdi_nvm.c ****  * EXPRESSLY AND SPECIFICALLY DISCLAIMED. IN NO EVENT SHALL ATMEL BE LIABLE FOR
+  38:xmega_pdi_nvm.c ****  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  39:xmega_pdi_nvm.c ****  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  40:xmega_pdi_nvm.c ****  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  41:xmega_pdi_nvm.c ****  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+  42:xmega_pdi_nvm.c ****  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+  43:xmega_pdi_nvm.c ****  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+  44:xmega_pdi_nvm.c ****  * DAMAGE.
+  45:xmega_pdi_nvm.c ****  */
+  46:xmega_pdi_nvm.c **** #include <xmega_pdi_nvm.h>
+  47:xmega_pdi_nvm.c **** 
+  48:xmega_pdi_nvm.c **** uint8_t cmd_buffer[20];
+  49:xmega_pdi_nvm.c **** enum status_code retval;
+  50:xmega_pdi_nvm.c **** uint8_t initialized = 0;
+  51:xmega_pdi_nvm.c **** 
+  52:xmega_pdi_nvm.c **** /* Private prototypes */
+  53:xmega_pdi_nvm.c **** static enum status_code xnvm_read_pdi_status(uint8_t *status);
+  54:xmega_pdi_nvm.c **** static enum status_code xnvm_wait_for_nvmen(uint32_t retries);
+  55:xmega_pdi_nvm.c **** static enum status_code xnvm_ctrl_read_reg(uint16_t reg, uint8_t *value);
+  56:xmega_pdi_nvm.c **** static enum status_code xnvm_ctrl_write_reg(uint16_t reg, uint8_t value);
+  57:xmega_pdi_nvm.c **** enum status_code xnvm_st_ptr(uint32_t address);
+  58:xmega_pdi_nvm.c **** enum status_code xnvm_ctrl_cmd_write(uint8_t cmd_id);
+  59:xmega_pdi_nvm.c **** static enum status_code xnvm_ctrl_read_status(uint8_t *value);
+  60:xmega_pdi_nvm.c **** enum status_code xnvm_st_ptr(uint32_t address);
+  61:xmega_pdi_nvm.c **** enum status_code xnvm_st_star_ptr_postinc(uint8_t value);
+  62:xmega_pdi_nvm.c **** static enum status_code xnvm_write_repeat(uint32_t count);
+  63:xmega_pdi_nvm.c **** enum status_code xnvm_ctrl_wait_nvmbusy(uint32_t retries);
+  64:xmega_pdi_nvm.c **** static enum status_code xnvm_ctrl_cmdex_write(void);
+  65:xmega_pdi_nvm.c **** /*********************/
+  66:xmega_pdi_nvm.c **** 
+  67:xmega_pdi_nvm.c **** /**
+  68:xmega_pdi_nvm.c ****  * \brief Initiliazation function for the PDI interface
+  69:xmega_pdi_nvm.c ****  *
+  70:xmega_pdi_nvm.c ****  * This function initializes the PDI interface agains
+  71:xmega_pdi_nvm.c ****  * the connected target device.
+  72:xmega_pdi_nvm.c ****  *
+  73:xmega_pdi_nvm.c ****  * \retval STATUS_OK init ok
+  74:xmega_pdi_nvm.c ****  * \retval ERR_TIMEOUT the init timed out
+  75:xmega_pdi_nvm.c ****  */
+  76:xmega_pdi_nvm.c **** enum status_code xnvm_init (uint8_t div)
+  77:xmega_pdi_nvm.c **** {
+  78:xmega_pdi_nvm.c **** 	if(initialized == 0){
+  79:xmega_pdi_nvm.c **** 
+  80:xmega_pdi_nvm.c **** 		pdi_init(div);
+  81:xmega_pdi_nvm.c **** 
+  82:xmega_pdi_nvm.c **** 		/* Put the device in reset mode */
+  83:xmega_pdi_nvm.c **** 		xnvm_put_dev_in_reset();
+  84:xmega_pdi_nvm.c **** 
+  85:xmega_pdi_nvm.c **** 		/* Create the key command */
+  86:xmega_pdi_nvm.c **** 		cmd_buffer[0] = XNVM_PDI_KEY_INSTR;
+  87:xmega_pdi_nvm.c **** 		cmd_buffer[1] = NVM_KEY_BYTE0;
+  88:xmega_pdi_nvm.c **** 		cmd_buffer[2] = NVM_KEY_BYTE1;
+  89:xmega_pdi_nvm.c **** 		cmd_buffer[3] = NVM_KEY_BYTE2;
+  90:xmega_pdi_nvm.c **** 		cmd_buffer[4] = NVM_KEY_BYTE3;
+  91:xmega_pdi_nvm.c **** 		cmd_buffer[5] = NVM_KEY_BYTE4;
+  92:xmega_pdi_nvm.c **** 		cmd_buffer[6] = NVM_KEY_BYTE5;
+  93:xmega_pdi_nvm.c **** 		cmd_buffer[7] = NVM_KEY_BYTE6;
+  94:xmega_pdi_nvm.c **** 		cmd_buffer[8] = NVM_KEY_BYTE7;
+  95:xmega_pdi_nvm.c **** 
+  96:xmega_pdi_nvm.c **** 		pdi_write(cmd_buffer, 9);
+  97:xmega_pdi_nvm.c **** 
+  98:xmega_pdi_nvm.c **** 		retval = xnvm_ctrl_wait_nvmbusy(WAIT_RETRIES_NUM);
+  99:xmega_pdi_nvm.c **** 
+ 100:xmega_pdi_nvm.c **** 		initialized = 1;
+ 101:xmega_pdi_nvm.c **** 	}
+ 102:xmega_pdi_nvm.c **** 
+ 103:xmega_pdi_nvm.c **** 	return retval;
+ 104:xmega_pdi_nvm.c **** }
+ 105:xmega_pdi_nvm.c **** 
+ 106:xmega_pdi_nvm.c **** /**
+ 107:xmega_pdi_nvm.c ****  * \brief Function for putting the device into reset
+ 108:xmega_pdi_nvm.c ****  *
+ 109:xmega_pdi_nvm.c ****  * \retval STATUS_OK if all went well
+ 110:xmega_pdi_nvm.c ****  * \retval ERR_IO_ERROR if the pdi write failed
+ 111:xmega_pdi_nvm.c ****  */
+ 112:xmega_pdi_nvm.c **** enum status_code xnvm_put_dev_in_reset (void)
+ 113:xmega_pdi_nvm.c **** {
+ 114:xmega_pdi_nvm.c **** 	/* Reset the device */
+ 115:xmega_pdi_nvm.c **** 	cmd_buffer[0] = XNVM_PDI_STCS_INSTR | XOCD_RESET_REGISTER_ADDRESS;
+ 116:xmega_pdi_nvm.c **** 	cmd_buffer[1] = XOCD_RESET_SIGNATURE;
+ 117:xmega_pdi_nvm.c **** 	if(pdi_write(cmd_buffer, 2)){
+ 118:xmega_pdi_nvm.c **** 		return ERR_IO_ERROR;
+ 119:xmega_pdi_nvm.c **** 	}
+ 120:xmega_pdi_nvm.c **** 	return STATUS_OK;
+ 121:xmega_pdi_nvm.c **** }
+ 122:xmega_pdi_nvm.c **** 
+ 123:xmega_pdi_nvm.c **** /**
+ 124:xmega_pdi_nvm.c ****  *  \internal
+ 125:xmega_pdi_nvm.c ****  *  \brief Wait until the NVM module has completed initialization
+ 126:xmega_pdi_nvm.c ****  *
+ 127:xmega_pdi_nvm.c ****  *  \param  retries the retry count.
+ 128:xmega_pdi_nvm.c ****  *  \retval STATUS_OK the NVMEN was set successfully.
+ 129:xmega_pdi_nvm.c ****  *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ 130:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT Time out.
+ 131:xmega_pdi_nvm.c ****  */
+ 132:xmega_pdi_nvm.c **** static enum status_code xnvm_wait_for_nvmen(uint32_t retries)
+ 133:xmega_pdi_nvm.c **** {
+ 134:xmega_pdi_nvm.c **** 	uint8_t pdi_status;
+ 135:xmega_pdi_nvm.c **** 
+ 136:xmega_pdi_nvm.c **** 	while (retries != 0) {
+ 137:xmega_pdi_nvm.c **** 		if (xnvm_read_pdi_status(&pdi_status) != STATUS_OK) {
+ 138:xmega_pdi_nvm.c **** 				return ERR_BAD_DATA;
+ 139:xmega_pdi_nvm.c **** 		}
+ 140:xmega_pdi_nvm.c **** 		if ((pdi_status & XNVM_NVMEN) != 0) {
+ 141:xmega_pdi_nvm.c **** 				return STATUS_OK;
+ 142:xmega_pdi_nvm.c **** 		}
+ 143:xmega_pdi_nvm.c **** 		--retries;
+ 144:xmega_pdi_nvm.c **** 	}
+ 145:xmega_pdi_nvm.c **** 	return ERR_TIMEOUT;
+ 146:xmega_pdi_nvm.c **** 
+ 147:xmega_pdi_nvm.c **** }
+ 148:xmega_pdi_nvm.c **** 
+ 149:xmega_pdi_nvm.c **** /**
+ 150:xmega_pdi_nvm.c ****  *  \internal
+ 151:xmega_pdi_nvm.c ****  *  \brief Read the PDI Controller's STATUS register
+ 152:xmega_pdi_nvm.c ****  *
+ 153:xmega_pdi_nvm.c ****  *  \param  status the status buffer pointer.
+ 154:xmega_pdi_nvm.c ****  *  \retval STATUS_OK read successfully.
+ 155:xmega_pdi_nvm.c ****  *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ 156:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT Time out.
+ 157:xmega_pdi_nvm.c ****  */
+ 158:xmega_pdi_nvm.c **** static enum status_code xnvm_read_pdi_status(uint8_t *status)
+ 159:xmega_pdi_nvm.c **** {
+ 160:xmega_pdi_nvm.c **** 	enum status_code ret = STATUS_OK;
+ 161:xmega_pdi_nvm.c **** 
+ 162:xmega_pdi_nvm.c **** 	cmd_buffer[0] = XNVM_PDI_LDCS_INSTR;
+ 163:xmega_pdi_nvm.c **** 	cmd_buffer[1] = 0x00;
+ 164:xmega_pdi_nvm.c **** 	if (STATUS_OK != pdi_write(cmd_buffer, 2)) {
+ 165:xmega_pdi_nvm.c **** 			ret = ERR_BAD_DATA;
+ 166:xmega_pdi_nvm.c **** 	}
+ 167:xmega_pdi_nvm.c **** 	if (pdi_get_byte(status, WAIT_RETRIES_NUM) != STATUS_OK) {
+ 168:xmega_pdi_nvm.c **** 			ret = ERR_TIMEOUT;
+ 169:xmega_pdi_nvm.c **** 	}
+ 170:xmega_pdi_nvm.c **** 
+ 171:xmega_pdi_nvm.c **** 	return ret;
+ 172:xmega_pdi_nvm.c **** }
+ 173:xmega_pdi_nvm.c **** 
+ 174:xmega_pdi_nvm.c **** /**
+ 175:xmega_pdi_nvm.c ****  *  \brief Read the IO space register with NVM controller
+ 176:xmega_pdi_nvm.c ****  *
+ 177:xmega_pdi_nvm.c ****  *  \param  address the register address in the IO space.
+ 178:xmega_pdi_nvm.c ****  *  \param  value the value buffer pointer.
+ 179:xmega_pdi_nvm.c ****  *  \retval STATUS_OK read successfully.
+ 180:xmega_pdi_nvm.c ****  *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ 181:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT Time out.
+ 182:xmega_pdi_nvm.c ****  */
+ 183:xmega_pdi_nvm.c **** enum status_code xnvm_ioread_byte(uint16_t address, uint8_t *value)
+ 184:xmega_pdi_nvm.c **** {
+ 185:xmega_pdi_nvm.c **** 	enum status_code ret = STATUS_OK;
+ 186:xmega_pdi_nvm.c **** 	uint32_t register_address;
+ 187:xmega_pdi_nvm.c **** 
+ 188:xmega_pdi_nvm.c **** 	cmd_buffer[0] = XNVM_PDI_LDS_INSTR | XNVM_PDI_LONG_ADDRESS_MASK |
+ 189:xmega_pdi_nvm.c **** 			XNVM_PDI_BYTE_DATA_MASK;
+ 190:xmega_pdi_nvm.c **** 
+ 191:xmega_pdi_nvm.c **** 	register_address = XNVM_DATA_BASE + address;
+ 192:xmega_pdi_nvm.c **** 
+ 193:xmega_pdi_nvm.c **** 	mem_move((uint8_t*)&register_address, (cmd_buffer + 1), 4);
+ 194:xmega_pdi_nvm.c **** 
+ 195:xmega_pdi_nvm.c **** 	ret = pdi_write(cmd_buffer, 5);
+ 196:xmega_pdi_nvm.c **** 	ret = pdi_get_byte(value, WAIT_RETRIES_NUM);
+ 197:xmega_pdi_nvm.c **** 
+ 198:xmega_pdi_nvm.c **** 	return ret;
+ 199:xmega_pdi_nvm.c **** }
+ 200:xmega_pdi_nvm.c **** 
+ 201:xmega_pdi_nvm.c **** /**
+ 202:xmega_pdi_nvm.c ****  *  \brief Write the IO space register with NVM controller
+ 203:xmega_pdi_nvm.c ****  *
+ 204:xmega_pdi_nvm.c ****  *  \param  address the register address in the IO space.
+ 205:xmega_pdi_nvm.c ****  *  \param  value the value which should be write into the address.
+ 206:xmega_pdi_nvm.c ****  *  \retval STATUS_OK write successfully.
+ 207:xmega_pdi_nvm.c ****  *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ 208:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT Time out.
+ 209:xmega_pdi_nvm.c ****  */
+ 210:xmega_pdi_nvm.c **** enum status_code xnvm_iowrite_byte(uint16_t address, uint8_t value)
+ 211:xmega_pdi_nvm.c **** {
+ 212:xmega_pdi_nvm.c **** 
+ 213:xmega_pdi_nvm.c **** 	uint32_t register_address = XNVM_DATA_BASE + address;
+ 214:xmega_pdi_nvm.c **** 
+ 215:xmega_pdi_nvm.c **** 	cmd_buffer[0] = XNVM_PDI_STS_INSTR | XNVM_PDI_LONG_ADDRESS_MASK |
+ 216:xmega_pdi_nvm.c **** 			XNVM_PDI_BYTE_DATA_MASK;
+ 217:xmega_pdi_nvm.c **** 
+ 218:xmega_pdi_nvm.c **** 	mem_move((uint8_t*)&register_address, (cmd_buffer + 1), 4);
+ 219:xmega_pdi_nvm.c **** 	cmd_buffer[5] = value;
+ 220:xmega_pdi_nvm.c **** 
+ 221:xmega_pdi_nvm.c **** 	return (pdi_write(cmd_buffer, 6));
+ 222:xmega_pdi_nvm.c **** }
+ 223:xmega_pdi_nvm.c **** 
+ 224:xmega_pdi_nvm.c **** /**
+ 225:xmega_pdi_nvm.c ****  *  \internal
+ 226:xmega_pdi_nvm.c ****  *  \brief Read the NVM Controller's status register
+ 227:xmega_pdi_nvm.c ****  *
+ 228:xmega_pdi_nvm.c ****  *  \param  value the NVM Controller's status buffer pointer.
+ 229:xmega_pdi_nvm.c ****  *  \retval STATUS_OK read successfully.
+ 230:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT Time out.
+ 231:xmega_pdi_nvm.c ****  */
+ 232:xmega_pdi_nvm.c **** static enum status_code xnvm_ctrl_read_status(uint8_t *value)
+ 233:xmega_pdi_nvm.c **** {
+ 234:xmega_pdi_nvm.c **** 	return xnvm_ctrl_read_reg(XNVM_CONTROLLER_STATUS_REG_OFFSET, value);
+ 235:xmega_pdi_nvm.c **** }
+ 236:xmega_pdi_nvm.c **** 
+ 237:xmega_pdi_nvm.c **** /**
+ 238:xmega_pdi_nvm.c ****  *  \internal
+ 239:xmega_pdi_nvm.c ****  *  \brief Read the NVM Controller's register
+ 240:xmega_pdi_nvm.c ****  *
+ 241:xmega_pdi_nvm.c ****  *  \param  reg the offset of the NVM Controller register.
+ 242:xmega_pdi_nvm.c ****  *  \param  value the pointer of the value buffer.
+ 243:xmega_pdi_nvm.c ****  *  \retval STATUS_OK read succussfully.
+ 244:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT Time out.
+ 245:xmega_pdi_nvm.c ****  */
+ 246:xmega_pdi_nvm.c **** static enum status_code xnvm_ctrl_read_reg(uint16_t reg, uint8_t *value)
+ 247:xmega_pdi_nvm.c **** {
+ 248:xmega_pdi_nvm.c **** 	uint16_t address;
+ 249:xmega_pdi_nvm.c **** 
+ 250:xmega_pdi_nvm.c **** 	address = XNVM_CONTROLLER_BASE + reg;
+ 251:xmega_pdi_nvm.c **** 	return xnvm_ioread_byte(address, value);
+ 252:xmega_pdi_nvm.c **** }
+ 253:xmega_pdi_nvm.c **** 
+ 254:xmega_pdi_nvm.c **** /**
+ 255:xmega_pdi_nvm.c ****  *  \internal
+ 256:xmega_pdi_nvm.c ****  *  \brief Write the NVM Controller's register
+ 257:xmega_pdi_nvm.c ****  *
+ 258:xmega_pdi_nvm.c ****  *  \param  reg the offset of the NVM Controller register.
+ 259:xmega_pdi_nvm.c ****  *  \param  value the value which should be write into the register.
+ 260:xmega_pdi_nvm.c ****  *  \retval STATUS_OK write succussfully.
+ 261:xmega_pdi_nvm.c ****  *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ 262:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT Time out.
+ 263:xmega_pdi_nvm.c ****  */
+ 264:xmega_pdi_nvm.c **** static enum status_code xnvm_ctrl_write_reg(uint16_t reg, uint8_t value)
+ 265:xmega_pdi_nvm.c **** {
+ 266:xmega_pdi_nvm.c **** 	uint16_t address;
+ 267:xmega_pdi_nvm.c **** 
+ 268:xmega_pdi_nvm.c **** 	address = XNVM_CONTROLLER_BASE + reg;
+ 269:xmega_pdi_nvm.c **** 	return xnvm_iowrite_byte(address, value);
+ 270:xmega_pdi_nvm.c **** }
+ 271:xmega_pdi_nvm.c **** 
+ 272:xmega_pdi_nvm.c **** /**
+ 273:xmega_pdi_nvm.c ****  * \internal
+ 274:xmega_pdi_nvm.c ****  * \brief Write the NVM CTRLA register CMDEX
+ 275:xmega_pdi_nvm.c ****  *
+ 276:xmega_pdi_nvm.c ****  * \retval STATUS_OK write successful.
+ 277:xmega_pdi_nvm.c ****  * \retval STATUS_OK write successfully.
+ 278:xmega_pdi_nvm.c ****  * \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ 279:xmega_pdi_nvm.c ****  * \retval ERR_TIMEOUT Time out.
+ 280:xmega_pdi_nvm.c ****  */
+ 281:xmega_pdi_nvm.c **** static enum status_code xnvm_ctrl_cmdex_write(void)
+ 282:xmega_pdi_nvm.c **** {
+ 283:xmega_pdi_nvm.c **** 	return xnvm_ctrl_write_reg(XNVM_CONTROLLER_CTRLA_REG_OFFSET, XNVM_CTRLA_CMDEX);
+ 284:xmega_pdi_nvm.c **** }
+ 285:xmega_pdi_nvm.c **** 
+ 286:xmega_pdi_nvm.c **** /**
+ 287:xmega_pdi_nvm.c ****  *  \internal
+ 288:xmega_pdi_nvm.c ****  *  \brief Write NVM command register
+ 289:xmega_pdi_nvm.c ****  *
+ 290:xmega_pdi_nvm.c ****  *  \param  cmd_id the command code which should be write into the NVM command register.
+ 291:xmega_pdi_nvm.c ****  *  \retval STATUS_OK write successfully.
+ 292:xmega_pdi_nvm.c ****  *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ 293:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT Time out.
+ 294:xmega_pdi_nvm.c ****  */
+ 295:xmega_pdi_nvm.c **** enum status_code xnvm_ctrl_cmd_write(uint8_t cmd_id)
+ 296:xmega_pdi_nvm.c **** {
+ 297:xmega_pdi_nvm.c **** 	return xnvm_ctrl_write_reg(XNVM_CONTROLLER_CMD_REG_OFFSET, cmd_id);
+ 298:xmega_pdi_nvm.c **** }
+ 299:xmega_pdi_nvm.c **** 
+ 300:xmega_pdi_nvm.c **** /**
+ 301:xmega_pdi_nvm.c ****  *  \brief Erase the chip
+ 302:xmega_pdi_nvm.c ****  *
+ 303:xmega_pdi_nvm.c ****  *  \retval STATUS_OK erase chip succussfully.
+ 304:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT Time out.
+ 305:xmega_pdi_nvm.c ****  */
+ 306:xmega_pdi_nvm.c **** enum status_code xnvm_chip_erase(void)
+ 307:xmega_pdi_nvm.c **** {
+ 308:xmega_pdi_nvm.c **** 	/* Write the chip erase command to the NVM command reg */
+ 309:xmega_pdi_nvm.c **** 	xnvm_ctrl_cmd_write(XNVM_CMD_CHIP_ERASE);
+ 310:xmega_pdi_nvm.c **** 	/* Write the CMDEX to execute command */
+ 311:xmega_pdi_nvm.c **** 	xnvm_ctrl_cmdex_write();
+ 312:xmega_pdi_nvm.c **** 	return xnvm_wait_for_nvmen(WAIT_RETRIES_NUM);
+ 313:xmega_pdi_nvm.c **** }
+ 314:xmega_pdi_nvm.c **** 
+ 315:xmega_pdi_nvm.c **** enum status_code xnvm_load_buffer(volatile uint8_t *buf, uint16_t len)
+ 316:xmega_pdi_nvm.c **** {
+ 317:xmega_pdi_nvm.c **** 	if (len > 1) {
+ 318:xmega_pdi_nvm.c **** 			xnvm_write_repeat(len);
+ 319:xmega_pdi_nvm.c **** 	} else {
+ 320:xmega_pdi_nvm.c **** 			return xnvm_st_star_ptr_postinc(*buf);
+ 321:xmega_pdi_nvm.c **** 	}
+ 322:xmega_pdi_nvm.c **** 
+ 323:xmega_pdi_nvm.c **** 	cmd_buffer[0] = XNVM_PDI_ST_INSTR | XNVM_PDI_LD_PTR_STAR_INC_MASK |
+ 324:xmega_pdi_nvm.c **** 			XNVM_PDI_BYTE_DATA_MASK;
+ 325:xmega_pdi_nvm.c **** 	pdi_write(cmd_buffer, 1);
+ 326:xmega_pdi_nvm.c **** 
+ 327:xmega_pdi_nvm.c **** 	return pdi_write(buf, len);
+ 328:xmega_pdi_nvm.c **** }
+ 329:xmega_pdi_nvm.c **** 
+ 330:xmega_pdi_nvm.c **** enum status_code xnvm_erase_buffer(int eeprom, uint32_t retries)
+ 331:xmega_pdi_nvm.c **** {
+ 332:xmega_pdi_nvm.c **** 	enum status_code ret = xnvm_st_ptr(0);
+ 333:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 334:xmega_pdi_nvm.c **** 		return ret;
+ 335:xmega_pdi_nvm.c **** 	ret = xnvm_ctrl_cmd_write(eeprom ? XNVM_CMD_ERASE_EEPROM_PAGE_BUFFER : XNVM_CMD_ERASE_FLASH_PAGE_B
+ 336:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 337:xmega_pdi_nvm.c **** 		return ret;
+ 338:xmega_pdi_nvm.c **** 	ret = xnvm_ctrl_cmdex_write();
+ 339:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 340:xmega_pdi_nvm.c **** 		return ret;
+ 341:xmega_pdi_nvm.c **** 
+ 342:xmega_pdi_nvm.c **** 	return xnvm_ctrl_wait_nvmbusy(retries);
+ 343:xmega_pdi_nvm.c **** }
+ 344:xmega_pdi_nvm.c **** 
+ 345:xmega_pdi_nvm.c **** /**
+ 346:xmega_pdi_nvm.c ****  *  \internal
+ 347:xmega_pdi_nvm.c ****  *  \brief Write the repeating number with PDI port
+ 348:xmega_pdi_nvm.c ****  *
+ 349:xmega_pdi_nvm.c ****  *  \param  count the repeating number.
+ 350:xmega_pdi_nvm.c ****  *  \retval STATUS_OK write succussfully.
+ 351:xmega_pdi_nvm.c ****  *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ 352:xmega_pdi_nvm.c ****  */
+ 353:xmega_pdi_nvm.c **** static enum status_code xnvm_write_repeat(uint32_t count)
+ 354:xmega_pdi_nvm.c **** {
+  49               		.loc 2 354 0
+  50               		.cfi_startproc
+  51               	.LVL6:
+  52 0014 CF93      		push r28
+  53               	.LCFI0:
+  54               		.cfi_def_cfa_offset 3
+  55               		.cfi_offset 28, -2
+  56 0016 DF93      		push r29
+  57               	.LCFI1:
+  58               		.cfi_def_cfa_offset 4
+  59               		.cfi_offset 29, -3
+  60 0018 00D0      		rcall .
+  61 001a 00D0      		rcall .
+  62               	.LCFI2:
+  63               		.cfi_def_cfa_offset 8
+  64 001c CDB7      		in r28,__SP_L__
+  65 001e DEB7      		in r29,__SP_H__
+  66               	.LCFI3:
+  67               		.cfi_def_cfa_register 28
+  68               	/* prologue: function */
+  69               	/* frame size = 4 */
+  70               	/* stack size = 6 */
+  71               	.L__stack_usage = 6
+ 355:xmega_pdi_nvm.c **** 	uint8_t cmd_len;
+ 356:xmega_pdi_nvm.c **** 
+ 357:xmega_pdi_nvm.c **** 	--count;
+  72               		.loc 2 357 0
+  73 0020 6150      		subi r22,1
+  74 0022 7109      		sbc r23,__zero_reg__
+  75 0024 8109      		sbc r24,__zero_reg__
+  76 0026 9109      		sbc r25,__zero_reg__
+  77               	.LVL7:
+  78 0028 6983      		std Y+1,r22
+  79 002a 7A83      		std Y+2,r23
+  80 002c 8B83      		std Y+3,r24
+  81 002e 9C83      		std Y+4,r25
+ 358:xmega_pdi_nvm.c **** 
+ 359:xmega_pdi_nvm.c **** 	if (count < (1 << 8)) {
+  82               		.loc 2 359 0
+  83 0030 6F3F      		cpi r22,-1
+  84 0032 7105      		cpc r23,__zero_reg__
+  85 0034 8105      		cpc r24,__zero_reg__
+  86 0036 9105      		cpc r25,__zero_reg__
+  87 0038 01F0      		breq .+2
+  88 003a 00F4      		brsh .L6
+ 360:xmega_pdi_nvm.c **** 		cmd_buffer[0] = XNVM_PDI_REPEAT_INSTR | XNVM_PDI_BYTE_DATA_MASK;
+  89               		.loc 2 360 0
+  90 003c 20EA      		ldi r18,lo8(-96)
+  91 003e 2093 0000 		sts cmd_buffer,r18
+ 361:xmega_pdi_nvm.c **** 		cmd_buffer[1] = count;
+  92               		.loc 2 361 0
+  93 0042 6093 0000 		sts cmd_buffer+1,r22
+  94               	.LVL8:
+ 362:xmega_pdi_nvm.c **** 		cmd_len = 2;
+  95               		.loc 2 362 0
+  96 0046 62E0      		ldi r22,lo8(2)
+  97               	.LVL9:
+  98 0048 00C0      		rjmp .L7
+  99               	.LVL10:
+ 100               	.L6:
+ 363:xmega_pdi_nvm.c **** 	} else if (count < ((uint32_t)(1) << 16)) {
+ 101               		.loc 2 363 0
+ 102 004a 6115      		cp r22,__zero_reg__
+ 103 004c 7105      		cpc r23,__zero_reg__
+ 104 004e 21E0      		ldi r18,1
+ 105 0050 8207      		cpc r24,r18
+ 106 0052 9105      		cpc r25,__zero_reg__
+ 107 0054 00F4      		brsh .L8
+ 364:xmega_pdi_nvm.c **** 		cmd_buffer[0] = XNVM_PDI_REPEAT_INSTR | XNVM_PDI_WORD_DATA_MASK;
+ 108               		.loc 2 364 0
+ 109 0056 81EA      		ldi r24,lo8(-95)
+ 110 0058 8093 0000 		sts cmd_buffer,r24
+ 365:xmega_pdi_nvm.c **** 		mem_move((uint8_t*)&count, (cmd_buffer + 1), 2);
+ 111               		.loc 2 365 0
+ 112 005c 62E0      		ldi r22,lo8(2)
+ 113               	.LVL11:
+ 114 005e CE01      		movw r24,r28
+ 115 0060 0196      		adiw r24,1
+ 116 0062 00D0      		rcall mem_move.constprop.2
+ 117               	.LVL12:
+ 366:xmega_pdi_nvm.c **** 		cmd_len = 3;
+ 118               		.loc 2 366 0
+ 119 0064 63E0      		ldi r22,lo8(3)
+ 120 0066 00C0      		rjmp .L7
+ 121               	.LVL13:
+ 122               	.L8:
+ 367:xmega_pdi_nvm.c **** 	} else if (count < ((uint32_t)(1) << 24)) {
+ 123               		.loc 2 367 0
+ 124 0068 6115      		cp r22,__zero_reg__
+ 125 006a 7105      		cpc r23,__zero_reg__
+ 126 006c 8105      		cpc r24,__zero_reg__
+ 127 006e 9140      		sbci r25,1
+ 128 0070 00F4      		brsh .L9
+ 368:xmega_pdi_nvm.c **** 		cmd_buffer[0] = XNVM_PDI_REPEAT_INSTR | XNVM_PDI_3BYTES_DATA_MASK;
+ 129               		.loc 2 368 0
+ 130 0072 82EA      		ldi r24,lo8(-94)
+ 131 0074 8093 0000 		sts cmd_buffer,r24
+ 369:xmega_pdi_nvm.c **** 		mem_move((uint8_t*)&count, (cmd_buffer + 1), 3);
+ 132               		.loc 2 369 0
+ 133 0078 63E0      		ldi r22,lo8(3)
+ 134 007a CE01      		movw r24,r28
+ 135 007c 0196      		adiw r24,1
+ 136 007e 00D0      		rcall mem_move.constprop.2
+ 137               	.LVL14:
+ 370:xmega_pdi_nvm.c **** 		cmd_len = 4;
+ 138               		.loc 2 370 0
+ 139 0080 64E0      		ldi r22,lo8(4)
+ 140 0082 00C0      		rjmp .L7
+ 141               	.LVL15:
+ 142               	.L9:
+ 371:xmega_pdi_nvm.c **** 	} else {
+ 372:xmega_pdi_nvm.c **** 		cmd_buffer[0] = XNVM_PDI_REPEAT_INSTR | XNVM_PDI_LONG_DATA_MASK;
+ 143               		.loc 2 372 0
+ 144 0084 83EA      		ldi r24,lo8(-93)
+ 145 0086 8093 0000 		sts cmd_buffer,r24
+ 373:xmega_pdi_nvm.c **** 		mem_move((uint8_t*)&count, (cmd_buffer + 1), 4);
+ 146               		.loc 2 373 0
+ 147 008a 64E0      		ldi r22,lo8(4)
+ 148 008c CE01      		movw r24,r28
+ 149 008e 0196      		adiw r24,1
+ 150 0090 00D0      		rcall mem_move.constprop.2
+ 151               	.LVL16:
+ 374:xmega_pdi_nvm.c **** 		cmd_len = 5;
+ 152               		.loc 2 374 0
+ 153 0092 65E0      		ldi r22,lo8(5)
+ 154               	.LVL17:
+ 155               	.L7:
+ 375:xmega_pdi_nvm.c **** 	}
+ 376:xmega_pdi_nvm.c **** 
+ 377:xmega_pdi_nvm.c **** 	return pdi_write(cmd_buffer, cmd_len);
+ 156               		.loc 2 377 0
+ 157 0094 70E0      		ldi r23,0
+ 158 0096 80E0      		ldi r24,lo8(cmd_buffer)
+ 159 0098 90E0      		ldi r25,hi8(cmd_buffer)
+ 160 009a 00D0      		rcall pdi_write
+ 161               	.LVL18:
+ 162               	/* epilogue start */
+ 378:xmega_pdi_nvm.c **** }
+ 163               		.loc 2 378 0
+ 164 009c 0F90      		pop __tmp_reg__
+ 165 009e 0F90      		pop __tmp_reg__
+ 166 00a0 0F90      		pop __tmp_reg__
+ 167 00a2 0F90      		pop __tmp_reg__
+ 168 00a4 DF91      		pop r29
+ 169 00a6 CF91      		pop r28
+ 170 00a8 0895      		ret
+ 171               		.cfi_endproc
+ 172               	.LFE39:
+ 174               	.global	xnvm_put_dev_in_reset
+ 176               	xnvm_put_dev_in_reset:
+ 177               	.LFB26:
+ 113:xmega_pdi_nvm.c **** 	/* Reset the device */
+ 178               		.loc 2 113 0
+ 179               		.cfi_startproc
+ 180               	/* prologue: function */
+ 181               	/* frame size = 0 */
+ 182               	/* stack size = 0 */
+ 183               	.L__stack_usage = 0
+ 115:xmega_pdi_nvm.c **** 	cmd_buffer[1] = XOCD_RESET_SIGNATURE;
+ 184               		.loc 2 115 0
+ 185 00aa 81EC      		ldi r24,lo8(-63)
+ 186 00ac 8093 0000 		sts cmd_buffer,r24
+ 116:xmega_pdi_nvm.c **** 	if(pdi_write(cmd_buffer, 2)){
+ 187               		.loc 2 116 0
+ 188 00b0 89E5      		ldi r24,lo8(89)
+ 189 00b2 8093 0000 		sts cmd_buffer+1,r24
+ 117:xmega_pdi_nvm.c **** 		return ERR_IO_ERROR;
+ 190               		.loc 2 117 0
+ 191 00b6 62E0      		ldi r22,lo8(2)
+ 192 00b8 70E0      		ldi r23,0
+ 193 00ba 80E0      		ldi r24,lo8(cmd_buffer)
+ 194 00bc 90E0      		ldi r25,hi8(cmd_buffer)
+ 195 00be 00D0      		rcall pdi_write
+ 196               	.LVL19:
+ 197 00c0 91E0      		ldi r25,lo8(1)
+ 198 00c2 8111      		cpse r24,__zero_reg__
+ 199 00c4 00C0      		rjmp .L11
+ 200 00c6 90E0      		ldi r25,0
+ 201               	.L11:
+ 121:xmega_pdi_nvm.c **** 
+ 202               		.loc 2 121 0
+ 203 00c8 892F      		mov r24,r25
+ 204 00ca 8195      		neg r24
+ 205 00cc 0895      		ret
+ 206               		.cfi_endproc
+ 207               	.LFE26:
+ 209               	.global	xnvm_ioread_byte
+ 211               	xnvm_ioread_byte:
+ 212               	.LFB29:
+ 184:xmega_pdi_nvm.c **** 	enum status_code ret = STATUS_OK;
+ 213               		.loc 2 184 0
+ 214               		.cfi_startproc
+ 215               	.LVL20:
+ 216 00ce 0F93      		push r16
+ 217               	.LCFI4:
+ 218               		.cfi_def_cfa_offset 3
+ 219               		.cfi_offset 16, -2
+ 220 00d0 1F93      		push r17
+ 221               	.LCFI5:
+ 222               		.cfi_def_cfa_offset 4
+ 223               		.cfi_offset 17, -3
+ 224 00d2 CF93      		push r28
+ 225               	.LCFI6:
+ 226               		.cfi_def_cfa_offset 5
+ 227               		.cfi_offset 28, -4
+ 228 00d4 DF93      		push r29
+ 229               	.LCFI7:
+ 230               		.cfi_def_cfa_offset 6
+ 231               		.cfi_offset 29, -5
+ 232 00d6 00D0      		rcall .
+ 233 00d8 00D0      		rcall .
+ 234               	.LCFI8:
+ 235               		.cfi_def_cfa_offset 10
+ 236 00da CDB7      		in r28,__SP_L__
+ 237 00dc DEB7      		in r29,__SP_H__
+ 238               	.LCFI9:
+ 239               		.cfi_def_cfa_register 28
+ 240               	/* prologue: function */
+ 241               	/* frame size = 4 */
+ 242               	/* stack size = 8 */
+ 243               	.L__stack_usage = 8
+ 244 00de AC01      		movw r20,r24
+ 245 00e0 8B01      		movw r16,r22
+ 246               	.LVL21:
+ 188:xmega_pdi_nvm.c **** 			XNVM_PDI_BYTE_DATA_MASK;
+ 247               		.loc 2 188 0
+ 248 00e2 8CE0      		ldi r24,lo8(12)
+ 249               	.LVL22:
+ 250 00e4 8093 0000 		sts cmd_buffer,r24
+ 191:xmega_pdi_nvm.c **** 
+ 251               		.loc 2 191 0
+ 252 00e8 60E0      		ldi r22,0
+ 253 00ea 70E0      		ldi r23,0
+ 254               	.LVL23:
+ 255 00ec 7395      		inc r23
+ 256               	.LVL24:
+ 257 00ee 4983      		std Y+1,r20
+ 258 00f0 5A83      		std Y+2,r21
+ 259 00f2 6B83      		std Y+3,r22
+ 260 00f4 7C83      		std Y+4,r23
+ 193:xmega_pdi_nvm.c **** 
+ 261               		.loc 2 193 0
+ 262 00f6 64E0      		ldi r22,lo8(4)
+ 263 00f8 CE01      		movw r24,r28
+ 264 00fa 0196      		adiw r24,1
+ 265 00fc 00D0      		rcall mem_move.constprop.2
+ 266               	.LVL25:
+ 195:xmega_pdi_nvm.c **** 	ret = pdi_get_byte(value, WAIT_RETRIES_NUM);
+ 267               		.loc 2 195 0
+ 268 00fe 65E0      		ldi r22,lo8(5)
+ 269 0100 70E0      		ldi r23,0
+ 270 0102 80E0      		ldi r24,lo8(cmd_buffer)
+ 271 0104 90E0      		ldi r25,hi8(cmd_buffer)
+ 272 0106 00D0      		rcall pdi_write
+ 273               	.LVL26:
+ 196:xmega_pdi_nvm.c **** 
+ 274               		.loc 2 196 0
+ 275 0108 48EE      		ldi r20,lo8(-24)
+ 276 010a 53E0      		ldi r21,lo8(3)
+ 277 010c 60E0      		ldi r22,0
+ 278 010e 70E0      		ldi r23,0
+ 279 0110 C801      		movw r24,r16
+ 280 0112 00D0      		rcall pdi_get_byte
+ 281               	.LVL27:
+ 282               	/* epilogue start */
+ 199:xmega_pdi_nvm.c **** 
+ 283               		.loc 2 199 0
+ 284 0114 0F90      		pop __tmp_reg__
+ 285 0116 0F90      		pop __tmp_reg__
+ 286 0118 0F90      		pop __tmp_reg__
+ 287 011a 0F90      		pop __tmp_reg__
+ 288 011c DF91      		pop r29
+ 289 011e CF91      		pop r28
+ 290 0120 1F91      		pop r17
+ 291 0122 0F91      		pop r16
+ 292               	.LVL28:
+ 293 0124 0895      		ret
+ 294               		.cfi_endproc
+ 295               	.LFE29:
+ 297               	.global	xnvm_iowrite_byte
+ 299               	xnvm_iowrite_byte:
+ 300               	.LFB30:
+ 211:xmega_pdi_nvm.c **** 
+ 301               		.loc 2 211 0
+ 302               		.cfi_startproc
+ 303               	.LVL29:
+ 304 0126 1F93      		push r17
+ 305               	.LCFI10:
+ 306               		.cfi_def_cfa_offset 3
+ 307               		.cfi_offset 17, -2
+ 308 0128 CF93      		push r28
+ 309               	.LCFI11:
+ 310               		.cfi_def_cfa_offset 4
+ 311               		.cfi_offset 28, -3
+ 312 012a DF93      		push r29
+ 313               	.LCFI12:
+ 314               		.cfi_def_cfa_offset 5
+ 315               		.cfi_offset 29, -4
+ 316 012c 00D0      		rcall .
+ 317 012e 00D0      		rcall .
+ 318               	.LCFI13:
+ 319               		.cfi_def_cfa_offset 9
+ 320 0130 CDB7      		in r28,__SP_L__
+ 321 0132 DEB7      		in r29,__SP_H__
+ 322               	.LCFI14:
+ 323               		.cfi_def_cfa_register 28
+ 324               	/* prologue: function */
+ 325               	/* frame size = 4 */
+ 326               	/* stack size = 7 */
+ 327               	.L__stack_usage = 7
+ 328 0134 162F      		mov r17,r22
+ 213:xmega_pdi_nvm.c **** 
+ 329               		.loc 2 213 0
+ 330 0136 A0E0      		ldi r26,0
+ 331 0138 B0E0      		ldi r27,0
+ 332 013a B395      		inc r27
+ 333               	.LVL30:
+ 334 013c 8983      		std Y+1,r24
+ 335 013e 9A83      		std Y+2,r25
+ 336 0140 AB83      		std Y+3,r26
+ 337 0142 BC83      		std Y+4,r27
+ 215:xmega_pdi_nvm.c **** 			XNVM_PDI_BYTE_DATA_MASK;
+ 338               		.loc 2 215 0
+ 339 0144 8CE4      		ldi r24,lo8(76)
+ 340 0146 8093 0000 		sts cmd_buffer,r24
+ 218:xmega_pdi_nvm.c **** 	cmd_buffer[5] = value;
+ 341               		.loc 2 218 0
+ 342 014a 64E0      		ldi r22,lo8(4)
+ 343               	.LVL31:
+ 344 014c CE01      		movw r24,r28
+ 345 014e 0196      		adiw r24,1
+ 346 0150 00D0      		rcall mem_move.constprop.2
+ 347               	.LVL32:
+ 219:xmega_pdi_nvm.c **** 
+ 348               		.loc 2 219 0
+ 349 0152 1093 0000 		sts cmd_buffer+5,r17
+ 221:xmega_pdi_nvm.c **** }
+ 350               		.loc 2 221 0
+ 351 0156 66E0      		ldi r22,lo8(6)
+ 352 0158 70E0      		ldi r23,0
+ 353 015a 80E0      		ldi r24,lo8(cmd_buffer)
+ 354 015c 90E0      		ldi r25,hi8(cmd_buffer)
+ 355 015e 00D0      		rcall pdi_write
+ 356               	.LVL33:
+ 357               	/* epilogue start */
+ 222:xmega_pdi_nvm.c **** 
+ 358               		.loc 2 222 0
+ 359 0160 0F90      		pop __tmp_reg__
+ 360 0162 0F90      		pop __tmp_reg__
+ 361 0164 0F90      		pop __tmp_reg__
+ 362 0166 0F90      		pop __tmp_reg__
+ 363 0168 DF91      		pop r29
+ 364 016a CF91      		pop r28
+ 365 016c 1F91      		pop r17
+ 366               	.LVL34:
+ 367 016e 0895      		ret
+ 368               		.cfi_endproc
+ 369               	.LFE30:
+ 371               	.global	xnvm_ctrl_cmd_write
+ 373               	xnvm_ctrl_cmd_write:
+ 374               	.LFB35:
+ 296:xmega_pdi_nvm.c **** 	return xnvm_ctrl_write_reg(XNVM_CONTROLLER_CMD_REG_OFFSET, cmd_id);
+ 375               		.loc 2 296 0
+ 376               		.cfi_startproc
+ 377               	.LVL35:
+ 378               	/* prologue: function */
+ 379               	/* frame size = 0 */
+ 380               	/* stack size = 0 */
+ 381               	.L__stack_usage = 0
+ 382               	.LBB4:
+ 383               	.LBB5:
+ 269:xmega_pdi_nvm.c **** }
+ 384               		.loc 2 269 0
+ 385 0170 682F      		mov r22,r24
+ 386 0172 8AEC      		ldi r24,lo8(-54)
+ 387 0174 91E0      		ldi r25,lo8(1)
+ 388               	.LVL36:
+ 389 0176 00C0      		rjmp xnvm_iowrite_byte
+ 390               	.LVL37:
+ 391               	.LBE5:
+ 392               	.LBE4:
+ 393               		.cfi_endproc
+ 394               	.LFE35:
+ 396               	.global	xnvm_chip_erase
+ 398               	xnvm_chip_erase:
+ 399               	.LFB36:
+ 307:xmega_pdi_nvm.c **** 	/* Write the chip erase command to the NVM command reg */
+ 400               		.loc 2 307 0
+ 401               		.cfi_startproc
+ 402 0178 EF92      		push r14
+ 403               	.LCFI15:
+ 404               		.cfi_def_cfa_offset 3
+ 405               		.cfi_offset 14, -2
+ 406 017a FF92      		push r15
+ 407               	.LCFI16:
+ 408               		.cfi_def_cfa_offset 4
+ 409               		.cfi_offset 15, -3
+ 410 017c 0F93      		push r16
+ 411               	.LCFI17:
+ 412               		.cfi_def_cfa_offset 5
+ 413               		.cfi_offset 16, -4
+ 414 017e 1F93      		push r17
+ 415               	.LCFI18:
+ 416               		.cfi_def_cfa_offset 6
+ 417               		.cfi_offset 17, -5
+ 418 0180 CF93      		push r28
+ 419               	.LCFI19:
+ 420               		.cfi_def_cfa_offset 7
+ 421               		.cfi_offset 28, -6
+ 422 0182 DF93      		push r29
+ 423               	.LCFI20:
+ 424               		.cfi_def_cfa_offset 8
+ 425               		.cfi_offset 29, -7
+ 426 0184 1F92      		push __zero_reg__
+ 427               	.LCFI21:
+ 428               		.cfi_def_cfa_offset 9
+ 429 0186 CDB7      		in r28,__SP_L__
+ 430 0188 DEB7      		in r29,__SP_H__
+ 431               	.LCFI22:
+ 432               		.cfi_def_cfa_register 28
+ 433               	/* prologue: function */
+ 434               	/* frame size = 1 */
+ 435               	/* stack size = 7 */
+ 436               	.L__stack_usage = 7
+ 309:xmega_pdi_nvm.c **** 	/* Write the CMDEX to execute command */
+ 437               		.loc 2 309 0
+ 438 018a 80E4      		ldi r24,lo8(64)
+ 439 018c 00D0      		rcall xnvm_ctrl_cmd_write
+ 440               	.LVL38:
+ 441               	.LBB14:
+ 442               	.LBB15:
+ 443               	.LBB16:
+ 269:xmega_pdi_nvm.c **** }
+ 444               		.loc 2 269 0
+ 445 018e 61E0      		ldi r22,lo8(1)
+ 446 0190 8BEC      		ldi r24,lo8(-53)
+ 447 0192 91E0      		ldi r25,lo8(1)
+ 448 0194 00D0      		rcall xnvm_iowrite_byte
+ 449               	.LVL39:
+ 450 0196 00E0      		ldi r16,0
+ 451 0198 10E0      		ldi r17,0
+ 452               	.LBE16:
+ 453               	.LBE15:
+ 454               	.LBE14:
+ 455               	.LBB17:
+ 456               	.LBB18:
+ 457               	.LBB19:
+ 458               	.LBB20:
+ 162:xmega_pdi_nvm.c **** 	cmd_buffer[1] = 0x00;
+ 459               		.loc 2 162 0
+ 460 019a 90E8      		ldi r25,lo8(-128)
+ 461 019c E92E      		mov r14,r25
+ 462               	.LVL40:
+ 463               	.L18:
+ 464 019e E092 0000 		sts cmd_buffer,r14
+ 163:xmega_pdi_nvm.c **** 	if (STATUS_OK != pdi_write(cmd_buffer, 2)) {
+ 465               		.loc 2 163 0
+ 466 01a2 1092 0000 		sts cmd_buffer+1,__zero_reg__
+ 164:xmega_pdi_nvm.c **** 			ret = ERR_BAD_DATA;
+ 467               		.loc 2 164 0
+ 468 01a6 62E0      		ldi r22,lo8(2)
+ 469 01a8 70E0      		ldi r23,0
+ 470 01aa 80E0      		ldi r24,lo8(cmd_buffer)
+ 471 01ac 90E0      		ldi r25,hi8(cmd_buffer)
+ 472 01ae 00D0      		rcall pdi_write
+ 473               	.LVL41:
+ 474 01b0 8111      		cpse r24,__zero_reg__
+ 475 01b2 00C0      		rjmp .L19
+ 160:xmega_pdi_nvm.c **** 
+ 476               		.loc 2 160 0
+ 477 01b4 F12C      		mov r15,__zero_reg__
+ 478 01b6 00C0      		rjmp .L16
+ 479               	.L19:
+ 165:xmega_pdi_nvm.c **** 	}
+ 480               		.loc 2 165 0
+ 481 01b8 8CEF      		ldi r24,lo8(-4)
+ 482 01ba F82E      		mov r15,r24
+ 483               	.L16:
+ 484               	.LVL42:
+ 167:xmega_pdi_nvm.c **** 			ret = ERR_TIMEOUT;
+ 485               		.loc 2 167 0
+ 486 01bc 48EE      		ldi r20,lo8(-24)
+ 487 01be 53E0      		ldi r21,lo8(3)
+ 488 01c0 60E0      		ldi r22,0
+ 489 01c2 70E0      		ldi r23,0
+ 490 01c4 CE01      		movw r24,r28
+ 491 01c6 0196      		adiw r24,1
+ 492 01c8 00D0      		rcall pdi_get_byte
+ 493               	.LVL43:
+ 494 01ca 8111      		cpse r24,__zero_reg__
+ 495 01cc 00C0      		rjmp .L21
+ 496               	.LBE20:
+ 497               	.LBE19:
+ 137:xmega_pdi_nvm.c **** 				return ERR_BAD_DATA;
+ 498               		.loc 2 137 0
+ 499 01ce F110      		cpse r15,__zero_reg__
+ 500 01d0 00C0      		rjmp .L21
+ 501               	.LVL44:
+ 140:xmega_pdi_nvm.c **** 				return STATUS_OK;
+ 502               		.loc 2 140 0
+ 503 01d2 9981      		ldd r25,Y+1
+ 504 01d4 91FD      		sbrc r25,1
+ 505 01d6 00C0      		rjmp .L17
+ 506 01d8 0F5F      		subi r16,-1
+ 507 01da 1F4F      		sbci r17,-1
+ 136:xmega_pdi_nvm.c **** 		if (xnvm_read_pdi_status(&pdi_status) != STATUS_OK) {
+ 508               		.loc 2 136 0
+ 509 01dc 083E      		cpi r16,-24
+ 510 01de 83E0      		ldi r24,3
+ 511 01e0 1807      		cpc r17,r24
+ 512 01e2 01F4      		brne .L18
+ 145:xmega_pdi_nvm.c **** 
+ 513               		.loc 2 145 0
+ 514 01e4 8DEF      		ldi r24,lo8(-3)
+ 515 01e6 00C0      		rjmp .L17
+ 516               	.LVL45:
+ 517               	.L21:
+ 138:xmega_pdi_nvm.c **** 		}
+ 518               		.loc 2 138 0
+ 519 01e8 8CEF      		ldi r24,lo8(-4)
+ 520               	.LVL46:
+ 521               	.L17:
+ 522               	/* epilogue start */
+ 523               	.LBE18:
+ 524               	.LBE17:
+ 313:xmega_pdi_nvm.c **** 
+ 525               		.loc 2 313 0
+ 526 01ea 0F90      		pop __tmp_reg__
+ 527 01ec DF91      		pop r29
+ 528 01ee CF91      		pop r28
+ 529 01f0 1F91      		pop r17
+ 530 01f2 0F91      		pop r16
+ 531 01f4 FF90      		pop r15
+ 532 01f6 EF90      		pop r14
+ 533 01f8 0895      		ret
+ 534               		.cfi_endproc
+ 535               	.LFE36:
+ 537               	.global	xnvm_st_star_ptr_postinc
+ 539               	xnvm_st_star_ptr_postinc:
+ 540               	.LFB40:
+ 379:xmega_pdi_nvm.c **** 
+ 380:xmega_pdi_nvm.c **** /**
+ 381:xmega_pdi_nvm.c ****  *  \internal
+ 382:xmega_pdi_nvm.c ****  *  \brief Write a value to a address with *(ptr++) instruction through the PDI Controller.
+ 383:xmega_pdi_nvm.c ****  *
+ 384:xmega_pdi_nvm.c ****  *  \param  value the value should be write into the *ptr.
+ 385:xmega_pdi_nvm.c ****  *  \retval STATUS_OK write succussfully.
+ 386:xmega_pdi_nvm.c ****  *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ 387:xmega_pdi_nvm.c ****  */
+ 388:xmega_pdi_nvm.c **** enum status_code xnvm_st_star_ptr_postinc(uint8_t value)
+ 389:xmega_pdi_nvm.c **** {
+ 541               		.loc 2 389 0
+ 542               		.cfi_startproc
+ 543               	.LVL47:
+ 544               	/* prologue: function */
+ 545               	/* frame size = 0 */
+ 546               	/* stack size = 0 */
+ 547               	.L__stack_usage = 0
+ 390:xmega_pdi_nvm.c **** 	cmd_buffer[0] = XNVM_PDI_ST_INSTR | XNVM_PDI_LD_PTR_STAR_INC_MASK |
+ 548               		.loc 2 390 0
+ 549 01fa 94E6      		ldi r25,lo8(100)
+ 550 01fc 9093 0000 		sts cmd_buffer,r25
+ 391:xmega_pdi_nvm.c **** 			XNVM_PDI_BYTE_DATA_MASK;
+ 392:xmega_pdi_nvm.c **** 	cmd_buffer[1] = value;
+ 551               		.loc 2 392 0
+ 552 0200 8093 0000 		sts cmd_buffer+1,r24
+ 393:xmega_pdi_nvm.c **** 
+ 394:xmega_pdi_nvm.c **** 	return pdi_write(cmd_buffer, 2);
+ 553               		.loc 2 394 0
+ 554 0204 62E0      		ldi r22,lo8(2)
+ 555 0206 70E0      		ldi r23,0
+ 556 0208 80E0      		ldi r24,lo8(cmd_buffer)
+ 557 020a 90E0      		ldi r25,hi8(cmd_buffer)
+ 558               	.LVL48:
+ 559 020c 00C0      		rjmp pdi_write
+ 560               	.LVL49:
+ 561               		.cfi_endproc
+ 562               	.LFE40:
+ 564               	.global	xnvm_load_buffer
+ 566               	xnvm_load_buffer:
+ 567               	.LFB37:
+ 316:xmega_pdi_nvm.c **** 	if (len > 1) {
+ 568               		.loc 2 316 0
+ 569               		.cfi_startproc
+ 570               	.LVL50:
+ 571 020e 0F93      		push r16
+ 572               	.LCFI23:
+ 573               		.cfi_def_cfa_offset 3
+ 574               		.cfi_offset 16, -2
+ 575 0210 1F93      		push r17
+ 576               	.LCFI24:
+ 577               		.cfi_def_cfa_offset 4
+ 578               		.cfi_offset 17, -3
+ 579 0212 CF93      		push r28
+ 580               	.LCFI25:
+ 581               		.cfi_def_cfa_offset 5
+ 582               		.cfi_offset 28, -4
+ 583 0214 DF93      		push r29
+ 584               	.LCFI26:
+ 585               		.cfi_def_cfa_offset 6
+ 586               		.cfi_offset 29, -5
+ 587               	/* prologue: function */
+ 588               	/* frame size = 0 */
+ 589               	/* stack size = 4 */
+ 590               	.L__stack_usage = 4
+ 591 0216 8C01      		movw r16,r24
+ 592 0218 EB01      		movw r28,r22
+ 317:xmega_pdi_nvm.c **** 			xnvm_write_repeat(len);
+ 593               		.loc 2 317 0
+ 594 021a 6230      		cpi r22,2
+ 595 021c 7105      		cpc r23,__zero_reg__
+ 596 021e 00F0      		brlo .L25
+ 318:xmega_pdi_nvm.c **** 	} else {
+ 597               		.loc 2 318 0
+ 598 0220 80E0      		ldi r24,0
+ 599 0222 90E0      		ldi r25,0
+ 600               	.LVL51:
+ 601 0224 00D0      		rcall xnvm_write_repeat
+ 602               	.LVL52:
+ 323:xmega_pdi_nvm.c **** 			XNVM_PDI_BYTE_DATA_MASK;
+ 603               		.loc 2 323 0
+ 604 0226 84E6      		ldi r24,lo8(100)
+ 605 0228 8093 0000 		sts cmd_buffer,r24
+ 325:xmega_pdi_nvm.c **** 
+ 606               		.loc 2 325 0
+ 607 022c 61E0      		ldi r22,lo8(1)
+ 608 022e 70E0      		ldi r23,0
+ 609 0230 80E0      		ldi r24,lo8(cmd_buffer)
+ 610 0232 90E0      		ldi r25,hi8(cmd_buffer)
+ 611 0234 00D0      		rcall pdi_write
+ 612               	.LVL53:
+ 327:xmega_pdi_nvm.c **** }
+ 613               		.loc 2 327 0
+ 614 0236 BE01      		movw r22,r28
+ 615 0238 C801      		movw r24,r16
+ 616               	/* epilogue start */
+ 328:xmega_pdi_nvm.c **** 
+ 617               		.loc 2 328 0
+ 618 023a DF91      		pop r29
+ 619 023c CF91      		pop r28
+ 620               	.LVL54:
+ 621 023e 1F91      		pop r17
+ 622 0240 0F91      		pop r16
+ 623               	.LVL55:
+ 327:xmega_pdi_nvm.c **** }
+ 624               		.loc 2 327 0
+ 625 0242 00C0      		rjmp pdi_write
+ 626               	.LVL56:
+ 627               	.L25:
+ 320:xmega_pdi_nvm.c **** 	}
+ 628               		.loc 2 320 0
+ 629 0244 FC01      		movw r30,r24
+ 630 0246 8081      		ld r24,Z
+ 631               	/* epilogue start */
+ 328:xmega_pdi_nvm.c **** 
+ 632               		.loc 2 328 0
+ 633 0248 DF91      		pop r29
+ 634 024a CF91      		pop r28
+ 635 024c 1F91      		pop r17
+ 636 024e 0F91      		pop r16
+ 637               	.LVL57:
+ 320:xmega_pdi_nvm.c **** 	}
+ 638               		.loc 2 320 0
+ 639 0250 00C0      		rjmp xnvm_st_star_ptr_postinc
+ 640               	.LVL58:
+ 641               		.cfi_endproc
+ 642               	.LFE37:
+ 644               	.global	xnvm_st_ptr
+ 646               	xnvm_st_ptr:
+ 647               	.LFB41:
+ 395:xmega_pdi_nvm.c **** }
+ 396:xmega_pdi_nvm.c **** 
+ 397:xmega_pdi_nvm.c **** /**
+ 398:xmega_pdi_nvm.c ****  *  \internal
+ 399:xmega_pdi_nvm.c ****  *  \brief Write a address in PDI Controller's pointer.
+ 400:xmega_pdi_nvm.c ****  *
+ 401:xmega_pdi_nvm.c ****  *  \param  address the address which should be written into the ptr.
+ 402:xmega_pdi_nvm.c ****  *  \retval STATUS_OK write successfully.
+ 403:xmega_pdi_nvm.c ****  *  \retval ERR_BAD_DATA One of the bytes sent was corrupted during transmission.
+ 404:xmega_pdi_nvm.c ****  */
+ 405:xmega_pdi_nvm.c **** enum status_code xnvm_st_ptr(uint32_t address)
+ 406:xmega_pdi_nvm.c **** {
+ 648               		.loc 2 406 0
+ 649               		.cfi_startproc
+ 650               	.LVL59:
+ 651 0252 CF93      		push r28
+ 652               	.LCFI27:
+ 653               		.cfi_def_cfa_offset 3
+ 654               		.cfi_offset 28, -2
+ 655 0254 DF93      		push r29
+ 656               	.LCFI28:
+ 657               		.cfi_def_cfa_offset 4
+ 658               		.cfi_offset 29, -3
+ 659 0256 00D0      		rcall .
+ 660 0258 00D0      		rcall .
+ 661               	.LCFI29:
+ 662               		.cfi_def_cfa_offset 8
+ 663 025a CDB7      		in r28,__SP_L__
+ 664 025c DEB7      		in r29,__SP_H__
+ 665               	.LCFI30:
+ 666               		.cfi_def_cfa_register 28
+ 667               	/* prologue: function */
+ 668               	/* frame size = 4 */
+ 669               	/* stack size = 6 */
+ 670               	.L__stack_usage = 6
+ 671 025e 6983      		std Y+1,r22
+ 672 0260 7A83      		std Y+2,r23
+ 673 0262 8B83      		std Y+3,r24
+ 674 0264 9C83      		std Y+4,r25
+ 407:xmega_pdi_nvm.c **** 	cmd_buffer[0] = XNVM_PDI_ST_INSTR | XNVM_PDI_LD_PTR_ADDRESS_MASK |
+ 675               		.loc 2 407 0
+ 676 0266 8BE6      		ldi r24,lo8(107)
+ 677 0268 8093 0000 		sts cmd_buffer,r24
+ 408:xmega_pdi_nvm.c **** 			XNVM_PDI_LONG_DATA_MASK;
+ 409:xmega_pdi_nvm.c **** 
+ 410:xmega_pdi_nvm.c **** 	mem_move((uint8_t*)&address, (cmd_buffer + 1), 4);
+ 678               		.loc 2 410 0
+ 679 026c 64E0      		ldi r22,lo8(4)
+ 680               	.LVL60:
+ 681 026e CE01      		movw r24,r28
+ 682 0270 0196      		adiw r24,1
+ 683 0272 00D0      		rcall mem_move.constprop.2
+ 684               	.LVL61:
+ 411:xmega_pdi_nvm.c **** 
+ 412:xmega_pdi_nvm.c **** 	return pdi_write(cmd_buffer, 5);
+ 685               		.loc 2 412 0
+ 686 0274 65E0      		ldi r22,lo8(5)
+ 687 0276 70E0      		ldi r23,0
+ 688 0278 80E0      		ldi r24,lo8(cmd_buffer)
+ 689 027a 90E0      		ldi r25,hi8(cmd_buffer)
+ 690 027c 00D0      		rcall pdi_write
+ 691               	.LVL62:
+ 692               	/* epilogue start */
+ 413:xmega_pdi_nvm.c **** }
+ 693               		.loc 2 413 0
+ 694 027e 0F90      		pop __tmp_reg__
+ 695 0280 0F90      		pop __tmp_reg__
+ 696 0282 0F90      		pop __tmp_reg__
+ 697 0284 0F90      		pop __tmp_reg__
+ 698 0286 DF91      		pop r29
+ 699 0288 CF91      		pop r28
+ 700               	.LVL63:
+ 701 028a 0895      		ret
+ 702               		.cfi_endproc
+ 703               	.LFE41:
+ 705               	.global	xnvm_read_memory
+ 707               	xnvm_read_memory:
+ 708               	.LFB42:
+ 414:xmega_pdi_nvm.c **** 
+ 415:xmega_pdi_nvm.c **** /**
+ 416:xmega_pdi_nvm.c ****  *  \brief Read the memory (include flash, eeprom, user signature, fuse bits)with NVM controller.
+ 417:xmega_pdi_nvm.c ****  *
+ 418:xmega_pdi_nvm.c ****  *  \param  address the address of the memory.
+ 419:xmega_pdi_nvm.c ****  *  \param  data the pointer which points to the data buffer.
+ 420:xmega_pdi_nvm.c ****  *  \param  length the data length.
+ 421:xmega_pdi_nvm.c ****  *  \retval non-zero the read byte length.
+ 422:xmega_pdi_nvm.c ****  *  \retval zero read fail.
+ 423:xmega_pdi_nvm.c ****  */
+ 424:xmega_pdi_nvm.c **** uint16_t xnvm_read_memory(uint32_t address, uint8_t *data, uint16_t length)
+ 425:xmega_pdi_nvm.c **** {
+ 709               		.loc 2 425 0
+ 710               		.cfi_startproc
+ 711               	.LVL64:
+ 712 028c CF92      		push r12
+ 713               	.LCFI31:
+ 714               		.cfi_def_cfa_offset 3
+ 715               		.cfi_offset 12, -2
+ 716 028e DF92      		push r13
+ 717               	.LCFI32:
+ 718               		.cfi_def_cfa_offset 4
+ 719               		.cfi_offset 13, -3
+ 720 0290 EF92      		push r14
+ 721               	.LCFI33:
+ 722               		.cfi_def_cfa_offset 5
+ 723               		.cfi_offset 14, -4
+ 724 0292 FF92      		push r15
+ 725               	.LCFI34:
+ 726               		.cfi_def_cfa_offset 6
+ 727               		.cfi_offset 15, -5
+ 728 0294 0F93      		push r16
+ 729               	.LCFI35:
+ 730               		.cfi_def_cfa_offset 7
+ 731               		.cfi_offset 16, -6
+ 732 0296 1F93      		push r17
+ 733               	.LCFI36:
+ 734               		.cfi_def_cfa_offset 8
+ 735               		.cfi_offset 17, -7
+ 736 0298 CF93      		push r28
+ 737               	.LCFI37:
+ 738               		.cfi_def_cfa_offset 9
+ 739               		.cfi_offset 28, -8
+ 740 029a DF93      		push r29
+ 741               	.LCFI38:
+ 742               		.cfi_def_cfa_offset 10
+ 743               		.cfi_offset 29, -9
+ 744               	/* prologue: function */
+ 745               	/* frame size = 0 */
+ 746               	/* stack size = 8 */
+ 747               	.L__stack_usage = 8
+ 748 029c 6B01      		movw r12,r22
+ 749 029e 7C01      		movw r14,r24
+ 750 02a0 8A01      		movw r16,r20
+ 751 02a2 E901      		movw r28,r18
+ 426:xmega_pdi_nvm.c **** 	xnvm_ctrl_cmd_write(XNVM_CMD_READ_NVM_PDI);
+ 752               		.loc 2 426 0
+ 753 02a4 83E4      		ldi r24,lo8(67)
+ 754 02a6 00D0      		rcall xnvm_ctrl_cmd_write
+ 755               	.LVL65:
+ 427:xmega_pdi_nvm.c **** 	xnvm_st_ptr(address);
+ 756               		.loc 2 427 0
+ 757 02a8 C701      		movw r24,r14
+ 758 02aa B601      		movw r22,r12
+ 759 02ac 00D0      		rcall xnvm_st_ptr
+ 760               	.LVL66:
+ 428:xmega_pdi_nvm.c **** 
+ 429:xmega_pdi_nvm.c **** 	if (length > 1) {
+ 761               		.loc 2 429 0
+ 762 02ae C230      		cpi r28,2
+ 763 02b0 D105      		cpc r29,__zero_reg__
+ 764 02b2 00F0      		brlo .L28
+ 430:xmega_pdi_nvm.c **** 			xnvm_write_repeat(length);
+ 765               		.loc 2 430 0
+ 766 02b4 BE01      		movw r22,r28
+ 767 02b6 80E0      		ldi r24,0
+ 768 02b8 90E0      		ldi r25,0
+ 769 02ba 00D0      		rcall xnvm_write_repeat
+ 770               	.LVL67:
+ 771               	.L28:
+ 431:xmega_pdi_nvm.c **** 	}
+ 432:xmega_pdi_nvm.c **** 
+ 433:xmega_pdi_nvm.c **** 	cmd_buffer[0] = XNVM_PDI_LD_INSTR | XNVM_PDI_LD_PTR_STAR_INC_MASK |
+ 772               		.loc 2 433 0
+ 773 02bc 84E2      		ldi r24,lo8(36)
+ 774 02be 8093 0000 		sts cmd_buffer,r24
+ 434:xmega_pdi_nvm.c **** 			XNVM_PDI_BYTE_DATA_MASK;
+ 435:xmega_pdi_nvm.c **** 	pdi_write(cmd_buffer, 1);
+ 775               		.loc 2 435 0
+ 776 02c2 61E0      		ldi r22,lo8(1)
+ 777 02c4 70E0      		ldi r23,0
+ 778 02c6 80E0      		ldi r24,lo8(cmd_buffer)
+ 779 02c8 90E0      		ldi r25,hi8(cmd_buffer)
+ 780 02ca 00D0      		rcall pdi_write
+ 781               	.LVL68:
+ 436:xmega_pdi_nvm.c **** 
+ 437:xmega_pdi_nvm.c **** 	return pdi_read(data, length, WAIT_RETRIES_NUM);
+ 782               		.loc 2 437 0
+ 783 02cc 28EE      		ldi r18,lo8(-24)
+ 784 02ce 33E0      		ldi r19,lo8(3)
+ 785 02d0 40E0      		ldi r20,0
+ 786 02d2 50E0      		ldi r21,0
+ 787 02d4 BE01      		movw r22,r28
+ 788 02d6 C801      		movw r24,r16
+ 789               	/* epilogue start */
+ 438:xmega_pdi_nvm.c **** }
+ 790               		.loc 2 438 0
+ 791 02d8 DF91      		pop r29
+ 792 02da CF91      		pop r28
+ 793               	.LVL69:
+ 794 02dc 1F91      		pop r17
+ 795 02de 0F91      		pop r16
+ 796               	.LVL70:
+ 797 02e0 FF90      		pop r15
+ 798 02e2 EF90      		pop r14
+ 799 02e4 DF90      		pop r13
+ 800 02e6 CF90      		pop r12
+ 801               	.LVL71:
+ 437:xmega_pdi_nvm.c **** }
+ 802               		.loc 2 437 0
+ 803 02e8 00C0      		rjmp pdi_read
+ 804               	.LVL72:
+ 805               		.cfi_endproc
+ 806               	.LFE42:
+ 808               	.global	xnvm_ctrl_wait_nvmbusy
+ 810               	xnvm_ctrl_wait_nvmbusy:
+ 811               	.LFB46:
+ 439:xmega_pdi_nvm.c **** 
+ 440:xmega_pdi_nvm.c **** /**
+ 441:xmega_pdi_nvm.c ****  *  \internal
+ 442:xmega_pdi_nvm.c ****  *  \brief Erase the user signature with NVM controller.
+ 443:xmega_pdi_nvm.c ****  *
+ 444:xmega_pdi_nvm.c ****  *  \retval STATUS_OK erase succussfully.
+ 445:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT time out.
+ 446:xmega_pdi_nvm.c ****  */
+ 447:xmega_pdi_nvm.c **** enum status_code xnvm_erase_user_sign(void)
+ 448:xmega_pdi_nvm.c **** {
+ 449:xmega_pdi_nvm.c **** 	enum status_code ret = xnvm_ctrl_cmd_write(XNVM_CMD_ERASE_USER_SIGN);
+ 450:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 451:xmega_pdi_nvm.c **** 		return ret;
+ 452:xmega_pdi_nvm.c **** 
+ 453:xmega_pdi_nvm.c **** 	/* Dummy write for starting the erase command */
+ 454:xmega_pdi_nvm.c **** 	ret = xnvm_st_ptr(XNVM_SIGNATURE_BASE);
+ 455:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 456:xmega_pdi_nvm.c **** 		return ret;
+ 457:xmega_pdi_nvm.c **** 	
+ 458:xmega_pdi_nvm.c **** 	ret = xnvm_st_star_ptr_postinc(DUMMY_BYTE);
+ 459:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 460:xmega_pdi_nvm.c **** 		return ret;
+ 461:xmega_pdi_nvm.c **** 
+ 462:xmega_pdi_nvm.c **** 	return xnvm_ctrl_wait_nvmbusy(WAIT_RETRIES_NUM);
+ 463:xmega_pdi_nvm.c **** }
+ 464:xmega_pdi_nvm.c **** 
+ 465:xmega_pdi_nvm.c **** /**
+ 466:xmega_pdi_nvm.c ****  *  \internal
+ 467:xmega_pdi_nvm.c ****  *  \brief Erase and program the user signature with NVM controller.
+ 468:xmega_pdi_nvm.c ****  *
+ 469:xmega_pdi_nvm.c ****  *  \param  address the address of the user signature.
+ 470:xmega_pdi_nvm.c ****  *  \param  dat_buf the pointer which points to the data buffer.
+ 471:xmega_pdi_nvm.c ****  *  \param  length the data length.
+ 472:xmega_pdi_nvm.c ****  *  \retval STATUS_OK program succussfully.
+ 473:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT time out.
+ 474:xmega_pdi_nvm.c ****  */
+ 475:xmega_pdi_nvm.c **** enum status_code xnvm_erase_program_user_sign(void)
+ 476:xmega_pdi_nvm.c **** {
+ 477:xmega_pdi_nvm.c **** 	enum status_code ret = xnvm_erase_user_sign();
+ 478:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 479:xmega_pdi_nvm.c **** 		return ret;
+ 480:xmega_pdi_nvm.c **** 	
+ 481:xmega_pdi_nvm.c **** 	ret = xnvm_ctrl_cmd_write(XNVM_CMD_WRITE_USER_SIGN);
+ 482:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 483:xmega_pdi_nvm.c **** 		return ret;
+ 484:xmega_pdi_nvm.c **** 		
+ 485:xmega_pdi_nvm.c **** 	/* Dummy write for starting the write command. */
+ 486:xmega_pdi_nvm.c **** 	ret = xnvm_st_ptr(XNVM_SIGNATURE_BASE);
+ 487:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 488:xmega_pdi_nvm.c **** 		return ret;
+ 489:xmega_pdi_nvm.c **** 		
+ 490:xmega_pdi_nvm.c **** 	ret = xnvm_st_star_ptr_postinc(DUMMY_BYTE);
+ 491:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 492:xmega_pdi_nvm.c **** 		return ret;
+ 493:xmega_pdi_nvm.c **** 
+ 494:xmega_pdi_nvm.c **** 	return xnvm_ctrl_wait_nvmbusy(WAIT_RETRIES_NUM);
+ 495:xmega_pdi_nvm.c **** }
+ 496:xmega_pdi_nvm.c **** 
+ 497:xmega_pdi_nvm.c **** /**
+ 498:xmega_pdi_nvm.c ****  *  \brief Write the fuse bit with NVM controller
+ 499:xmega_pdi_nvm.c ****  *
+ 500:xmega_pdi_nvm.c ****  *  \param  address the fuse bit address.
+ 501:xmega_pdi_nvm.c ****  *  \param  value which should be write into the fuse bit.
+ 502:xmega_pdi_nvm.c ****  *  \param  retries the time out delay number.
+ 503:xmega_pdi_nvm.c ****  *  \retval STATUS_OK write succussfully.
+ 504:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT time out.
+ 505:xmega_pdi_nvm.c ****  */
+ 506:xmega_pdi_nvm.c **** enum status_code xnvm_write_fuse_bit(uint32_t address, uint8_t value, uint32_t retries)
+ 507:xmega_pdi_nvm.c **** {
+ 508:xmega_pdi_nvm.c **** 
+ 509:xmega_pdi_nvm.c **** 	xnvm_ctrl_cmd_write(XNVM_CMD_WRITE_FUSE);
+ 510:xmega_pdi_nvm.c **** 
+ 511:xmega_pdi_nvm.c **** 	cmd_buffer[0] = XNVM_PDI_STS_INSTR | XNVM_PDI_LONG_ADDRESS_MASK |
+ 512:xmega_pdi_nvm.c **** 			XNVM_PDI_BYTE_DATA_MASK;
+ 513:xmega_pdi_nvm.c **** 
+ 514:xmega_pdi_nvm.c **** 	mem_move((uint8_t*)&address, (cmd_buffer + 1), 4);
+ 515:xmega_pdi_nvm.c **** 	cmd_buffer[5] = value;
+ 516:xmega_pdi_nvm.c **** 
+ 517:xmega_pdi_nvm.c **** 	pdi_write(cmd_buffer, 6);
+ 518:xmega_pdi_nvm.c **** 
+ 519:xmega_pdi_nvm.c **** 	return xnvm_ctrl_wait_nvmbusy(retries);
+ 520:xmega_pdi_nvm.c **** }
+ 521:xmega_pdi_nvm.c **** 
+ 522:xmega_pdi_nvm.c **** /**
+ 523:xmega_pdi_nvm.c ****  *  \internal
+ 524:xmega_pdi_nvm.c ****  *  \brief Wait until the NVM Controller is ready.
+ 525:xmega_pdi_nvm.c ****  *
+ 526:xmega_pdi_nvm.c ****  *  \param  retries the retry count.
+ 527:xmega_pdi_nvm.c ****  *  \retval STATUS_OK BUSY bit was set.
+ 528:xmega_pdi_nvm.c ****  *  \retval ERR_TIMEOUT Time out.
+ 529:xmega_pdi_nvm.c ****  */
+ 530:xmega_pdi_nvm.c **** enum status_code xnvm_ctrl_wait_nvmbusy(uint32_t retries)
+ 531:xmega_pdi_nvm.c **** {
+ 812               		.loc 2 531 0
+ 813               		.cfi_startproc
+ 814               	.LVL73:
+ 815 02ea CF92      		push r12
+ 816               	.LCFI39:
+ 817               		.cfi_def_cfa_offset 3
+ 818               		.cfi_offset 12, -2
+ 819 02ec DF92      		push r13
+ 820               	.LCFI40:
+ 821               		.cfi_def_cfa_offset 4
+ 822               		.cfi_offset 13, -3
+ 823 02ee EF92      		push r14
+ 824               	.LCFI41:
+ 825               		.cfi_def_cfa_offset 5
+ 826               		.cfi_offset 14, -4
+ 827 02f0 FF92      		push r15
+ 828               	.LCFI42:
+ 829               		.cfi_def_cfa_offset 6
+ 830               		.cfi_offset 15, -5
+ 831 02f2 CF93      		push r28
+ 832               	.LCFI43:
+ 833               		.cfi_def_cfa_offset 7
+ 834               		.cfi_offset 28, -6
+ 835 02f4 DF93      		push r29
+ 836               	.LCFI44:
+ 837               		.cfi_def_cfa_offset 8
+ 838               		.cfi_offset 29, -7
+ 839 02f6 1F92      		push __zero_reg__
+ 840               	.LCFI45:
+ 841               		.cfi_def_cfa_offset 9
+ 842 02f8 CDB7      		in r28,__SP_L__
+ 843 02fa DEB7      		in r29,__SP_H__
+ 844               	.LCFI46:
+ 845               		.cfi_def_cfa_register 28
+ 846               	/* prologue: function */
+ 847               	/* frame size = 1 */
+ 848               	/* stack size = 7 */
+ 849               	.L__stack_usage = 7
+ 850 02fc 6B01      		movw r12,r22
+ 851 02fe 7C01      		movw r14,r24
+ 852               	.LVL74:
+ 853               	.L30:
+ 532:xmega_pdi_nvm.c **** 	uint8_t status;
+ 533:xmega_pdi_nvm.c **** 
+ 534:xmega_pdi_nvm.c **** 	while (retries != 0) {
+ 854               		.loc 2 534 0 discriminator 1
+ 855 0300 C114      		cp r12,__zero_reg__
+ 856 0302 D104      		cpc r13,__zero_reg__
+ 857 0304 E104      		cpc r14,__zero_reg__
+ 858 0306 F104      		cpc r15,__zero_reg__
+ 859 0308 01F0      		breq .L34
+ 860               	.LVL75:
+ 861               	.LBB25:
+ 862               	.LBB26:
+ 863               	.LBB27:
+ 251:xmega_pdi_nvm.c **** }
+ 864               		.loc 2 251 0
+ 865 030a BE01      		movw r22,r28
+ 866 030c 6F5F      		subi r22,-1
+ 867 030e 7F4F      		sbci r23,-1
+ 868 0310 8FEC      		ldi r24,lo8(-49)
+ 869 0312 91E0      		ldi r25,lo8(1)
+ 870 0314 00D0      		rcall xnvm_ioread_byte
+ 871               	.LVL76:
+ 872               	.LBE27:
+ 873               	.LBE26:
+ 874               	.LBE25:
+ 535:xmega_pdi_nvm.c **** 			xnvm_ctrl_read_status(&status);
+ 536:xmega_pdi_nvm.c **** 
+ 537:xmega_pdi_nvm.c **** 			/* Check if the NVMBUSY bit is clear in the NVM_STATUS register. */
+ 538:xmega_pdi_nvm.c **** 			if ((status & XNVM_NVM_BUSY) == 0) {
+ 875               		.loc 2 538 0
+ 876 0316 8981      		ldd r24,Y+1
+ 877 0318 87FF      		sbrs r24,7
+ 878 031a 00C0      		rjmp .L33
+ 539:xmega_pdi_nvm.c **** 					return STATUS_OK;
+ 540:xmega_pdi_nvm.c **** 			}
+ 541:xmega_pdi_nvm.c **** 			--retries;
+ 879               		.loc 2 541 0
+ 880 031c 81E0      		ldi r24,1
+ 881 031e C81A      		sub r12,r24
+ 882 0320 D108      		sbc r13,__zero_reg__
+ 883 0322 E108      		sbc r14,__zero_reg__
+ 884 0324 F108      		sbc r15,__zero_reg__
+ 885               	.LVL77:
+ 886 0326 00C0      		rjmp .L30
+ 887               	.LVL78:
+ 888               	.L34:
+ 542:xmega_pdi_nvm.c **** 	}
+ 543:xmega_pdi_nvm.c **** 	return ERR_TIMEOUT;
+ 889               		.loc 2 543 0
+ 890 0328 8DEF      		ldi r24,lo8(-3)
+ 891 032a 00C0      		rjmp .L31
+ 892               	.LVL79:
+ 893               	.L33:
+ 539:xmega_pdi_nvm.c **** 					return STATUS_OK;
+ 894               		.loc 2 539 0
+ 895 032c 80E0      		ldi r24,0
+ 896               	.LVL80:
+ 897               	.L31:
+ 898               	/* epilogue start */
+ 544:xmega_pdi_nvm.c **** }
+ 899               		.loc 2 544 0
+ 900 032e 0F90      		pop __tmp_reg__
+ 901 0330 DF91      		pop r29
+ 902 0332 CF91      		pop r28
+ 903 0334 FF90      		pop r15
+ 904 0336 EF90      		pop r14
+ 905 0338 DF90      		pop r13
+ 906 033a CF90      		pop r12
+ 907               	.LVL81:
+ 908 033c 0895      		ret
+ 909               		.cfi_endproc
+ 910               	.LFE46:
+ 912               	.global	xnvm_init
+ 914               	xnvm_init:
+ 915               	.LFB25:
+  77:xmega_pdi_nvm.c **** 	if(initialized == 0){
+ 916               		.loc 2 77 0
+ 917               		.cfi_startproc
+ 918               	.LVL82:
+ 919               	/* prologue: function */
+ 920               	/* frame size = 0 */
+ 921               	/* stack size = 0 */
+ 922               	.L__stack_usage = 0
+  78:xmega_pdi_nvm.c **** 
+ 923               		.loc 2 78 0
+ 924 033e 9091 0000 		lds r25,initialized
+ 925 0342 9111      		cpse r25,__zero_reg__
+ 926 0344 00C0      		rjmp .L36
+  80:xmega_pdi_nvm.c **** 
+ 927               		.loc 2 80 0
+ 928 0346 00D0      		rcall pdi_init
+ 929               	.LVL83:
+  83:xmega_pdi_nvm.c **** 
+ 930               		.loc 2 83 0
+ 931 0348 00D0      		rcall xnvm_put_dev_in_reset
+ 932               	.LVL84:
+  86:xmega_pdi_nvm.c **** 		cmd_buffer[1] = NVM_KEY_BYTE0;
+ 933               		.loc 2 86 0
+ 934 034a 80EE      		ldi r24,lo8(-32)
+ 935 034c 8093 0000 		sts cmd_buffer,r24
+  87:xmega_pdi_nvm.c **** 		cmd_buffer[2] = NVM_KEY_BYTE1;
+ 936               		.loc 2 87 0
+ 937 0350 8FEF      		ldi r24,lo8(-1)
+ 938 0352 8093 0000 		sts cmd_buffer+1,r24
+  88:xmega_pdi_nvm.c **** 		cmd_buffer[3] = NVM_KEY_BYTE2;
+ 939               		.loc 2 88 0
+ 940 0356 88E8      		ldi r24,lo8(-120)
+ 941 0358 8093 0000 		sts cmd_buffer+2,r24
+  89:xmega_pdi_nvm.c **** 		cmd_buffer[4] = NVM_KEY_BYTE3;
+ 942               		.loc 2 89 0
+ 943 035c 88ED      		ldi r24,lo8(-40)
+ 944 035e 8093 0000 		sts cmd_buffer+3,r24
+  90:xmega_pdi_nvm.c **** 		cmd_buffer[5] = NVM_KEY_BYTE4;
+ 945               		.loc 2 90 0
+ 946 0362 8DEC      		ldi r24,lo8(-51)
+ 947 0364 8093 0000 		sts cmd_buffer+4,r24
+  91:xmega_pdi_nvm.c **** 		cmd_buffer[6] = NVM_KEY_BYTE5;
+ 948               		.loc 2 91 0
+ 949 0368 85E4      		ldi r24,lo8(69)
+ 950 036a 8093 0000 		sts cmd_buffer+5,r24
+  92:xmega_pdi_nvm.c **** 		cmd_buffer[7] = NVM_KEY_BYTE6;
+ 951               		.loc 2 92 0
+ 952 036e 8BEA      		ldi r24,lo8(-85)
+ 953 0370 8093 0000 		sts cmd_buffer+6,r24
+  93:xmega_pdi_nvm.c **** 		cmd_buffer[8] = NVM_KEY_BYTE7;
+ 954               		.loc 2 93 0
+ 955 0374 89E8      		ldi r24,lo8(-119)
+ 956 0376 8093 0000 		sts cmd_buffer+7,r24
+  94:xmega_pdi_nvm.c **** 
+ 957               		.loc 2 94 0
+ 958 037a 82E1      		ldi r24,lo8(18)
+ 959 037c 8093 0000 		sts cmd_buffer+8,r24
+  96:xmega_pdi_nvm.c **** 
+ 960               		.loc 2 96 0
+ 961 0380 69E0      		ldi r22,lo8(9)
+ 962 0382 70E0      		ldi r23,0
+ 963 0384 80E0      		ldi r24,lo8(cmd_buffer)
+ 964 0386 90E0      		ldi r25,hi8(cmd_buffer)
+ 965 0388 00D0      		rcall pdi_write
+ 966               	.LVL85:
+  98:xmega_pdi_nvm.c **** 
+ 967               		.loc 2 98 0
+ 968 038a 68EE      		ldi r22,lo8(-24)
+ 969 038c 73E0      		ldi r23,lo8(3)
+ 970 038e 80E0      		ldi r24,0
+ 971 0390 90E0      		ldi r25,0
+ 972 0392 00D0      		rcall xnvm_ctrl_wait_nvmbusy
+ 973               	.LVL86:
+ 974 0394 8093 0000 		sts retval,r24
+ 100:xmega_pdi_nvm.c **** 	}
+ 975               		.loc 2 100 0
+ 976 0398 81E0      		ldi r24,lo8(1)
+ 977 039a 8093 0000 		sts initialized,r24
+ 978               	.L36:
+ 104:xmega_pdi_nvm.c **** 
+ 979               		.loc 2 104 0
+ 980 039e 8091 0000 		lds r24,retval
+ 981 03a2 0895      		ret
+ 982               		.cfi_endproc
+ 983               	.LFE25:
+ 985               	.global	xnvm_erase_buffer
+ 987               	xnvm_erase_buffer:
+ 988               	.LFB38:
+ 331:xmega_pdi_nvm.c **** 	enum status_code ret = xnvm_st_ptr(0);
+ 989               		.loc 2 331 0
+ 990               		.cfi_startproc
+ 991               	.LVL87:
+ 992 03a4 CF92      		push r12
+ 993               	.LCFI47:
+ 994               		.cfi_def_cfa_offset 3
+ 995               		.cfi_offset 12, -2
+ 996 03a6 DF92      		push r13
+ 997               	.LCFI48:
+ 998               		.cfi_def_cfa_offset 4
+ 999               		.cfi_offset 13, -3
+ 1000 03a8 EF92      		push r14
+ 1001               	.LCFI49:
+ 1002               		.cfi_def_cfa_offset 5
+ 1003               		.cfi_offset 14, -4
+ 1004 03aa FF92      		push r15
+ 1005               	.LCFI50:
+ 1006               		.cfi_def_cfa_offset 6
+ 1007               		.cfi_offset 15, -5
+ 1008 03ac CF93      		push r28
+ 1009               	.LCFI51:
+ 1010               		.cfi_def_cfa_offset 7
+ 1011               		.cfi_offset 28, -6
+ 1012 03ae DF93      		push r29
+ 1013               	.LCFI52:
+ 1014               		.cfi_def_cfa_offset 8
+ 1015               		.cfi_offset 29, -7
+ 1016               	/* prologue: function */
+ 1017               	/* frame size = 0 */
+ 1018               	/* stack size = 6 */
+ 1019               	.L__stack_usage = 6
+ 1020 03b0 EC01      		movw r28,r24
+ 1021 03b2 6A01      		movw r12,r20
+ 1022 03b4 7B01      		movw r14,r22
+ 332:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 1023               		.loc 2 332 0
+ 1024 03b6 60E0      		ldi r22,0
+ 1025 03b8 70E0      		ldi r23,0
+ 1026 03ba CB01      		movw r24,r22
+ 1027 03bc 00D0      		rcall xnvm_st_ptr
+ 1028               	.LVL88:
+ 333:xmega_pdi_nvm.c **** 		return ret;
+ 1029               		.loc 2 333 0
+ 1030 03be 8111      		cpse r24,__zero_reg__
+ 1031 03c0 00C0      		rjmp .L38
+ 335:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 1032               		.loc 2 335 0
+ 1033 03c2 CD2B      		or r28,r29
+ 1034 03c4 01F0      		breq .L41
+ 1035 03c6 86E3      		ldi r24,lo8(54)
+ 1036               	.LVL89:
+ 1037 03c8 00C0      		rjmp .L39
+ 1038               	.LVL90:
+ 1039               	.L41:
+ 1040 03ca 86E2      		ldi r24,lo8(38)
+ 1041               	.LVL91:
+ 1042               	.L39:
+ 335:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 1043               		.loc 2 335 0 is_stmt 0 discriminator 3
+ 1044 03cc 00D0      		rcall xnvm_ctrl_cmd_write
+ 1045               	.LVL92:
+ 336:xmega_pdi_nvm.c **** 		return ret;
+ 1046               		.loc 2 336 0 is_stmt 1 discriminator 3
+ 1047 03ce 8111      		cpse r24,__zero_reg__
+ 1048 03d0 00C0      		rjmp .L38
+ 1049               	.LVL93:
+ 1050               	.LBB32:
+ 1051               	.LBB33:
+ 1052               	.LBB34:
+ 269:xmega_pdi_nvm.c **** }
+ 1053               		.loc 2 269 0
+ 1054 03d2 61E0      		ldi r22,lo8(1)
+ 1055 03d4 8BEC      		ldi r24,lo8(-53)
+ 1056 03d6 91E0      		ldi r25,lo8(1)
+ 1057               	.LVL94:
+ 1058 03d8 00D0      		rcall xnvm_iowrite_byte
+ 1059               	.LVL95:
+ 1060               	.LBE34:
+ 1061               	.LBE33:
+ 1062               	.LBE32:
+ 339:xmega_pdi_nvm.c **** 		return ret;
+ 1063               		.loc 2 339 0
+ 1064 03da 8111      		cpse r24,__zero_reg__
+ 1065 03dc 00C0      		rjmp .L38
+ 342:xmega_pdi_nvm.c **** }
+ 1066               		.loc 2 342 0
+ 1067 03de C701      		movw r24,r14
+ 1068 03e0 B601      		movw r22,r12
+ 1069               	/* epilogue start */
+ 343:xmega_pdi_nvm.c **** 
+ 1070               		.loc 2 343 0
+ 1071 03e2 DF91      		pop r29
+ 1072 03e4 CF91      		pop r28
+ 1073               	.LVL96:
+ 1074 03e6 FF90      		pop r15
+ 1075 03e8 EF90      		pop r14
+ 1076 03ea DF90      		pop r13
+ 1077 03ec CF90      		pop r12
+ 1078               	.LVL97:
+ 342:xmega_pdi_nvm.c **** }
+ 1079               		.loc 2 342 0
+ 1080 03ee 00C0      		rjmp xnvm_ctrl_wait_nvmbusy
+ 1081               	.LVL98:
+ 1082               	.L38:
+ 1083               	/* epilogue start */
+ 343:xmega_pdi_nvm.c **** 
+ 1084               		.loc 2 343 0
+ 1085 03f0 DF91      		pop r29
+ 1086 03f2 CF91      		pop r28
+ 1087               	.LVL99:
+ 1088 03f4 FF90      		pop r15
+ 1089 03f6 EF90      		pop r14
+ 1090 03f8 DF90      		pop r13
+ 1091 03fa CF90      		pop r12
+ 1092               	.LVL100:
+ 1093 03fc 0895      		ret
+ 1094               		.cfi_endproc
+ 1095               	.LFE38:
+ 1097               	.global	xnvm_erase_user_sign
+ 1099               	xnvm_erase_user_sign:
+ 1100               	.LFB43:
+ 448:xmega_pdi_nvm.c **** 	enum status_code ret = xnvm_ctrl_cmd_write(XNVM_CMD_ERASE_USER_SIGN);
+ 1101               		.loc 2 448 0
+ 1102               		.cfi_startproc
+ 1103               	/* prologue: function */
+ 1104               	/* frame size = 0 */
+ 1105               	/* stack size = 0 */
+ 1106               	.L__stack_usage = 0
+ 449:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 1107               		.loc 2 449 0
+ 1108 03fe 88E1      		ldi r24,lo8(24)
+ 1109 0400 00D0      		rcall xnvm_ctrl_cmd_write
+ 1110               	.LVL101:
+ 450:xmega_pdi_nvm.c **** 		return ret;
+ 1111               		.loc 2 450 0
+ 1112 0402 8111      		cpse r24,__zero_reg__
+ 1113 0404 00C0      		rjmp .L44
+ 454:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 1114               		.loc 2 454 0
+ 1115 0406 60E0      		ldi r22,0
+ 1116 0408 74E0      		ldi r23,lo8(4)
+ 1117 040a 8EE8      		ldi r24,lo8(-114)
+ 1118 040c 90E0      		ldi r25,0
+ 1119 040e 00D0      		rcall xnvm_st_ptr
+ 1120               	.LVL102:
+ 455:xmega_pdi_nvm.c **** 		return ret;
+ 1121               		.loc 2 455 0
+ 1122 0410 8111      		cpse r24,__zero_reg__
+ 1123 0412 00C0      		rjmp .L44
+ 458:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 1124               		.loc 2 458 0
+ 1125 0414 85E5      		ldi r24,lo8(85)
+ 1126               	.LVL103:
+ 1127 0416 00D0      		rcall xnvm_st_star_ptr_postinc
+ 1128               	.LVL104:
+ 459:xmega_pdi_nvm.c **** 		return ret;
+ 1129               		.loc 2 459 0
+ 1130 0418 8111      		cpse r24,__zero_reg__
+ 1131 041a 00C0      		rjmp .L44
+ 462:xmega_pdi_nvm.c **** }
+ 1132               		.loc 2 462 0
+ 1133 041c 68EE      		ldi r22,lo8(-24)
+ 1134 041e 73E0      		ldi r23,lo8(3)
+ 1135 0420 80E0      		ldi r24,0
+ 1136 0422 90E0      		ldi r25,0
+ 1137 0424 00C0      		rjmp xnvm_ctrl_wait_nvmbusy
+ 1138               	.LVL105:
+ 1139               	.L44:
+ 463:xmega_pdi_nvm.c **** 
+ 1140               		.loc 2 463 0
+ 1141 0426 0895      		ret
+ 1142               		.cfi_endproc
+ 1143               	.LFE43:
+ 1145               	.global	xnvm_erase_program_user_sign
+ 1147               	xnvm_erase_program_user_sign:
+ 1148               	.LFB44:
+ 476:xmega_pdi_nvm.c **** 	enum status_code ret = xnvm_erase_user_sign();
+ 1149               		.loc 2 476 0
+ 1150               		.cfi_startproc
+ 1151               	/* prologue: function */
+ 1152               	/* frame size = 0 */
+ 1153               	/* stack size = 0 */
+ 1154               	.L__stack_usage = 0
+ 477:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 1155               		.loc 2 477 0
+ 1156 0428 00D0      		rcall xnvm_erase_user_sign
+ 1157               	.LVL106:
+ 478:xmega_pdi_nvm.c **** 		return ret;
+ 1158               		.loc 2 478 0
+ 1159 042a 8111      		cpse r24,__zero_reg__
+ 1160 042c 00C0      		rjmp .L49
+ 481:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 1161               		.loc 2 481 0
+ 1162 042e 8AE1      		ldi r24,lo8(26)
+ 1163               	.LVL107:
+ 1164 0430 00D0      		rcall xnvm_ctrl_cmd_write
+ 1165               	.LVL108:
+ 482:xmega_pdi_nvm.c **** 		return ret;
+ 1166               		.loc 2 482 0
+ 1167 0432 8111      		cpse r24,__zero_reg__
+ 1168 0434 00C0      		rjmp .L49
+ 486:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 1169               		.loc 2 486 0
+ 1170 0436 60E0      		ldi r22,0
+ 1171 0438 74E0      		ldi r23,lo8(4)
+ 1172 043a 8EE8      		ldi r24,lo8(-114)
+ 1173 043c 90E0      		ldi r25,0
+ 1174 043e 00D0      		rcall xnvm_st_ptr
+ 1175               	.LVL109:
+ 487:xmega_pdi_nvm.c **** 		return ret;
+ 1176               		.loc 2 487 0
+ 1177 0440 8111      		cpse r24,__zero_reg__
+ 1178 0442 00C0      		rjmp .L49
+ 490:xmega_pdi_nvm.c **** 	if(ret != STATUS_OK)
+ 1179               		.loc 2 490 0
+ 1180 0444 85E5      		ldi r24,lo8(85)
+ 1181               	.LVL110:
+ 1182 0446 00D0      		rcall xnvm_st_star_ptr_postinc
+ 1183               	.LVL111:
+ 491:xmega_pdi_nvm.c **** 		return ret;
+ 1184               		.loc 2 491 0
+ 1185 0448 8111      		cpse r24,__zero_reg__
+ 1186 044a 00C0      		rjmp .L49
+ 494:xmega_pdi_nvm.c **** }
+ 1187               		.loc 2 494 0
+ 1188 044c 68EE      		ldi r22,lo8(-24)
+ 1189 044e 73E0      		ldi r23,lo8(3)
+ 1190 0450 80E0      		ldi r24,0
+ 1191 0452 90E0      		ldi r25,0
+ 1192 0454 00C0      		rjmp xnvm_ctrl_wait_nvmbusy
+ 1193               	.LVL112:
+ 1194               	.L49:
+ 495:xmega_pdi_nvm.c **** 
+ 1195               		.loc 2 495 0
+ 1196 0456 0895      		ret
+ 1197               		.cfi_endproc
+ 1198               	.LFE44:
+ 1200               	.global	xnvm_write_fuse_bit
+ 1202               	xnvm_write_fuse_bit:
+ 1203               	.LFB45:
+ 507:xmega_pdi_nvm.c **** 
+ 1204               		.loc 2 507 0
+ 1205               		.cfi_startproc
+ 1206               	.LVL113:
+ 1207 0458 CF92      		push r12
+ 1208               	.LCFI53:
+ 1209               		.cfi_def_cfa_offset 3
+ 1210               		.cfi_offset 12, -2
+ 1211 045a DF92      		push r13
+ 1212               	.LCFI54:
+ 1213               		.cfi_def_cfa_offset 4
+ 1214               		.cfi_offset 13, -3
+ 1215 045c EF92      		push r14
+ 1216               	.LCFI55:
+ 1217               		.cfi_def_cfa_offset 5
+ 1218               		.cfi_offset 14, -4
+ 1219 045e FF92      		push r15
+ 1220               	.LCFI56:
+ 1221               		.cfi_def_cfa_offset 6
+ 1222               		.cfi_offset 15, -5
+ 1223 0460 0F93      		push r16
+ 1224               	.LCFI57:
+ 1225               		.cfi_def_cfa_offset 7
+ 1226               		.cfi_offset 16, -6
+ 1227 0462 1F93      		push r17
+ 1228               	.LCFI58:
+ 1229               		.cfi_def_cfa_offset 8
+ 1230               		.cfi_offset 17, -7
+ 1231 0464 CF93      		push r28
+ 1232               	.LCFI59:
+ 1233               		.cfi_def_cfa_offset 9
+ 1234               		.cfi_offset 28, -8
+ 1235 0466 DF93      		push r29
+ 1236               	.LCFI60:
+ 1237               		.cfi_def_cfa_offset 10
+ 1238               		.cfi_offset 29, -9
+ 1239 0468 00D0      		rcall .
+ 1240 046a 00D0      		rcall .
+ 1241 046c 1F92      		push __zero_reg__
+ 1242               	.LCFI61:
+ 1243               		.cfi_def_cfa_offset 15
+ 1244 046e CDB7      		in r28,__SP_L__
+ 1245 0470 DEB7      		in r29,__SP_H__
+ 1246               	.LCFI62:
+ 1247               		.cfi_def_cfa_register 28
+ 1248               	/* prologue: function */
+ 1249               	/* frame size = 5 */
+ 1250               	/* stack size = 13 */
+ 1251               	.L__stack_usage = 13
+ 1252 0472 6983      		std Y+1,r22
+ 1253 0474 7A83      		std Y+2,r23
+ 1254 0476 8B83      		std Y+3,r24
+ 1255 0478 9C83      		std Y+4,r25
+ 1256 047a 6801      		movw r12,r16
+ 1257 047c 7901      		movw r14,r18
+ 509:xmega_pdi_nvm.c **** 
+ 1258               		.loc 2 509 0
+ 1259 047e 8CE4      		ldi r24,lo8(76)
+ 1260 0480 4D83      		std Y+5,r20
+ 1261 0482 00D0      		rcall xnvm_ctrl_cmd_write
+ 1262               	.LVL114:
+ 511:xmega_pdi_nvm.c **** 			XNVM_PDI_BYTE_DATA_MASK;
+ 1263               		.loc 2 511 0
+ 1264 0484 8CE4      		ldi r24,lo8(76)
+ 1265 0486 8093 0000 		sts cmd_buffer,r24
+ 514:xmega_pdi_nvm.c **** 	cmd_buffer[5] = value;
+ 1266               		.loc 2 514 0
+ 1267 048a 64E0      		ldi r22,lo8(4)
+ 1268 048c CE01      		movw r24,r28
+ 1269 048e 0196      		adiw r24,1
+ 1270 0490 00D0      		rcall mem_move.constprop.2
+ 1271               	.LVL115:
+ 515:xmega_pdi_nvm.c **** 
+ 1272               		.loc 2 515 0
+ 1273 0492 4D81      		ldd r20,Y+5
+ 1274 0494 4093 0000 		sts cmd_buffer+5,r20
+ 517:xmega_pdi_nvm.c **** 
+ 1275               		.loc 2 517 0
+ 1276 0498 66E0      		ldi r22,lo8(6)
+ 1277 049a 70E0      		ldi r23,0
+ 1278 049c 80E0      		ldi r24,lo8(cmd_buffer)
+ 1279 049e 90E0      		ldi r25,hi8(cmd_buffer)
+ 1280 04a0 00D0      		rcall pdi_write
+ 1281               	.LVL116:
+ 519:xmega_pdi_nvm.c **** }
+ 1282               		.loc 2 519 0
+ 1283 04a2 C701      		movw r24,r14
+ 1284 04a4 B601      		movw r22,r12
+ 1285 04a6 00D0      		rcall xnvm_ctrl_wait_nvmbusy
+ 1286               	.LVL117:
+ 1287               	/* epilogue start */
+ 520:xmega_pdi_nvm.c **** 
+ 1288               		.loc 2 520 0
+ 1289 04a8 0F90      		pop __tmp_reg__
+ 1290 04aa 0F90      		pop __tmp_reg__
+ 1291 04ac 0F90      		pop __tmp_reg__
+ 1292 04ae 0F90      		pop __tmp_reg__
+ 1293 04b0 0F90      		pop __tmp_reg__
+ 1294 04b2 DF91      		pop r29
+ 1295 04b4 CF91      		pop r28
+ 1296               	.LVL118:
+ 1297 04b6 1F91      		pop r17
+ 1298               	.LVL119:
+ 1299 04b8 0F91      		pop r16
+ 1300               	.LVL120:
+ 1301 04ba FF90      		pop r15
+ 1302               	.LVL121:
+ 1303 04bc EF90      		pop r14
+ 1304               	.LVL122:
+ 1305 04be DF90      		pop r13
+ 1306               	.LVL123:
+ 1307 04c0 CF90      		pop r12
+ 1308               	.LVL124:
+ 1309 04c2 0895      		ret
+ 1310               		.cfi_endproc
+ 1311               	.LFE45:
+ 1313               	.global	xnvm_deinit
+ 1315               	xnvm_deinit:
+ 1316               	.LFB47:
+ 545:xmega_pdi_nvm.c **** 
+ 546:xmega_pdi_nvm.c **** /**
+ 547:xmega_pdi_nvm.c ****  * \brief Function for closing the PDI communication to the device.
+ 548:xmega_pdi_nvm.c ****  *
+ 549:xmega_pdi_nvm.c ****  * \retval always STATUS_OK;
+ 550:xmega_pdi_nvm.c ****  */
+ 551:xmega_pdi_nvm.c **** enum status_code xnvm_deinit(void)
+ 552:xmega_pdi_nvm.c **** {
+ 1317               		.loc 2 552 0
+ 1318               		.cfi_startproc
+ 1319               	/* prologue: function */
+ 1320               	/* frame size = 0 */
+ 1321               	/* stack size = 0 */
+ 1322               	.L__stack_usage = 0
+ 553:xmega_pdi_nvm.c **** 	pdi_deinit();
+ 1323               		.loc 2 553 0
+ 1324 04c4 00D0      		rcall pdi_deinit
+ 1325               	.LVL125:
+ 554:xmega_pdi_nvm.c **** 	initialized = 0;
+ 1326               		.loc 2 554 0
+ 1327 04c6 1092 0000 		sts initialized,__zero_reg__
+ 555:xmega_pdi_nvm.c **** 	return STATUS_OK;
+ 556:xmega_pdi_nvm.c **** }
+ 1328               		.loc 2 556 0
+ 1329 04ca 80E0      		ldi r24,0
+ 1330 04cc 0895      		ret
+ 1331               		.cfi_endproc
+ 1332               	.LFE47:
+ 1334               	.global	initialized
+ 1335               		.section .bss
+ 1338               	initialized:
+ 1339 0000 00        		.zero	1
+ 1340               		.comm	retval,1,1
+ 1341               		.comm	cmd_buffer,20,1
+ 1342               		.text
+ 1343               	.Letext0:
+ 1344               		.file 3 "/usr/lib/avr/include/stdint.h"
+ 1345               		.file 4 "./low_level_pdi.h"
+ 1346               		.file 5 "./status_codes.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 xmega_pdi_nvm.c
+     /tmp/ccuMY3Ze.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccuMY3Ze.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccuMY3Ze.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccuMY3Ze.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccuMY3Ze.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccuMY3Ze.s:11     .text:0000000000000000 mem_move.constprop.2
+                            *COM*:0000000000000014 cmd_buffer
+     /tmp/ccuMY3Ze.s:46     .text:0000000000000014 xnvm_write_repeat
+     /tmp/ccuMY3Ze.s:176    .text:00000000000000aa xnvm_put_dev_in_reset
+     /tmp/ccuMY3Ze.s:211    .text:00000000000000ce xnvm_ioread_byte
+     /tmp/ccuMY3Ze.s:299    .text:0000000000000126 xnvm_iowrite_byte
+     /tmp/ccuMY3Ze.s:373    .text:0000000000000170 xnvm_ctrl_cmd_write
+     /tmp/ccuMY3Ze.s:398    .text:0000000000000178 xnvm_chip_erase
+     /tmp/ccuMY3Ze.s:539    .text:00000000000001fa xnvm_st_star_ptr_postinc
+     /tmp/ccuMY3Ze.s:566    .text:000000000000020e xnvm_load_buffer
+     /tmp/ccuMY3Ze.s:646    .text:0000000000000252 xnvm_st_ptr
+     /tmp/ccuMY3Ze.s:707    .text:000000000000028c xnvm_read_memory
+     /tmp/ccuMY3Ze.s:810    .text:00000000000002ea xnvm_ctrl_wait_nvmbusy
+     /tmp/ccuMY3Ze.s:914    .text:000000000000033e xnvm_init
+     /tmp/ccuMY3Ze.s:1338   .bss:0000000000000000 initialized
+                            *COM*:0000000000000001 retval
+     /tmp/ccuMY3Ze.s:987    .text:00000000000003a4 xnvm_erase_buffer
+     /tmp/ccuMY3Ze.s:1099   .text:00000000000003fe xnvm_erase_user_sign
+     /tmp/ccuMY3Ze.s:1147   .text:0000000000000428 xnvm_erase_program_user_sign
+     /tmp/ccuMY3Ze.s:1202   .text:0000000000000458 xnvm_write_fuse_bit
+     /tmp/ccuMY3Ze.s:1315   .text:00000000000004c4 xnvm_deinit
+
+UNDEFINED SYMBOLS
+pdi_write
+pdi_get_byte
+pdi_read
+pdi_init
+pdi_deinit
+__do_clear_bss

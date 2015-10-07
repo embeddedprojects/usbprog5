@@ -872,6 +872,20 @@ static void usbprog5_setup_pdi(PROGRAMMER * pgm)
     pgm->chip_erase = usbprog5_pdi_chip_erase;
     pgm->page_erase = usbprog5_pdi_page_erase;
     
+    /* RST GPIO ouput */
+    iomem[IOCFG_GPIO + IO_MODE1_SET] = (1<<GPIO_PDI_RST_BIT);
+  
+    /* MOSI GPIO output */
+    iomem[IOCFG_SPI + IO_MODE1_SET] = (1<<SPI_PDI_MOSI_BIT);
+  
+    /* MISO GPIO input */
+    iomem[IOCFG_SPI + IO_MODE0_RESET] = (1<<SPI_PDI_MISO_BIT);
+    iomem[IOCFG_SPI + IO_MODE1_RESET] = (1<<SPI_PDI_MISO_BIT);
+  
+    /* SCK GPIO output */
+    iomem[IOCFG_GPIO + IO_MODE1_SET] = (1<<GPIO_PDI_SCK_BIT);
+    iomem[IOCFG_GPIO + IO_MODE0_RESET] = (1<<GPIO_PDI_SCK_BIT);
+    
     /* configure nCS as output, drive hi (inactive) */
 	iomem[IOCFG_GPIO + IO_MODE0_SET] = (1<<GPIO_PDI_NCS_BIT);
 	iomem[IOCFG_GPIO + IO_MODE1_SET] = (1<<GPIO_PDI_NCS_BIT);

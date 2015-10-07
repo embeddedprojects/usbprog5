@@ -1,7 +1,8 @@
 Status:
 
 Signature: OK
-flash-write: OK
+Error AVRdude/OpenOCD had exitcode 1
+
 dump memory: OK
 
 
@@ -26,9 +27,8 @@ adapter_nsrst_delay: 100
 none separate
 cortex_m reset_config sysresetreq
 Info : clock speed 100 kHz
-in procedure 'init' 
-in procedure 'ocd_bouncer'
-
+Info : SWD IDCODE 0x1ba01477
+Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints
 
 
 
@@ -54,9 +54,24 @@ adapter_nsrst_delay: 100
 none separate
 cortex_m reset_config sysresetreq
 Info : clock speed 100 kHz
-in procedure 'init' 
-in procedure 'ocd_bouncer'
+Info : SWD IDCODE 0x1ba01477
+Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints
+target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08000044 msp: 0x20002000
+target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08000044 msp: 0x20002000
+** Programming Started **
+auto erase enabled
+Info : device id = 0x10016420
+Info : flash size = 128kbytes
+wrote 1024 bytes from file /tmp/main.elf in 0.346470s (2.886 KiB/s)
+** Programming Finished **
+** Resetting Target **
+Warn : target not halted
 
+Error AVRdude/OpenOCD had exitcode 1
 
 
 
@@ -80,9 +95,13 @@ adapter_nsrst_delay: 100
 none separate
 cortex_m reset_config sysresetreq
 Info : clock speed 100 kHz
-in procedure 'init' 
-in procedure 'ocd_bouncer'
-
+Info : SWD IDCODE 0x1ba01477
+Info : stm32f1x.cpu: hardware has 6 breakpoints, 4 watchpoints
+target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x61000000 pc: 0x08000074 msp: 0x20001ff0
+0x00000000: 20002000 08000045 08000041 08000041 08000041 08000041 08000041 00000000 
+0x00000020: 00000000 00000000 
 
 
 
