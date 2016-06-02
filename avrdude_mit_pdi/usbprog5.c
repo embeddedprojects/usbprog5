@@ -39,6 +39,8 @@
 
 #if HAVE_USBPROG5
 
+static int at89 = 0;
+
 struct pdata
 {
   /* Start address of Xmega boot area */
@@ -363,6 +365,9 @@ static int usbprog5_setpin(PROGRAMMER * pgm, int pinfunc, int value)
 	
 	pinfunc-=3;
 	
+	if((at89) && (!pinfunc))
+		value ^= 1;
+
 	reg_ofs = io_ofs[pinfunc] + IO_MODE0_SET + ((value&1)^1);
 	iomem[reg_ofs] = 1<<io_bit[pinfunc];
 	
@@ -377,8 +382,18 @@ static int usbprog5_getpin(PROGRAMMER * pgm, int pinfunc)
 	return (iomem[io_ofs[MISO_PIN] + IO_PINS]>>io_bit[MISO_PIN])&1;
 }
 
+static int at89_pulse(PROGRAMMER * pgm, int pinfunc) {
+	usbprog5_setpin(pgm, pinfunc, 1);
+	usleep(1000);
+	usbprog5_setpin(pgm, pinfunc, 0);
+	usleep(1000);
+	return 0;
+}
+
 static int usbprog5_highpulsepin(PROGRAMMER * pgm, int pinfunc)
 {
+  if(at89)
+	return at89_pulse(pgm, pinfunc);
 
 //	printf("pulsepin %d\n",pinfunc);
   usbprog5_setpin(pgm, pinfunc, 1);
@@ -439,6 +454,7 @@ static int usbprog5_open(PROGRAMMER *pgm, char *port)
 		  io_ofs = pdi_ofs;
 		  io_bit = pdi_bit;
 	  }
+	  at89 =  (!strcmp(port,"at89"));
   }
 
   /* RST GPIO ouput */
@@ -509,7 +525,7 @@ static unsigned char usbprog5_pdi_memtype(PROGRAMMER * pgm, unsigned long addr)
 #define ID_MAGIC2		0xd8
 
 #define VERSION_MSB		1
-#define VERSION_LSB		0
+#define VERSION_LSB		2
 
 #define CMD_BUFFER		0x20
 #define BUFFER_ERASE	0x10

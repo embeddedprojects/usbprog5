@@ -388,6 +388,9 @@ def logica(code,connection):
 		code['execute']="/root/avrdude-6.1/avrdude -p "+code['processor']+" -c usbprog5 -i "+code['speed']+" -C /root/avrdude-6.1/avrdude.conf"
 
 
+		if 'at89' in code['processor']:
+			code['execute']=code['execute']+" -P at89"
+			
 		if code['v']>=2:
 			print code['execute']
 		if code['delete']:
